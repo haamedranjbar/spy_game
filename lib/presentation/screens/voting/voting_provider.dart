@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:spy_game/presentation/providers/audio_provider.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
 
 part 'voting_provider.g.dart';
@@ -37,6 +38,8 @@ class VotingNotifier extends _$VotingNotifier {
     final selected = state.selectedPlayerName;
     if (selected == null) return;
 
+    ref.read(audioServiceProvider).playVote();
+    ref.read(audioServiceProvider).vibrateLight();
     ref.read(gameProvider.notifier).castVote(selected);
     state = const VotingUiState();
   }

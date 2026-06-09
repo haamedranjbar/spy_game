@@ -30,6 +30,15 @@ class PlayerSetupScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.save_outlined),
+            tooltip: 'player_setup.save_group'.tr(),
+            onPressed: setupState.isSaving
+                ? null
+                : () => _showSaveGroupDialog(context, ref),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(
@@ -44,6 +53,9 @@ class PlayerSetupScreen extends ConsumerWidget {
                       selectedGroupId: setupState.selectedGroupId,
                       onChanged: notifier.selectGroup,
                       onCreateNew: notifier.createNewGroup,
+                      onDelete: setupState.selectedGroupId != null
+                          ? () => _confirmDeleteGroup(context, ref)
+                          : null,
                     ),
                   if (setupState.groups.isNotEmpty) const SizedBox(height: 16),
                   CounterCard(
@@ -67,7 +79,9 @@ class PlayerSetupScreen extends ConsumerWidget {
                   ...List.generate(
                     setupState.playerNames.length,
                     (index) => _EditablePlayerTile(
-                      key: ValueKey('player_${setupState.playerNames[index]}_$index'),
+                      key: ValueKey(
+                        'player_${setupState.playerNames[index]}_$index',
+                      ),
                       name: setupState.playerNames[index],
                       index: index + 1,
                       onNameChanged: (value) =>
@@ -107,23 +121,13 @@ class PlayerSetupScreen extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.all(20),
               child: GradientButton(
-                label: 'player_setup.start'.tr(),
-                icon: Icons.play_arrow_rounded,
+                label: 'player_setup.continue'.tr(),
+                icon: Icons.arrow_forward_rounded,
                 enabled: setupState.canContinue,
-                isLoading: setupState.isStarting,
                 onPressed: setupState.canContinue
-                    ? () async {
-                        final started = await notifier.startGame();
-                        if (!context.mounted) return;
-                        if (started) {
-                          context.go(AppRoutes.wordReveal);
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('error.start_game'.tr()),
-                            ),
-                          );
-                        }
+                    ? () {
+                        notifier.continueToGameConfig();
+                        context.push(AppRoutes.gameConfig);
                       }
                     : null,
               ),
@@ -132,6 +136,102 @@ class PlayerSetupScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _showSaveGroupDialog(BuildContext context, WidgetRef ref) async {
+    final setupState = ref.read(playerSetupProvider);
+    final notifier = ref.read(playerSetupProvider.notifier);
+    final controller = TextEditingController(
+      text: setupState.selectedGroupId != null
+          ? setupState.groups
+              .where((g) => g.id == setupState.selectedGroupId)
+              .map((g) => g.name)
+              .firstOrNull
+          : '',
+    );
+
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: Text('player_setup.save_group'.tr()),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: 'player_setup.group_name'.tr(),
+            filled: true,
+            fillColor: AppColors.surfaceLight,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text('common.cancel'.tr()),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text('common.save'.tr()),
+          ),
+        ],
+      ),
+    );
+
+    if (saved == true && context.mounted) {
+      final success = await notifier.saveCurrentGroup(controller.text);
+      controller.dispose();
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            success
+                ? 'player_setup.group_saved'.tr()
+                : 'error.save_failed'.tr(),
+          ),
+        ),
+      );
+    } else {
+      controller.dispose();
+    }
+  }
+
+  Future<void> _confirmDeleteGroup(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        title: Text('player_setup.delete_group'.tr()),
+        content: Text('player_setup.delete_group_confirm'.tr()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text('common.cancel'.tr()),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(
+              'common.confirm'.tr(),
+              style: const TextStyle(color: AppColors.accentDanger),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      final success =
+          await ref.read(playerSetupProvider.notifier).deleteSelectedGroup();
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            success
+                ? 'player_setup.group_deleted'.tr()
+                : 'error.delete_failed'.tr(),
+          ),
+        ),
+      );
+    }
   }
 }
 

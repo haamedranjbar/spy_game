@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spy_game/core/router/router.dart';
 import 'package:spy_game/core/theme/app_theme.dart';
+import 'package:spy_game/presentation/providers/settings_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +34,9 @@ class SpyGameApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // بارگذاری تنظیمات در شروع اپ
+    ref.watch(settingsProvider);
+
     return MaterialApp.router(
       title: 'app.name'.tr(),
       debugShowCheckedModeBanner: false,

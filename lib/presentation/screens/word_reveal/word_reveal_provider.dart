@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:spy_game/presentation/providers/audio_provider.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
 
 part 'word_reveal_provider.g.dart';
@@ -25,6 +26,8 @@ class WordRevealNotifier extends _$WordRevealNotifier {
 
   /// نمایش نقش بازیکن فعلی
   void reveal() {
+    ref.read(audioServiceProvider).playReveal();
+    ref.read(audioServiceProvider).vibrateLight();
     ref.read(gameProvider.notifier).revealCurrentRole();
   }
 

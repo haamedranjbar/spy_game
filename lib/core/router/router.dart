@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spy_game/presentation/screens/about/about_screen.dart';
 import 'package:spy_game/presentation/screens/categories/categories_screen.dart';
+import 'package:spy_game/presentation/screens/custom_category/custom_category_screen.dart';
+import 'package:spy_game/presentation/screens/game_config/game_config_screen.dart';
 import 'package:spy_game/presentation/screens/home/home_screen.dart';
 import 'package:spy_game/presentation/screens/player_setup/player_setup_screen.dart';
 import 'package:spy_game/presentation/screens/result/result_screen.dart';
+import 'package:spy_game/presentation/screens/rules/rules_screen.dart';
+import 'package:spy_game/presentation/screens/settings/settings_screen.dart';
 import 'package:spy_game/presentation/screens/splash/splash_screen.dart';
 import 'package:spy_game/presentation/screens/timer/timer_screen.dart';
 import 'package:spy_game/presentation/screens/voting/voting_screen.dart';
@@ -50,6 +55,30 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
+      path: AppRoutes.settings,
+      name: 'settings',
+      pageBuilder: (context, state) => _fadePage(
+        state: state,
+        child: const SettingsScreen(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.rules,
+      name: 'rules',
+      pageBuilder: (context, state) => _fadePage(
+        state: state,
+        child: const RulesScreen(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.about,
+      name: 'about',
+      pageBuilder: (context, state) => _fadePage(
+        state: state,
+        child: const AboutScreen(),
+      ),
+    ),
+    GoRoute(
       path: AppRoutes.categories,
       name: 'categories',
       pageBuilder: (context, state) => _fadePage(
@@ -63,6 +92,22 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => _fadePage(
         state: state,
         child: const PlayerSetupScreen(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.gameConfig,
+      name: 'gameConfig',
+      pageBuilder: (context, state) => _fadePage(
+        state: state,
+        child: const GameConfigScreen(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.customCategory,
+      name: 'customCategory',
+      pageBuilder: (context, state) => _fadePage(
+        state: state,
+        child: const CustomCategoryScreen(),
       ),
     ),
     GoRoute(

@@ -11,12 +11,14 @@ class GroupSelector extends StatelessWidget {
     required this.selectedGroupId,
     required this.onChanged,
     this.onCreateNew,
+    this.onDelete,
   });
 
   final List<GroupSelectorItem> groups;
   final int? selectedGroupId;
   final ValueChanged<int?> onChanged;
   final VoidCallback? onCreateNew;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -32,46 +34,61 @@ class GroupSelector extends StatelessWidget {
                 ),
           ),
           const SizedBox(height: 8),
-          DropdownButtonFormField<int?>(
-            initialValue: selectedGroupId,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: AppColors.surfaceLight,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppColors.cardBorder),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppColors.cardBorder),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
-              ),
-            ),
-            dropdownColor: AppColors.surfaceLight,
-            hint: Text('player_setup.select_group'.tr()),
-            items: [
-              ...groups.map(
-                (group) => DropdownMenuItem<int?>(
-                  value: group.id,
-                  child: Text(group.name),
+          Row(
+            children: [
+              Expanded(
+                child: DropdownButtonFormField<int?>(
+                  initialValue: selectedGroupId,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: AppColors.surfaceLight,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: AppColors.cardBorder),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: AppColors.cardBorder),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                  ),
+                  dropdownColor: AppColors.surfaceLight,
+                  hint: Text('player_setup.select_group'.tr()),
+                  items: [
+                    ...groups.map(
+                      (group) => DropdownMenuItem<int?>(
+                        value: group.id,
+                        child: Text(group.name),
+                      ),
+                    ),
+                    if (onCreateNew != null)
+                      DropdownMenuItem<int?>(
+                        value: -1,
+                        child: Text('player_setup.new_group'.tr()),
+                      ),
+                  ],
+                  onChanged: (value) {
+                    if (value == -1) {
+                      onCreateNew?.call();
+                    } else {
+                      onChanged(value);
+                    }
+                  },
                 ),
               ),
-              if (onCreateNew != null)
-                DropdownMenuItem<int?>(
-                  value: -1,
-                  child: Text('player_setup.new_group'.tr()),
+              if (onDelete != null) ...[
+                const SizedBox(width: 8),
+                IconButton(
+                  onPressed: onDelete,
+                  icon: const Icon(Icons.delete_outline),
+                  color: AppColors.accentDanger,
+                  tooltip: 'player_setup.delete_group'.tr(),
                 ),
+              ],
             ],
-            onChanged: (value) {
-              if (value == -1) {
-                onCreateNew?.call();
-              } else {
-                onChanged(value);
-              }
-            },
           ),
         ],
       ),

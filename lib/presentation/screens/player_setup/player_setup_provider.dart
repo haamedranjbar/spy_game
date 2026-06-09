@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:isar_community/isar.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spy_game/core/constants/game_config.dart';
 import 'package:spy_game/core/utils/app_logger.dart';
 import 'package:spy_game/data/models/player_group.dart';
+import 'package:spy_game/data/repositories/player_repository.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
 import 'package:spy_game/presentation/providers/isar_provider.dart';
 import 'package:spy_game/presentation/widgets/group_selector.dart';
@@ -15,13 +15,13 @@ class PlayerSetupState {
   const PlayerSetupState({
     this.playerNames = const [],
     this.selectedGroupId,
-    this.isStarting = false,
+    this.isSaving = false,
     this.groups = const [],
   });
 
   final List<String> playerNames;
   final int? selectedGroupId;
-  final bool isStarting;
+  final bool isSaving;
   final List<GroupSelectorItem> groups;
 
   int get playerCount => playerNames.length;
@@ -33,7 +33,7 @@ class PlayerSetupState {
   PlayerSetupState copyWith({
     List<String>? playerNames,
     int? selectedGroupId,
-    bool? isStarting,
+    bool? isSaving,
     List<GroupSelectorItem>? groups,
     bool clearSelectedGroup = false,
   }) {
@@ -42,7 +42,7 @@ class PlayerSetupState {
       selectedGroupId: clearSelectedGroup
           ? null
           : (selectedGroupId ?? this.selectedGroupId),
-      isStarting: isStarting ?? this.isStarting,
+      isSaving: isSaving ?? this.isSaving,
       groups: groups ?? this.groups,
     );
   }
@@ -50,6 +50,8 @@ class PlayerSetupState {
 
 @riverpod
 class PlayerSetupNotifier extends _$PlayerSetupNotifier {
+  final PlayerRepository _repository = const PlayerRepository();
+
   @override
   PlayerSetupState build() {
     _loadGroups();
@@ -76,7 +78,7 @@ class PlayerSetupNotifier extends _$PlayerSetupNotifier {
   Future<void> _loadGroups() async {
     try {
       final isar = await ref.read(isarProvider.future);
-      final groups = await isar.playerGroups.where().findAll();
+      final groups = await _repository.getAllGroups(isar: isar);
       final items = groups
           .map(
             (group) => GroupSelectorItem(
@@ -164,15 +166,77 @@ class PlayerSetupNotifier extends _$PlayerSetupNotifier {
     );
   }
 
-  /// شروع بازی با اسامی فعلی
-  Future<bool> startGame() async {
-    state = state.copyWith(isStarting: true);
-    ref.read(gameProvider.notifier).setPlayerNames(state.playerNames);
-    final started = await ref.read(gameProvider.notifier).startGame();
-    if (ref.mounted) {
-      state = state.copyWith(isStarting: false);
+  /// ذخیره یا به‌روزرسانی گروه فعلی
+  Future<bool> saveCurrentGroup(String name) async {
+    if (name.trim().isEmpty) return false;
+
+    state = state.copyWith(isSaving: true);
+    try {
+      final isar = await ref.read(isarProvider.future);
+      final bool success;
+
+      if (state.selectedGroupId != null) {
+        success = await _repository.updateGroup(
+          isar: isar,
+          groupId: state.selectedGroupId!,
+          name: name,
+          playerNames: state.playerNames,
+        );
+      } else {
+        final group = await _repository.saveGroup(
+          isar: isar,
+          name: name,
+          playerNames: state.playerNames,
+        );
+        success = group != null;
+        if (group != null && ref.mounted) {
+          state = state.copyWith(selectedGroupId: group.id);
+        }
+      }
+
+      if (success) {
+        await _loadGroups();
+      }
+      return success;
+    } catch (e, stackTrace) {
+      appLogger.e('Failed to save player group', e, stackTrace);
+      return false;
+    } finally {
+      if (ref.mounted) {
+        state = state.copyWith(isSaving: false);
+      }
     }
-    return started;
+  }
+
+  /// حذف گروه انتخاب‌شده
+  Future<bool> deleteSelectedGroup() async {
+    final groupId = state.selectedGroupId;
+    if (groupId == null) return false;
+
+    try {
+      final isar = await ref.read(isarProvider.future);
+      final success = await _repository.deleteGroup(
+        isar: isar,
+        groupId: groupId,
+      );
+
+      if (success && ref.mounted) {
+        state = state.copyWith(
+          clearSelectedGroup: true,
+          playerNames: _defaultPlayerNames(),
+        );
+        await _loadGroups();
+      }
+      return success;
+    } catch (e, stackTrace) {
+      appLogger.e('Failed to delete player group', e, stackTrace);
+      return false;
+    }
+  }
+
+  /// ادامه به تنظیمات دور — فقط ذخیره اسامی در game state
+  void continueToGameConfig() {
+    ref.read(gameProvider.notifier).setPlayerNames(state.playerNames);
   }
 }
 
@@ -181,7 +245,7 @@ class PlayerSetupNotifier extends _$PlayerSetupNotifier {
 Future<List<PlayerGroup>> savedPlayerGroups(Ref ref) async {
   try {
     final isar = await ref.watch(isarProvider.future);
-    return isar.playerGroups.where().findAll();
+    return const PlayerRepository().getAllGroups(isar: isar);
   } catch (_) {
     return const [];
   }

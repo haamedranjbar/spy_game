@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:spy_game/presentation/providers/audio_provider.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
 
 part 'timer_provider.g.dart';
@@ -79,6 +80,8 @@ class TimerNotifier extends _$TimerNotifier {
   void _finish() {
     _cancelTimer();
     state = state.copyWith(remainingSeconds: 0, isRunning: false);
+    ref.read(audioServiceProvider).playTimerEnd();
+    ref.read(audioServiceProvider).vibrateMedium();
     ref.read(gameProvider.notifier).finishTimer();
   }
 }

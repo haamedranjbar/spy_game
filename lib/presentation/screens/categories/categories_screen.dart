@@ -83,7 +83,8 @@ class CategoriesScreen extends ConsumerWidget {
                         .read(categoriesProvider.notifier)
                         .toggleCategory(category, isGoldenUser: false);
                   },
-                  onCreateCustom: () => _showComingSoonSnackBar(context),
+                  onCreateCustom: () =>
+                      context.push(AppRoutes.customCategory),
                 ),
               ),
             ),
@@ -117,14 +118,6 @@ class CategoriesScreen extends ConsumerWidget {
     );
   }
 
-  void _showComingSoonSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('common.coming_soon'.tr()),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
 }
 
 class _CategoryGrid extends StatelessWidget {

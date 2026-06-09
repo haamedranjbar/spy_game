@@ -32,6 +32,9 @@ class GameState {
     this.playerNames = const [],
     this.spyCount = GameConfig.defaultSpyCount,
     this.timerSeconds = GameConfig.defaultTimerSeconds,
+    this.showCategoryForSpy = false,
+    this.spyHintEnabled = false,
+    this.spiesKnowEachOther = false,
     this.showColorImages = false,
     this.roles = const [],
     this.secretWord = '',
@@ -53,6 +56,9 @@ class GameState {
   final List<String> playerNames;
   final int spyCount;
   final int timerSeconds;
+  final bool showCategoryForSpy;
+  final bool spyHintEnabled;
+  final bool spiesKnowEachOther;
   final bool showColorImages;
   final List<PlayerRole> roles;
   final String secretWord;
@@ -103,6 +109,9 @@ class GameState {
     List<String>? playerNames,
     int? spyCount,
     int? timerSeconds,
+    bool? showCategoryForSpy,
+    bool? spyHintEnabled,
+    bool? spiesKnowEachOther,
     bool? showColorImages,
     List<PlayerRole>? roles,
     String? secretWord,
@@ -126,6 +135,9 @@ class GameState {
       playerNames: playerNames ?? this.playerNames,
       spyCount: spyCount ?? this.spyCount,
       timerSeconds: timerSeconds ?? this.timerSeconds,
+      showCategoryForSpy: showCategoryForSpy ?? this.showCategoryForSpy,
+      spyHintEnabled: spyHintEnabled ?? this.spyHintEnabled,
+      spiesKnowEachOther: spiesKnowEachOther ?? this.spiesKnowEachOther,
       showColorImages: showColorImages ?? this.showColorImages,
       roles: roles ?? this.roles,
       secretWord: secretWord ?? this.secretWord,
@@ -201,6 +213,31 @@ class GameNotifier extends _$GameNotifier {
     state = state.copyWith(
       spyCount: count.clamp(GameConfig.minSpies, maxSpies),
     );
+  }
+
+  /// تنظیم زمان تایمر بحث
+  void setTimerSeconds(int seconds) {
+    state = state.copyWith(
+      timerSeconds: seconds.clamp(
+        GameConfig.minTimerSeconds,
+        GameConfig.maxTimerSeconds,
+      ),
+    );
+  }
+
+  /// نمایش دسته به جاسوس
+  void setShowCategoryForSpy(bool value) {
+    state = state.copyWith(showCategoryForSpy: value);
+  }
+
+  /// راهنمای کلمه برای جاسوس
+  void setSpyHintEnabled(bool value) {
+    state = state.copyWith(spyHintEnabled: value);
+  }
+
+  /// جاسوس‌ها همدیگر را بشناسند
+  void setSpiesKnowEachOther(bool value) {
+    state = state.copyWith(spiesKnowEachOther: value);
   }
 
   /// شروع بازی — انتخاب کلمه و تخصیص نقش

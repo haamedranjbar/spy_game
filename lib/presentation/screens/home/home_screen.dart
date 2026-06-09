@@ -65,9 +65,9 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 20),
               _MenuGrid(
-                onSettings: () => _showComingSoon(context),
-                onRules: () => _showComingSoon(context),
-                onAbout: () => _showComingSoon(context),
+                onSettings: () => context.push(AppRoutes.settings),
+                onRules: () => context.push(AppRoutes.rules),
+                onAbout: () => context.push(AppRoutes.about),
                 onIap: () => _showComingSoon(context),
               ),
               const SizedBox(height: 8),
