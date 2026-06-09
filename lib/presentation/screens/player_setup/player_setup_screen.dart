@@ -130,35 +130,60 @@ class PlayerSetupScreen extends ConsumerWidget {
           : '',
     );
 
+    var showNameError = false;
+
     final saved = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: AppColors.surface,
-        title: Text('player_setup.save_group'.tr()),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: 'player_setup.group_name'.tr(),
-            filled: true,
-            fillColor: AppColors.surfaceLight,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          backgroundColor: AppColors.surface,
+          title: Text('player_setup.save_group'.tr()),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: controller,
+                autofocus: true,
+                onChanged: (_) {
+                  if (showNameError) {
+                    setDialogState(() => showNameError = false);
+                  }
+                },
+                decoration: InputDecoration(
+                  hintText: 'player_setup.group_name'.tr(),
+                  filled: true,
+                  fillColor: AppColors.surfaceLight,
+                  errorText: showNameError
+                      ? 'player_setup.group_name_required'.tr()
+                      : null,
+                ),
+              ),
+            ],
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: Text('common.cancel'.tr()),
+            ),
+            TextButton(
+              onPressed: () {
+                if (controller.text.trim().isEmpty) {
+                  setDialogState(() => showNameError = true);
+                  return;
+                }
+                Navigator.pop(dialogContext, true);
+              },
+              child: Text('common.save'.tr()),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: Text('common.cancel'.tr()),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text('common.save'.tr()),
-          ),
-        ],
       ),
     );
 
     if (saved == true && context.mounted) {
-      final success = await notifier.saveCurrentGroup(controller.text);
+      final success =
+          await notifier.saveCurrentGroup(controller.text.trim());
       controller.dispose();
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

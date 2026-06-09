@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -100,39 +102,47 @@ class _LanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locales = const [
-      (Locale('fa'), 'settings.language_fa'),
-      (Locale('en'), 'settings.language_en'),
-      (Locale('ar'), 'settings.language_ar'),
+    // عناوین زبان همیشه ثابت — وابسته به locale فعلی نیستند
+    const locales = [
+      (Locale('fa'), 'فارسی'),
+      (Locale('en'), 'English'),
+      (Locale('ar'), 'العربية'),
     ];
 
-    return Row(
-      children: locales.map((entry) {
-        final isSelected = currentLocale.languageCode == entry.$1.languageCode;
-        return Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(
-              right: entry.$1.languageCode != 'ar' ? 8 : 0,
-            ),
-            child: AppCard(
-              onTap: () => onChanged(entry.$1),
-              borderColor: isSelected ? AppColors.accentDefault : null,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              child: Text(
-                entry.$2.tr(),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: isSelected
-                          ? AppColors.accentDefault
-                          : AppColors.textPrimary,
-                      fontWeight:
-                          isSelected ? FontWeight.w700 : FontWeight.w400,
-                    ),
+    // چینش فیزیکی ثابت از راست: فارسی | English | العربية
+    return Directionality(
+      textDirection: ui.TextDirection.rtl,
+      child: Row(
+        children: [
+          for (var i = 0; i < locales.length; i++) ...[
+            if (i > 0) const SizedBox(width: 8),
+            Expanded(
+              child: AppCard(
+                onTap: () => onChanged(locales[i].$1),
+                borderColor: currentLocale.languageCode ==
+                        locales[i].$1.languageCode
+                    ? AppColors.accentDefault
+                    : null,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                child: Text(
+                  locales[i].$2,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: currentLocale.languageCode ==
+                                locales[i].$1.languageCode
+                            ? AppColors.accentDefault
+                            : AppColors.textPrimary,
+                        fontWeight: currentLocale.languageCode ==
+                                locales[i].$1.languageCode
+                            ? FontWeight.w700
+                            : FontWeight.w400,
+                      ),
+                ),
               ),
             ),
-          ),
-        );
-      }).toList(),
+          ],
+        ],
+      ),
     );
   }
 }

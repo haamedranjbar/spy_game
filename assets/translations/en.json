@@ -51,6 +51,8 @@
     "saved_groups": "Saved Groups",
     "select_group": "Select group",
     "new_group": "New group",
+    "new_group_hint": "Start with default player names",
+    "players_count": "{} players",
     "players": "Players",
     "add_player": "Add Player",
     "remove_player": "Remove Player",
@@ -61,6 +63,7 @@
     "save_group": "Save Group",
     "group_name": "Group name",
     "group_saved": "Group saved successfully",
+    "group_name_required": "Please enter a group name",
     "delete_group": "Delete Group",
     "delete_group_confirm": "Are you sure you want to delete this group?",
     "group_deleted": "Group deleted",
@@ -143,7 +146,7 @@
   "timer": {
     "discussion": "Discussion time",
     "end_early": "End early",
-    "hold_end_early_hint": "Hold for 3 seconds to end discussion early",
+    "hold_end_early_hint": "Hold for 2 seconds to end discussion early",
     "round": "Round {}",
     "hint": "Discuss the word — the spy is trying to figure it out!"
   },

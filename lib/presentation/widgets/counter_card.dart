@@ -65,29 +65,33 @@ class CounterCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _CounterButton(
-                icon: Icons.remove,
-                onTap: canDecrement ? onDecrement : null,
-                color: accentColor,
-                visible: onDecrement != null,
-              ),
-              Text(
-                '$value',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: accentColor,
-                      fontWeight: FontWeight.w800,
-                    ),
-              ),
-              _CounterButton(
-                icon: Icons.add,
-                onTap: canIncrement ? onIncrement : null,
-                color: accentColor,
-                visible: onIncrement != null,
-              ),
-            ],
+          // چینش ثابت: منها چپ، مثبت راست — مستقل از RTL
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _CounterButton(
+                  icon: Icons.remove,
+                  onTap: canDecrement ? onDecrement : null,
+                  color: accentColor,
+                  visible: onDecrement != null,
+                ),
+                Text(
+                  '$value',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: accentColor,
+                        fontWeight: FontWeight.w800,
+                      ),
+                ),
+                _CounterButton(
+                  icon: Icons.add,
+                  onTap: canIncrement ? onIncrement : null,
+                  color: accentColor,
+                  visible: onIncrement != null,
+                ),
+              ],
+            ),
           ),
           if (actionHint != null) ...[
             const Spacer(),

@@ -84,6 +84,7 @@ class PlayerSetupNotifier extends _$PlayerSetupNotifier {
             (group) => GroupSelectorItem(
               id: group.id,
               name: group.name,
+              playerCount: group.playerNames.length,
             ),
           )
           .toList();

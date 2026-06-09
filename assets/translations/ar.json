@@ -51,6 +51,8 @@
     "saved_groups": "المجموعات المحفوظة",
     "select_group": "اختر مجموعة",
     "new_group": "مجموعة جديدة",
+    "new_group_hint": "ابدأ بأسماء افتراضية للمجموعة",
+    "players_count": "{} لاعب",
     "players": "اللاعبون",
     "add_player": "إضافة لاعب",
     "remove_player": "إزالة لاعب",
@@ -61,6 +63,7 @@
     "save_group": "حفظ المجموعة",
     "group_name": "اسم المجموعة",
     "group_saved": "تم حفظ المجموعة بنجاح",
+    "group_name_required": "يرجى إدخال اسم المجموعة",
     "delete_group": "حذف المجموعة",
     "delete_group_confirm": "هل أنت متأكد من حذف هذه المجموعة؟",
     "group_deleted": "تم حذف المجموعة",
@@ -143,7 +146,7 @@
   "timer": {
     "discussion": "وقت النقاش",
     "end_early": "إنهاء مبكر",
-    "hold_end_early_hint": "اضغط مطولاً ٣ ثوانٍ لإنهاء النقاش مبكراً",
+    "hold_end_early_hint": "اضغط مطولاً ثانيتين لإنهاء النقاش مبكراً",
     "round": "الجولة {}",
     "hint": "ناقشوا الكلمة — الجاسوس يحاول معرفتها!"
   },

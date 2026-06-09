@@ -51,6 +51,8 @@
     "saved_groups": "گروه‌های ذخیره‌شده",
     "select_group": "انتخاب گروه",
     "new_group": "گروه جدید",
+    "new_group_hint": "اسامی پیش‌فرض برای گروه تازه",
+    "players_count": "{} بازیکن",
     "players": "بازیکنان",
     "add_player": "افزودن بازیکن",
     "remove_player": "حذف بازیکن",
@@ -61,6 +63,7 @@
     "save_group": "ذخیره گروه",
     "group_name": "نام گروه",
     "group_saved": "گروه با موفقیت ذخیره شد",
+    "group_name_required": "نام گروه را وارد کنید",
     "delete_group": "حذف گروه",
     "delete_group_confirm": "آیا از حذف این گروه مطمئن هستید؟",
     "group_deleted": "گروه حذف شد",
@@ -143,7 +146,7 @@
   "timer": {
     "discussion": "زمان بحث",
     "end_early": "پایان زودهنگام",
-    "hold_end_early_hint": "۳ ثانیه نگه دارید تا بحث زودتر تمام شود",
+    "hold_end_early_hint": "۲ ثانیه نگه دارید تا بحث زودتر تمام شود",
     "round": "دور {}",
     "hint": "در این زمان درباره کلمه بحث کنید — جاسوس سعی می‌کند متوجه شود!"
   },

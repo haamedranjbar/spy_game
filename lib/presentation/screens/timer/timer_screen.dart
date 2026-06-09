@@ -74,6 +74,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
               HoldConfirmButton(
                 label: 'timer.end_early'.tr(),
                 hint: 'timer.hold_end_early_hint'.tr(),
+                holdDuration: const Duration(seconds: 2),
                 icon: Icons.stop_circle_outlined,
                 gradientColors: const [
                   AppColors.accentDanger,
