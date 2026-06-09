@@ -28,14 +28,22 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final glowColor = selectedGlowColor ?? AppColors.accentDefault;
+    final baseBackground = backgroundColor ?? AppColors.surface;
+
     final effectiveBorderColor = isSelected
-        ? (selectedGlowColor ?? AppColors.accentDefault)
+        ? glowColor
         : (borderColor ?? AppColors.cardBorder);
+
+    // پس‌زمینه کمرنگ هنگام انتخاب — ترکیب subtle با رنگ accent همان تب
+    final effectiveBackground = isSelected
+        ? Color.lerp(baseBackground, glowColor, 0.11)!
+        : baseBackground;
 
     final card = Container(
       margin: margin,
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.surface,
+        color: effectiveBackground,
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
           color: effectiveBorderColor,
@@ -44,10 +52,9 @@ class AppCard extends StatelessWidget {
         boxShadow: isSelected
             ? [
                 BoxShadow(
-                  color: (selectedGlowColor ?? AppColors.accentDefault)
-                      .withValues(alpha: 0.35),
-                  blurRadius: 12,
-                  spreadRadius: 1,
+                  color: glowColor.withValues(alpha: 0.28),
+                  blurRadius: 10,
+                  spreadRadius: 0,
                 ),
               ]
             : null,

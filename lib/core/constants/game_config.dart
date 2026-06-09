@@ -30,6 +30,9 @@ abstract final class GameConfig {
   // تعداد دسته‌های رایگان
   static const int freeCategoryCount = 4;
 
+  // حداقل کلمات برای دسته سفارشی
+  static const int minCustomCategoryWords = 3;
+
   // نسخه بسته کلمات seed — با هر آپدیت محتوا افزایش یابد
   static const int wordSeedVersion = 1;
 }

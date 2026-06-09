@@ -185,6 +185,7 @@ class _CategoryGrid extends StatelessWidget {
                   wordCount: category.wordCount,
                   isPremium: category.isPremium,
                   isUnlockedByAd: category.isUnlockedByAd,
+                  isCustom: !category.isDefault,
                   isSelected: selectedIds.contains(category.id),
                   accentColor: accentColor,
                   icon: categoryIconFromName(category.iconName),

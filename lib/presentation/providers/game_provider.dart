@@ -179,6 +179,12 @@ class GameNotifier extends _$GameNotifier {
     );
   }
 
+  /// همگام‌سازی تب بدون پاک کردن دسته‌های انتخاب‌شده
+  void syncGameMode(CategoryType mode) {
+    if (state.gameMode == mode) return;
+    state = state.copyWith(gameMode: mode);
+  }
+
   /// انتخاب یا لغو انتخاب دسته
   void toggleCategory(int categoryId) {
     final ids = List<int>.from(state.selectedCategoryIds);
@@ -187,6 +193,13 @@ class GameNotifier extends _$GameNotifier {
     } else {
       ids.add(categoryId);
     }
+    state = state.copyWith(selectedCategoryIds: ids);
+  }
+
+  /// حذف دسته از انتخاب‌ها پس از پاک شدن دسته سفارشی
+  void removeCategoryFromSelection(int categoryId) {
+    if (!state.selectedCategoryIds.contains(categoryId)) return;
+    final ids = List<int>.from(state.selectedCategoryIds)..remove(categoryId);
     state = state.copyWith(selectedCategoryIds: ids);
   }
 

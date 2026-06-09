@@ -10,7 +10,10 @@
     "back": "رجوع",
     "next": "التالي",
     "done": "تم",
-    "coming_soon": "قريباً..."
+    "coming_soon": "قريباً...",
+    "exit_title": "الخروج",
+    "exit_message": "هل تريد الخروج من التطبيق؟",
+    "exit": "إنهاء"
   },
   "error": {
     "database_init": "فشل في تهيئة قاعدة البيانات",
@@ -84,12 +87,25 @@
   },
   "custom_category": {
     "title": "فئة مخصصة",
+    "edit_title": "تعديل الفئة المخصصة",
+    "saved_categories": "الفئات المحفوظة",
+    "select_category": "اختر فئة",
+    "new_category": "فئة جديدة",
+    "new_category_hint": "إنشاء فئة مخصصة من الصفر",
+    "no_saved_categories": "لا توجد فئات مخصصة محفوظة بعد",
+    "delete_category": "حذف الفئة",
+    "delete_category_confirm": "هل تريد حذف هذه الفئة وجميع كلماتها؟",
+    "updated": "تم تحديث الفئة",
+    "deleted": "تم حذف الفئة",
     "name": "اسم الفئة",
     "name_hint": "مثلاً أطعمة محلية",
     "words": "الكلمات",
     "add_word": "إضافة كلمة",
     "word_hint": "أدخل كلمة",
     "min_words": "مطلوب 3 كلمات على الأقل",
+    "words_progress": "{current} من {min} كلمات",
+    "name_required": "يرجى إدخال اسم الفئة",
+    "words_required": "أدخل {min} كلمات على الأقل",
     "saved": "تم حفظ الفئة المخصصة"
   },
   "rules": {

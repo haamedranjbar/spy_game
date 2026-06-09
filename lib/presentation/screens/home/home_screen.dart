@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:spy_game/core/constants/app_colors.dart';
 import 'package:spy_game/core/router/router.dart';
 import 'package:spy_game/presentation/widgets/app_card.dart';
+import 'package:spy_game/presentation/widgets/exit_confirm_scope.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
 
 /// صفحه اصلی — منوی بازی
@@ -13,7 +14,8 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
+    return ExitConfirmScope(
+      child: Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
@@ -74,6 +76,7 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }

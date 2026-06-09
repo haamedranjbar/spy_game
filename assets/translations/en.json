@@ -10,7 +10,10 @@
     "back": "Back",
     "next": "Next",
     "done": "Done",
-    "coming_soon": "Coming soon..."
+    "coming_soon": "Coming soon...",
+    "exit_title": "Exit",
+    "exit_message": "Do you want to exit the app?",
+    "exit": "Exit"
   },
   "error": {
     "database_init": "Failed to initialize database",
@@ -84,12 +87,25 @@
   },
   "custom_category": {
     "title": "Custom Category",
+    "edit_title": "Edit Custom Category",
+    "saved_categories": "Saved categories",
+    "select_category": "Select a category",
+    "new_category": "New category",
+    "new_category_hint": "Create a custom category from scratch",
+    "no_saved_categories": "No custom categories saved yet",
+    "delete_category": "Delete category",
+    "delete_category_confirm": "Delete this category and all its words?",
+    "updated": "Category updated",
+    "deleted": "Category deleted",
     "name": "Category name",
     "name_hint": "e.g. Local foods",
     "words": "Words",
     "add_word": "Add word",
     "word_hint": "Enter a word",
     "min_words": "At least 3 words required",
+    "words_progress": "{current} of {min} words",
+    "name_required": "Please enter a category name",
+    "words_required": "Enter at least {min} words",
     "saved": "Custom category saved"
   },
   "rules": {

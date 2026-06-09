@@ -10,7 +10,10 @@
     "back": "بازگشت",
     "next": "بعدی",
     "done": "تمام",
-    "coming_soon": "به‌زودی..."
+    "coming_soon": "به‌زودی...",
+    "exit_title": "خروج از بازی",
+    "exit_message": "آیا می‌خواهید از برنامه خارج شوید؟",
+    "exit": "خروج"
   },
   "error": {
     "database_init": "خطا در راه‌اندازی دیتابیس",
@@ -84,12 +87,25 @@
   },
   "custom_category": {
     "title": "دسته سفارشی",
+    "edit_title": "ویرایش دسته سفارشی",
+    "saved_categories": "دسته‌های ذخیره‌شده",
+    "select_category": "یک دسته انتخاب کنید",
+    "new_category": "دسته جدید",
+    "new_category_hint": "ساخت دسته سفارشی از صفر",
+    "no_saved_categories": "هنوز دسته سفارشی ذخیره نشده",
+    "delete_category": "حذف دسته",
+    "delete_category_confirm": "این دسته و همه کلماتش حذف شود؟",
+    "updated": "دسته به‌روزرسانی شد",
+    "deleted": "دسته حذف شد",
     "name": "نام دسته",
     "name_hint": "مثلاً غذاهای محلی",
     "words": "کلمات",
     "add_word": "افزودن کلمه",
     "word_hint": "یک کلمه وارد کنید",
     "min_words": "حداقل ۳ کلمه لازم است",
+    "words_progress": "{current} از {min} کلمه",
+    "name_required": "نام دسته را وارد کنید",
+    "words_required": "حداقل {min} کلمه وارد کنید",
     "saved": "دسته سفارشی ذخیره شد"
   },
   "rules": {

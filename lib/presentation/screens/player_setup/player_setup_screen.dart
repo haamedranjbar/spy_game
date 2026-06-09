@@ -59,9 +59,8 @@ class PlayerSetupScreen extends ConsumerWidget {
                   ...List.generate(
                     setupState.playerNames.length,
                     (index) => _EditablePlayerTile(
-                      key: ValueKey(
-                        'player_${setupState.playerNames[index]}_$index',
-                      ),
+                      // کلید پایدار — تغییر نام نباید ویجت را از نو بسازد
+                      key: ValueKey('player_$index'),
                       name: setupState.playerNames[index],
                       index: index + 1,
                       onNameChanged: (value) =>
@@ -362,7 +361,7 @@ class _EditablePlayerTileState extends State<_EditablePlayerTile> {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(14),
@@ -371,32 +370,43 @@ class _EditablePlayerTileState extends State<_EditablePlayerTile> {
       child: Row(
         children: [
           CircleAvatar(
-            radius: 20,
+            radius: 18,
             backgroundColor: AppColors.accentDefault.withValues(alpha: 0.25),
             child: Text(
               initial,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: AppColors.accentDefault,
                     fontWeight: FontWeight.w700,
                   ),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Expanded(
             child: TextField(
               controller: _controller,
               onChanged: widget.onNameChanged,
               style: Theme.of(context).textTheme.titleMedium,
+              textAlign: TextAlign.start,
               decoration: const InputDecoration(
                 border: InputBorder.none,
                 isDense: true,
-                contentPadding: EdgeInsets.zero,
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 4,
+                ),
               ),
             ),
           ),
-          Text(
-            '#${widget.index}',
-            style: Theme.of(context).textTheme.bodySmall,
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 28,
+            child: Text(
+              '#${widget.index}',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.textMuted,
+                  ),
+            ),
           ),
           if (widget.onRemove != null) ...[
             const SizedBox(width: 4),

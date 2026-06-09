@@ -16,11 +16,27 @@ class ProBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // نسخه فشرده: کادر مربعی هم‌اندازه آیکن دسته در کارت
+    if (compact) {
+      return Container(
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          color: AppColors.accentPremium.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColors.accentPremium),
+        ),
+        alignment: Alignment.center,
+        child: Icon(
+          showPlayIcon ? Icons.play_circle_outline : Icons.lock_outline,
+          size: 16,
+          color: AppColors.accentPremium,
+        ),
+      );
+    }
+
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: compact ? 6 : 8,
-        vertical: compact ? 3 : 4,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: AppColors.accentPremium.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
@@ -31,19 +47,17 @@ class ProBadge extends StatelessWidget {
         children: [
           Icon(
             showPlayIcon ? Icons.play_circle_outline : Icons.lock_outline,
-            size: compact ? 12 : 14,
+            size: 14,
             color: AppColors.accentPremium,
           ),
-          if (!compact) ...[
-            const SizedBox(width: 4),
-            Text(
-              'badge.pro'.tr(),
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: AppColors.accentPremium,
-                    fontWeight: FontWeight.w700,
-                  ),
-            ),
-          ],
+          const SizedBox(width: 4),
+          Text(
+            'badge.pro'.tr(),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppColors.accentPremium,
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
         ],
       ),
     );
