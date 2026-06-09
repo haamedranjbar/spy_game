@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spy_game/presentation/screens/categories/categories_screen.dart';
 import 'package:spy_game/presentation/screens/home/home_screen.dart';
+import 'package:spy_game/presentation/screens/player_setup/player_setup_screen.dart';
+import 'package:spy_game/presentation/screens/result/result_screen.dart';
 import 'package:spy_game/presentation/screens/splash/splash_screen.dart';
+import 'package:spy_game/presentation/screens/timer/timer_screen.dart';
+import 'package:spy_game/presentation/screens/voting/voting_screen.dart';
+import 'package:spy_game/presentation/screens/word_reveal/word_reveal_screen.dart';
 
 /// مسیرهای اپلیکیشن
 abstract final class AppRoutes {
@@ -41,6 +47,54 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => _fadePage(
         state: state,
         child: const HomeScreen(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.categories,
+      name: 'categories',
+      pageBuilder: (context, state) => _fadePage(
+        state: state,
+        child: const CategoriesScreen(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.playerSetup,
+      name: 'playerSetup',
+      pageBuilder: (context, state) => _fadePage(
+        state: state,
+        child: const PlayerSetupScreen(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.wordReveal,
+      name: 'wordReveal',
+      pageBuilder: (context, state) => _fadePage(
+        state: state,
+        child: const WordRevealScreen(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.timer,
+      name: 'timer',
+      pageBuilder: (context, state) => _fadePage(
+        state: state,
+        child: const TimerScreen(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.voting,
+      name: 'voting',
+      pageBuilder: (context, state) => _fadePage(
+        state: state,
+        child: const VotingScreen(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.result,
+      name: 'result',
+      pageBuilder: (context, state) => _fadePage(
+        state: state,
+        child: const ResultScreen(),
       ),
     ),
   ],

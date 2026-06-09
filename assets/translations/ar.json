@@ -9,10 +9,17 @@
     "save": "حفظ",
     "back": "رجوع",
     "next": "التالي",
-    "done": "تم"
+    "done": "تم",
+    "coming_soon": "قريباً..."
   },
   "error": {
-    "database_init": "فشل في تهيئة قاعدة البيانات"
+    "database_init": "فشل في تهيئة قاعدة البيانات",
+    "start_game": "تعذر بدء اللعبة. حاول مرة أخرى."
+  },
+  "categories": {
+    "title": "اختر الفئات",
+    "continue": "متابعة",
+    "locked_premium": "هذه الفئة للنسخة الذهبية فقط"
   },
   "home": {
     "subtitle": "لعبة كلمات جماعية بدون إنترنت — ممتعة ومثيرة",
@@ -38,12 +45,16 @@
     "create_custom_hint": "أضف كلماتك الخاصة"
   },
   "player_setup": {
+    "title": "أسماء اللاعبين",
     "saved_groups": "المجموعات المحفوظة",
     "select_group": "اختر مجموعة",
     "new_group": "مجموعة جديدة",
     "players": "اللاعبون",
     "add_player": "إضافة لاعب",
-    "remove_player": "إزالة لاعب"
+    "remove_player": "إزالة لاعب",
+    "edit_names": "تعديل الأسماء",
+    "default_name": "لاعب {}",
+    "start": "بدء اللعبة"
   },
   "game_config": {
     "player_count": "عدد اللاعبين",
@@ -62,9 +73,34 @@
     "reveal": "كشف",
     "your_word": "كلمتك"
   },
+  "word_reveal": {
+    "title": "كشف الدور",
+    "player_turn": "{} — لاعب {}/{}",
+    "pass_phone": "مرر الهاتف إلى {}",
+    "next_player": "اللاعب التالي",
+    "start_timer": "بدء النقاش"
+  },
   "timer": {
     "discussion": "وقت النقاش",
-    "end_early": "إنهاء مبكر"
+    "end_early": "إنهاء مبكر",
+    "round": "الجولة {}",
+    "hint": "ناقشوا الكلمة — الجاسوس يحاول معرفتها!"
+  },
+  "voting": {
+    "title": "التصويت",
+    "player_turn": "{} — تصويت {}/{}",
+    "select_player": "اختر شخصاً لإقصائه",
+    "submit": "إرسال التصويت"
+  },
+  "result": {
+    "title": "نتيجة الجولة {}",
+    "eliminated": "تم إقصاء {}",
+    "role_was": "الدور الحقيقي: {}",
+    "citizens_win": "المواطنون فازوا!",
+    "spies_win": "الجواسيس فازوا!",
+    "continue_hint": "اللعبة مستمرة — ابدأ الجولة التالية",
+    "continue_game": "الجولة التالية",
+    "back_home": "العودة للرئيسية"
   },
   "settings": {
     "title": "الإعدادات",

@@ -9,10 +9,17 @@
     "save": "ذخیره",
     "back": "بازگشت",
     "next": "بعدی",
-    "done": "تمام"
+    "done": "تمام",
+    "coming_soon": "به‌زودی..."
   },
   "error": {
-    "database_init": "خطا در راه‌اندازی دیتابیس"
+    "database_init": "خطا در راه‌اندازی دیتابیس",
+    "start_game": "شروع بازی ممکن نشد. دوباره تلاش کنید."
+  },
+  "categories": {
+    "title": "انتخاب دسته",
+    "continue": "ادامه",
+    "locked_premium": "این دسته فقط در نسخه طلایی است"
   },
   "home": {
     "subtitle": "بازی گروهی رد کلمه — آفلاین و هیجان‌انگیز",
@@ -38,12 +45,16 @@
     "create_custom_hint": "کلمات خودت رو اضافه کن"
   },
   "player_setup": {
+    "title": "اسامی بازیکنان",
     "saved_groups": "گروه‌های ذخیره‌شده",
     "select_group": "انتخاب گروه",
     "new_group": "گروه جدید",
     "players": "بازیکنان",
     "add_player": "افزودن بازیکن",
-    "remove_player": "حذف بازیکن"
+    "remove_player": "حذف بازیکن",
+    "edit_names": "ویرایش اسامی",
+    "default_name": "بازیکن {}",
+    "start": "شروع بازی"
   },
   "game_config": {
     "player_count": "تعداد بازیکن",
@@ -62,9 +73,34 @@
     "reveal": "نمایش نقش",
     "your_word": "کلمه شما"
   },
+  "word_reveal": {
+    "title": "نمایش نقش",
+    "player_turn": "{} — بازیکن {}/{}",
+    "pass_phone": "گوشی را به {} بدهید",
+    "next_player": "بازیکن بعدی",
+    "start_timer": "شروع بحث"
+  },
   "timer": {
     "discussion": "زمان بحث",
-    "end_early": "پایان زودهنگام"
+    "end_early": "پایان زودهنگام",
+    "round": "دور {}",
+    "hint": "در این زمان درباره کلمه بحث کنید — جاسوس سعی می‌کند متوجه شود!"
+  },
+  "voting": {
+    "title": "رای‌گیری",
+    "player_turn": "{} — رای {}/{}",
+    "select_player": "یک نفر را برای حذف انتخاب کنید",
+    "submit": "ثبت رای"
+  },
+  "result": {
+    "title": "نتیجه دور {}",
+    "eliminated": "{} حذف شد",
+    "role_was": "نقش واقعی: {}",
+    "citizens_win": "شهروندها برنده شدند!",
+    "spies_win": "جاسوس‌ها برنده شدند!",
+    "continue_hint": "بازی ادامه دارد — دور بعدی را شروع کنید",
+    "continue_game": "دور بعدی",
+    "back_home": "بازگشت به خانه"
   },
   "settings": {
     "title": "تنظیمات",

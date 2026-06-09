@@ -9,10 +9,17 @@
     "save": "Save",
     "back": "Back",
     "next": "Next",
-    "done": "Done"
+    "done": "Done",
+    "coming_soon": "Coming soon..."
   },
   "error": {
-    "database_init": "Failed to initialize database"
+    "database_init": "Failed to initialize database",
+    "start_game": "Could not start the game. Please try again."
+  },
+  "categories": {
+    "title": "Choose Categories",
+    "continue": "Continue",
+    "locked_premium": "This category is Golden Edition only"
   },
   "home": {
     "subtitle": "Offline party word game — exciting and fun",
@@ -38,12 +45,16 @@
     "create_custom_hint": "Add your own words"
   },
   "player_setup": {
+    "title": "Player Names",
     "saved_groups": "Saved Groups",
     "select_group": "Select group",
     "new_group": "New group",
     "players": "Players",
     "add_player": "Add Player",
-    "remove_player": "Remove Player"
+    "remove_player": "Remove Player",
+    "edit_names": "Edit names",
+    "default_name": "Player {}",
+    "start": "Start Game"
   },
   "game_config": {
     "player_count": "Players",
@@ -62,9 +73,34 @@
     "reveal": "Reveal",
     "your_word": "Your word"
   },
+  "word_reveal": {
+    "title": "Reveal Role",
+    "player_turn": "{} — Player {}/{}",
+    "pass_phone": "Pass the phone to {}",
+    "next_player": "Next Player",
+    "start_timer": "Start Discussion"
+  },
   "timer": {
     "discussion": "Discussion time",
-    "end_early": "End early"
+    "end_early": "End early",
+    "round": "Round {}",
+    "hint": "Discuss the word — the spy is trying to figure it out!"
+  },
+  "voting": {
+    "title": "Voting",
+    "player_turn": "{} — Vote {}/{}",
+    "select_player": "Select someone to eliminate",
+    "submit": "Submit Vote"
+  },
+  "result": {
+    "title": "Round {} Result",
+    "eliminated": "{} was eliminated",
+    "role_was": "Actual role: {}",
+    "citizens_win": "Citizens win!",
+    "spies_win": "Spies win!",
+    "continue_hint": "Game continues — start the next round",
+    "continue_game": "Next Round",
+    "back_home": "Back to Home"
   },
   "settings": {
     "title": "Settings",
