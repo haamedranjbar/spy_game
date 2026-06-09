@@ -61,3 +61,46 @@ abstract class _$WordRevealNotifier extends $Notifier<WordRevealUiState> {
     element.handleCreate(ref, build);
   }
 }
+
+/// بارگذاری دسته کلمه مخفی برای نمایش به جاسوس
+
+@ProviderFor(secretWordCategory)
+final secretWordCategoryProvider = SecretWordCategoryProvider._();
+
+/// بارگذاری دسته کلمه مخفی برای نمایش به جاسوس
+
+final class SecretWordCategoryProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<WordCategory?>,
+          WordCategory?,
+          FutureOr<WordCategory?>
+        >
+    with $FutureModifier<WordCategory?>, $FutureProvider<WordCategory?> {
+  SecretWordCategoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'secretWordCategoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$secretWordCategoryHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<WordCategory?> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<WordCategory?> create(Ref ref) {
+    return secretWordCategory(ref);
+  }
+}
+
+String _$secretWordCategoryHash() => r'e5f6789012345678secretcat01';

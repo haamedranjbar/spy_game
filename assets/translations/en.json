@@ -117,7 +117,10 @@
     "infiltrator": "Infiltrator",
     "tap_to_reveal": "Tap to reveal your role",
     "reveal": "Reveal",
-    "your_word": "Your word"
+    "your_word": "Your word",
+    "category": "Category",
+    "spy_hint": "Word hint",
+    "other_spies": "Other spies"
   },
   "word_reveal": {
     "title": "Reveal Role",

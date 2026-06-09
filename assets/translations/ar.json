@@ -117,7 +117,10 @@
     "infiltrator": "متسلل",
     "tap_to_reveal": "اضغط لكشف دورك",
     "reveal": "كشف",
-    "your_word": "كلمتك"
+    "your_word": "كلمتك",
+    "category": "الفئة",
+    "spy_hint": "تلميح الكلمة",
+    "other_spies": "جواسيس آخرون"
   },
   "word_reveal": {
     "title": "كشف الدور",

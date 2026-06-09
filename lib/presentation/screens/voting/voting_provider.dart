@@ -35,12 +35,14 @@ class VotingNotifier extends _$VotingNotifier {
 
   /// ثبت رای و رفتن به رای‌دهنده بعدی
   void submitVote() {
+    if (!ref.mounted) return;
     final selected = state.selectedPlayerName;
     if (selected == null) return;
 
     ref.read(audioServiceProvider).playVote();
     ref.read(audioServiceProvider).vibrateLight();
     ref.read(gameProvider.notifier).castVote(selected);
+    if (!ref.mounted) return;
     state = const VotingUiState();
   }
 }

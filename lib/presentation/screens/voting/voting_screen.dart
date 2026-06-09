@@ -130,7 +130,13 @@ class VotingScreen extends ConsumerWidget {
                 icon: Icons.how_to_vote_outlined,
                 enabled: votingUi.selectedPlayerName != null,
                 onPressed: votingUi.selectedPlayerName != null
-                    ? notifier.submitVote
+                    ? () {
+                        notifier.submitVote();
+                        if (!context.mounted) return;
+                        if (ref.read(gameProvider).phase == GamePhase.result) {
+                          context.go(AppRoutes.result);
+                        }
+                      }
                     : null,
               ),
             ],

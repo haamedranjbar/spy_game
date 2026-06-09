@@ -10,6 +10,9 @@ class RoleCard extends StatelessWidget {
     required this.roleKey,
     required this.isRevealed,
     this.word,
+    this.categoryName,
+    this.spyHint,
+    this.coSpyNames = const [],
     this.onReveal,
     this.accentColor = AppColors.accentDefault,
   });
@@ -18,6 +21,9 @@ class RoleCard extends StatelessWidget {
   final String roleKey;
   final bool isRevealed;
   final String? word;
+  final String? categoryName;
+  final String? spyHint;
+  final List<String> coSpyNames;
   final VoidCallback? onReveal;
   final Color accentColor;
 
@@ -26,6 +32,7 @@ class RoleCard extends StatelessWidget {
     return AppCard(
       borderColor: accentColor,
       padding: const EdgeInsets.all(24),
+      onTap: !isRevealed ? onReveal : null,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -56,6 +63,58 @@ class RoleCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                 textAlign: TextAlign.center,
+              ),
+            ],
+            if (categoryName != null) ...[
+              const SizedBox(height: 12),
+              Text(
+                'role.category'.tr(),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                categoryName!,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+            if (spyHint != null) ...[
+              const SizedBox(height: 12),
+              Text(
+                'role.spy_hint'.tr(),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                spyHint!,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 2,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+            if (coSpyNames.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                'role.other_spies'.tr(),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 4),
+              ...coSpyNames.map(
+                (name) => Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Text(
+                    name,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: AppColors.accentDanger,
+                          fontWeight: FontWeight.w600,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ],
           ] else ...[

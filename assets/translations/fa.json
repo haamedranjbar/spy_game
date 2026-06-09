@@ -117,7 +117,10 @@
     "infiltrator": "نفوذی",
     "tap_to_reveal": "برای دیدن نقش خود ضربه بزنید",
     "reveal": "نمایش نقش",
-    "your_word": "کلمه شما"
+    "your_word": "کلمه شما",
+    "category": "دسته",
+    "spy_hint": "راهنمای کلمه",
+    "other_spies": "جاسوس‌های دیگر"
   },
   "word_reveal": {
     "title": "نمایش نقش",

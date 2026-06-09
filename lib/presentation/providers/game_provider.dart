@@ -38,6 +38,7 @@ class GameState {
     this.showColorImages = false,
     this.roles = const [],
     this.secretWord = '',
+    this.secretCategoryId = 0,
     this.currentRevealIndex = 0,
     this.isCurrentRevealed = false,
     this.remainingSeconds = GameConfig.defaultTimerSeconds,
@@ -62,6 +63,7 @@ class GameState {
   final bool showColorImages;
   final List<PlayerRole> roles;
   final String secretWord;
+  final int secretCategoryId;
   final int currentRevealIndex;
   final bool isCurrentRevealed;
   final int remainingSeconds;
@@ -115,6 +117,7 @@ class GameState {
     bool? showColorImages,
     List<PlayerRole>? roles,
     String? secretWord,
+    int? secretCategoryId,
     int? currentRevealIndex,
     bool? isCurrentRevealed,
     int? remainingSeconds,
@@ -141,6 +144,7 @@ class GameState {
       showColorImages: showColorImages ?? this.showColorImages,
       roles: roles ?? this.roles,
       secretWord: secretWord ?? this.secretWord,
+      secretCategoryId: secretCategoryId ?? this.secretCategoryId,
       currentRevealIndex: currentRevealIndex ?? this.currentRevealIndex,
       isCurrentRevealed: isCurrentRevealed ?? this.isCurrentRevealed,
       remainingSeconds: remainingSeconds ?? this.remainingSeconds,
@@ -265,6 +269,7 @@ class GameNotifier extends _$GameNotifier {
       state = state.copyWith(
         phase: GamePhase.wordReveal,
         secretWord: word.text,
+        secretCategoryId: word.categoryId,
         roles: roles,
         currentRevealIndex: 0,
         isCurrentRevealed: false,
@@ -363,6 +368,7 @@ class GameNotifier extends _$GameNotifier {
       state = state.copyWith(
         phase: GamePhase.wordReveal,
         secretWord: word.text,
+        secretCategoryId: word.categoryId,
         roles: roles,
         currentRevealIndex: 0,
         isCurrentRevealed: false,

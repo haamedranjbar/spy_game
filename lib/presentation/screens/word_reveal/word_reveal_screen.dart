@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spy_game/core/constants/app_colors.dart';
 import 'package:spy_game/core/router/router.dart';
+import 'package:spy_game/core/utils/category_name.dart';
+import 'package:spy_game/core/utils/spy_reveal.dart';
 import 'package:spy_game/data/models/player_role.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
 import 'package:spy_game/presentation/screens/word_reveal/word_reveal_provider.dart';
@@ -17,7 +19,9 @@ class WordRevealScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final game = ref.watch(gameProvider);
+    ref.watch(wordRevealProvider);
     final notifier = ref.read(wordRevealProvider.notifier);
+    final categoryAsync = ref.watch(secretWordCategoryProvider);
     final currentPlayer = game.currentRevealPlayer;
     final aliveCount = game.aliveRoles.length;
 
@@ -35,6 +39,20 @@ class WordRevealScreen extends ConsumerWidget {
         ),
       );
     }
+
+    final categoryName = categoryAsync.value != null
+        ? localizedCategoryName(categoryAsync.value!, context.locale)
+        : null;
+
+    final revealInfo = buildRoleRevealInfo(
+      player: currentPlayer,
+      secretWord: game.secretWord,
+      showCategoryForSpy: game.showCategoryForSpy,
+      spyHintEnabled: game.spyHintEnabled,
+      spiesKnowEachOther: game.spiesKnowEachOther,
+      aliveRoles: game.aliveRoles,
+      categoryName: categoryName,
+    );
 
     final progress = game.currentRevealIndex + 1;
 
@@ -70,9 +88,10 @@ class WordRevealScreen extends ConsumerWidget {
               RoleCard(
                 roleKey: currentPlayer.roleKey,
                 isRevealed: game.isCurrentRevealed,
-                word: currentPlayer.role == GameRole.spy
-                    ? null
-                    : currentPlayer.word,
+                word: revealInfo.word,
+                categoryName: revealInfo.categoryName,
+                spyHint: revealInfo.spyHint,
+                coSpyNames: revealInfo.coSpyNames,
                 onReveal: game.isCurrentRevealed ? null : notifier.reveal,
                 accentColor: currentPlayer.role == GameRole.spy
                     ? AppColors.accentDanger
