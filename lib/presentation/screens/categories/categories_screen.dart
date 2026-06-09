@@ -172,11 +172,12 @@ class _CategoryGrid extends StatelessWidget {
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                if (index == categories.length) {
+                // باکس ساخت دسته سفارشی همیشه اولین آیتم grid
+                if (index == 0) {
                   return CreateCustomCard(onTap: onCreateCustom);
                 }
 
-                final category = categories[index];
+                final category = categories[index - 1];
                 return CategoryCard(
                   name: localizedCategoryName(
                     category,

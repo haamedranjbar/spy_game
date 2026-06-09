@@ -102,7 +102,7 @@
     "words": "الكلمات",
     "add_word": "إضافة كلمة",
     "word_hint": "أدخل كلمة",
-    "min_words": "مطلوب 3 كلمات على الأقل",
+    "min_words": "مطلوب كلمتان على الأقل",
     "words_progress": "{current} من {min} كلمات",
     "name_required": "يرجى إدخال اسم الفئة",
     "words_required": "أدخل {min} كلمات على الأقل",
@@ -157,7 +157,11 @@
     "check_complete": "اكتمل الفحص",
     "next_player": "اللاعب التالي",
     "pass_to_next": "مرر للاعب التالي",
-    "start_timer": "بدء النقاش"
+    "start_timer": "بدء النقاش",
+    "start_game": "بدء اللعبة"
+  },
+  "hold_confirm": {
+    "keep_holding": "استمر بالضغط... {seconds} ث"
   },
   "timer": {
     "discussion": "وقت النقاش",

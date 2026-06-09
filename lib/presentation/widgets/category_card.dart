@@ -29,39 +29,34 @@ class CategoryCard extends StatelessWidget {
   final Color accentColor;
   final IconData? icon;
 
-  static const Color _customAccent = AppColors.accentCustomCategory;
-
   @override
   Widget build(BuildContext context) {
-    final effectiveAccent =
-        isCustom ? _customAccent : accentColor;
-
-    // قفل طلایی اولویت دارد؛ دسته شخصی فیروزه‌ای
-    final borderColor = isPremium && !isUnlockedByAd
-        ? AppColors.accentPremium
-        : (isCustom ? _customAccent : null);
-
-    final backgroundColor = isCustom
-        ? Color.lerp(AppColors.surface, _customAccent, 0.1)
-        : null;
+    final isLockedPremium = isPremium && !isUnlockedByAd;
 
     return AppCard(
       onTap: onTap,
       isSelected: isSelected,
-      selectedGlowColor: effectiveAccent,
-      borderColor: borderColor,
-      backgroundColor: backgroundColor,
+      selectedGlowColor: accentColor,
+      borderColor: isLockedPremium ? AppColors.accentPremium : null,
+      backgroundColor:
+          isLockedPremium ? AppColors.premiumLockedBackground() : null,
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (icon != null || isPremium) ...[
-            // آیکن دسته و badge قفل در دو طرف — بدون هم‌پوشانی در RTL/LTR
+          if (isCustom || icon != null || isPremium) ...[
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (icon != null)
-                  Icon(icon, color: effectiveAccent, size: 28),
+                // دسته سفارشی: فقط آیکن نشانگر — بقیه ظاهر مثل دسته‌های عادی
+                if (isCustom)
+                  const Icon(
+                    Icons.folder_special_outlined,
+                    color: AppColors.accentCustomCategory,
+                    size: 22,
+                  )
+                else if (icon != null)
+                  Icon(icon, color: accentColor, size: 28),
                 const Spacer(),
                 if (isPremium)
                   ProBadge(showPlayIcon: isUnlockedByAd, compact: true),
@@ -82,7 +77,7 @@ class CategoryCard extends StatelessWidget {
                 width: 8,
                 height: 8,
                 decoration: BoxDecoration(
-                  color: effectiveAccent,
+                  color: accentColor,
                   shape: BoxShape.circle,
                 ),
               ),

@@ -102,7 +102,7 @@
     "words": "Words",
     "add_word": "Add word",
     "word_hint": "Enter a word",
-    "min_words": "At least 3 words required",
+    "min_words": "At least 2 words required",
     "words_progress": "{current} of {min} words",
     "name_required": "Please enter a category name",
     "words_required": "Enter at least {min} words",
@@ -157,7 +157,11 @@
     "check_complete": "Check complete",
     "next_player": "Next Player",
     "pass_to_next": "Pass to Next Player",
-    "start_timer": "Start Discussion"
+    "start_timer": "Start Discussion",
+    "start_game": "Start Game"
+  },
+  "hold_confirm": {
+    "keep_holding": "Keep holding... {seconds}s"
   },
   "timer": {
     "discussion": "Discussion time",

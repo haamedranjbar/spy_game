@@ -121,8 +121,9 @@ class WordRevealScreen extends ConsumerWidget {
 
 
     final progress = game.currentRevealIndex + 1;
-
-
+    final isLastPlayer = game.currentRevealIndex >= aliveCount - 1;
+    // «شروع بازی» فقط بعد از دیدن کارت آخرین بازیکن
+    final showStartGame = isLastPlayer && game.isCurrentRevealed;
 
     return Scaffold(
 
@@ -150,7 +151,7 @@ class WordRevealScreen extends ConsumerWidget {
 
                 currentPlayer.playerName.toUpperCase(),
 
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(
 
                       color: AppColors.textPrimary,
 
@@ -158,9 +159,15 @@ class WordRevealScreen extends ConsumerWidget {
 
                       letterSpacing: 0.5,
 
+                      height: 1.15,
+
                     ),
 
                 textAlign: TextAlign.center,
+
+                maxLines: 2,
+
+                overflow: TextOverflow.ellipsis,
 
               ),
 
@@ -216,19 +223,25 @@ class WordRevealScreen extends ConsumerWidget {
 
               GradientButton(
 
-                label: progress < aliveCount
+                label: showStartGame
 
-                    ? 'word_reveal.pass_to_next'.tr()
+                    ? 'word_reveal.start_game'.tr()
 
-                    : 'word_reveal.start_timer'.tr(),
+                    : 'word_reveal.pass_to_next'.tr(),
 
-                gradientColors: const [
+                gradientColors: showStartGame
 
-                  AppColors.primaryBlue,
+                    ? AppColors.gradientPurple
 
-                  AppColors.accentClassic,
+                    : const [
 
-                ],
+                        AppColors.primaryBlue,
+
+                        AppColors.accentClassic,
+
+                      ],
+
+                icon: showStartGame ? Icons.play_arrow_rounded : null,
 
                 enabled: game.isCurrentRevealed,
 

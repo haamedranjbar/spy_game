@@ -17,6 +17,10 @@ abstract final class AppColors {
   static const Color accentClassic = Color(0xFF60A5FA);
   static const Color accentFamily = Color(0xFFEC4899);
   static const Color accentPremium = Color(0xFFD4AF37);
+
+  /// پس‌زمینه ملایم دسته‌های قفل‌دار — لایه طلایی شفاف روی سطح تیره
+  static Color premiumLockedBackground([Color base = surface]) =>
+      Color.lerp(base, accentPremium, 0.1)!;
   /// ساخت دسته سفارشی — متمایز از طلایی قفل پریمیوم
   static const Color accentCustomCategory = Color(0xFF2DD4BF);
   static const Color accentDanger = Color(0xFFEF4444);

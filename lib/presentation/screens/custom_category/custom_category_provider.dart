@@ -24,7 +24,7 @@ class CustomCategoryState {
   const CustomCategoryState({
     this.name = '',
     this.type = CategoryType.classic,
-    this.words = const ['', '', ''],
+    this.words = const ['', ''],
     this.isSaving = false,
     this.selectedCategoryId,
     this.savedCategories = const [],

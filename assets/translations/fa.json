@@ -102,7 +102,7 @@
     "words": "کلمات",
     "add_word": "افزودن کلمه",
     "word_hint": "یک کلمه وارد کنید",
-    "min_words": "حداقل ۳ کلمه لازم است",
+    "min_words": "حداقل ۲ کلمه لازم است",
     "words_progress": "{current} از {min} کلمه",
     "name_required": "نام دسته را وارد کنید",
     "words_required": "حداقل {min} کلمه وارد کنید",
@@ -157,7 +157,11 @@
     "check_complete": "بررسی انجام شد",
     "next_player": "بازیکن بعدی",
     "pass_to_next": "تحویل به بازیکن بعدی",
-    "start_timer": "شروع بحث"
+    "start_timer": "شروع بحث",
+    "start_game": "شروع بازی"
+  },
+  "hold_confirm": {
+    "keep_holding": "{seconds} ثانیه دیگر نگه دارید..."
   },
   "timer": {
     "discussion": "زمان بحث",

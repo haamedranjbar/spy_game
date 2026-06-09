@@ -6,7 +6,7 @@ import 'package:spy_game/core/constants/app_colors.dart';
 import 'package:spy_game/data/models/player_role.dart';
 
 /// ارتفاع ثابت همه کارت‌ها — تغییر ارتفاع قبل از چرخش نقش را لو می‌دهد
-const double kRoleCardHeight = 360;
+const double kRoleCardHeight = 420;
 
 const Duration _flipDuration = Duration(milliseconds: 380);
 
@@ -263,7 +263,14 @@ class _BackContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSpy = role == GameRole.spy;
+    if (role == GameRole.spy) {
+      return _SpyBackContent(
+        roleKey: roleKey,
+        categoryName: categoryName,
+        spyHint: spyHint,
+        coSpyNames: coSpyNames,
+      );
+    }
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -277,27 +284,7 @@ class _BackContent extends StatelessWidget {
               children: [
                 _RoleIconBadge(role: role),
                 const SizedBox(height: 20),
-                if (isSpy) ...[
-                  Text(
-                    'role.secret_identity'.tr(),
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: AppColors.textPrimary.withValues(alpha: 0.75),
-                          letterSpacing: 1.5,
-                          fontWeight: FontWeight.w600,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'role.you_are_role'.tr(args: [roleKey.tr()]),
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.w800,
-                          height: 1.3,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                ] else if (word != null) ...[
+                if (word != null) ...[
                   Text(
                     'role.secret_word_label'.tr(),
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
@@ -317,72 +304,160 @@ class _BackContent extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ],
-                if (categoryName != null) ...[
-                  const SizedBox(height: 16),
-                  Text(
-                    'role.category'.tr(),
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: AppColors.textPrimary.withValues(alpha: 0.7),
-                        ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    categoryName!,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-                if (spyHint != null) ...[
-                  const SizedBox(height: 16),
-                  Text(
-                    'role.spy_hint'.tr(),
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: AppColors.textPrimary.withValues(alpha: 0.7),
-                        ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    spyHint!,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 2,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-                if (coSpyNames.isNotEmpty) ...[
-                  const SizedBox(height: 20),
-                  _CoSpyChipRow(names: coSpyNames),
-                ],
-                if (isSpy) ...[
-                  const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.background.withValues(alpha: 0.35),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      'role.dont_reveal'.tr(),
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: AppColors.textPrimary.withValues(alpha: 0.9),
-                          ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
               ],
             ),
           ),
         );
       },
+    );
+  }
+}
+
+/// چیدمان اختصاصی کارت جاسوس
+class _SpyBackContent extends StatelessWidget {
+  const _SpyBackContent({
+    required this.roleKey,
+    this.categoryName,
+    this.spyHint,
+    this.coSpyNames = const [],
+  });
+
+  final String roleKey;
+  final String? categoryName;
+  final String? spyHint;
+  final List<String> coSpyNames;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Center(child: _RoleIconBadge(role: GameRole.spy)),
+                const SizedBox(height: 16),
+                Text(
+                  'role.you_are_role'.tr(args: [roleKey.tr()]),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w800,
+                        height: 1.3,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                if (categoryName != null) ...[
+                  const SizedBox(height: 16),
+                  _SpyInfoBox(
+                    label: 'role.category'.tr(),
+                    value: categoryName!,
+                  ),
+                ],
+                if (spyHint != null) ...[
+                  const SizedBox(height: 10),
+                  _SpyInfoBox(
+                    label: 'role.spy_hint'.tr(),
+                    value: spyHint!,
+                    emphasizeValue: true,
+                  ),
+                ],
+                if (coSpyNames.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  _CoSpyChipRow(names: coSpyNames),
+                ],
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        const _SpyWarningBox(),
+      ],
+    );
+  }
+}
+
+/// کادر اطلاعات دسته یا راهنما در کارت جاسوس
+class _SpyInfoBox extends StatelessWidget {
+  const _SpyInfoBox({
+    required this.label,
+    required this.value,
+    this.emphasizeValue = false,
+  });
+
+  final String label;
+  final String value;
+  final bool emphasizeValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.textPrimary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: AppColors.textPrimary.withValues(alpha: 0.22),
+        ),
+      ),
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppColors.textPrimary.withValues(alpha: 0.72),
+                  fontWeight: FontWeight.w600,
+                ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: emphasizeValue
+                ? Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 2,
+                    )
+                : Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// هشدار تیره پایین کارت جاسوس
+class _SpyWarningBox extends StatelessWidget {
+  const _SpyWarningBox();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.background.withValues(alpha: 0.72),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: AppColors.background.withValues(alpha: 0.9),
+        ),
+      ),
+      child: Text(
+        'role.dont_reveal'.tr(),
+        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: AppColors.textPrimary.withValues(alpha: 0.92),
+              fontWeight: FontWeight.w600,
+            ),
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }
