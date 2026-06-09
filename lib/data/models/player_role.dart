@@ -2,6 +2,7 @@
 enum GameRole {
   citizen,
   spy,
+  infiltrator,
 }
 
 /// اطلاعات نقش یک بازیکن در دور جاری
@@ -24,6 +25,7 @@ class PlayerRole {
   String get roleKey => switch (role) {
         GameRole.citizen => 'role.citizen',
         GameRole.spy => 'role.spy',
+        GameRole.infiltrator => 'role.infiltrator',
       };
 
   PlayerRole copyWith({

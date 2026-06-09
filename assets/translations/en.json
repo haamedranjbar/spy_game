@@ -136,10 +136,15 @@
     "hint": "Discuss the word — the spy is trying to figure it out!"
   },
   "voting": {
-    "title": "Voting",
-    "player_turn": "{} — Vote {}/{}",
-    "select_player": "Select someone to eliminate",
-    "submit": "Submit Vote"
+    "title": "End Discussion",
+    "verbal_hint": "Vote verbally as a group",
+    "verbal_subhint": "Discuss and vote among yourselves. When ready, tap End Game to reveal the hidden roles.",
+    "end_game": "End Game",
+    "secret_word": "Secret word",
+    "spies_were": "Spies",
+    "infiltrators_were": "Infiltrators",
+    "no_spies": "No spies in this round",
+    "play_again": "Play Again"
   },
   "result": {
     "title": "Round {} Result",

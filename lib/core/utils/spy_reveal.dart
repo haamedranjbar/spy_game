@@ -34,7 +34,9 @@ RoleRevealInfo buildRoleRevealInfo({
   required List<PlayerRole> aliveRoles,
   String? categoryName,
 }) {
-  if (player.role == GameRole.citizen) {
+  // شهروند و نفوذی کلمه را می‌بینند
+  if (player.role == GameRole.citizen ||
+      player.role == GameRole.infiltrator) {
     return RoleRevealInfo(word: player.word);
   }
 
@@ -52,7 +54,8 @@ RoleRevealInfo buildRoleRevealInfo({
       ? aliveRoles
           .where(
             (role) =>
-                role.role == GameRole.spy &&
+                (role.role == GameRole.spy ||
+                    role.role == GameRole.infiltrator) &&
                 role.playerName != player.playerName,
           )
           .map((role) => role.playerName)

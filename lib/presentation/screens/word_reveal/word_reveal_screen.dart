@@ -31,7 +31,8 @@ class WordRevealScreen extends ConsumerWidget {
       }
     });
 
-    if (currentPlayer == null) {
+    // منتظر آماده‌شدن دور جدید (مثلاً بعد از شروع دوباره)
+    if (game.phase != GamePhase.wordReveal || currentPlayer == null) {
       return const Scaffold(
         backgroundColor: AppColors.background,
         body: Center(
@@ -93,9 +94,11 @@ class WordRevealScreen extends ConsumerWidget {
                 spyHint: revealInfo.spyHint,
                 coSpyNames: revealInfo.coSpyNames,
                 onReveal: game.isCurrentRevealed ? null : notifier.reveal,
-                accentColor: currentPlayer.role == GameRole.spy
-                    ? AppColors.accentDanger
-                    : AppColors.accentDefault,
+                accentColor: switch (currentPlayer.role) {
+                  GameRole.citizen => AppColors.accentDefault,
+                  GameRole.spy => AppColors.accentDanger,
+                  GameRole.infiltrator => AppColors.accentPremium,
+                },
               ),
               const Spacer(),
               GradientButton(

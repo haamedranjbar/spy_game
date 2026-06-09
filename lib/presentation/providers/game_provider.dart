@@ -315,13 +315,22 @@ class GameNotifier extends _$GameNotifier {
     );
   }
 
-  /// پایان تایمر — ورود به رای‌گیری
+  /// پایان تایمر — ورود به صفحه بحث شفاهی
   void finishTimer() {
     if (state.phase != GamePhase.timer) return;
     state = state.copyWith(
       phase: GamePhase.voting,
       currentVotingIndex: 0,
       votes: const {},
+    );
+  }
+
+  /// اتمام بازی — آماده افشای نقش‌ها
+  void endGameReveal() {
+    state = state.copyWith(
+      isGameOver: true,
+      clearEliminated: true,
+      clearWinner: true,
     );
   }
 
@@ -345,6 +354,49 @@ class GameNotifier extends _$GameNotifier {
 
     state = state.copyWith(votes: updatedVotes);
     _resolveVoting();
+  }
+
+  /// شروع دوباره — همان بازیکنان و تنظیمات، کلمه و نقش‌های جدید
+  Future<bool> playAgain() async {
+    if (state.playerNames.isEmpty || state.selectedCategoryIds.isEmpty) {
+      return false;
+    }
+
+    try {
+      final isar = await ref.read(isarProvider.future);
+      final word = await _wordRepository.pickRandomWord(
+        isar: isar,
+        categoryIds: state.selectedCategoryIds,
+        random: _random,
+      );
+      if (word == null) return false;
+
+      final roles = _gameRepository.assignRoles(
+        playerNames: state.playerNames,
+        spyCount: state.spyCount,
+        word: word.text,
+      );
+
+      state = state.copyWith(
+        phase: GamePhase.wordReveal,
+        secretWord: word.text,
+        secretCategoryId: word.categoryId,
+        roles: roles,
+        currentRevealIndex: 0,
+        isCurrentRevealed: false,
+        remainingSeconds: state.timerSeconds,
+        currentVotingIndex: 0,
+        votes: const {},
+        clearEliminated: true,
+        clearWinner: true,
+        roundNumber: state.roundNumber + 1,
+        isGameOver: false,
+      );
+      return true;
+    } catch (e, stackTrace) {
+      appLogger.e('Failed to play again', e, stackTrace);
+      return false;
+    }
   }
 
   /// شروع دور بعدی — کلمه جدید، نقش‌ها بدون تغییر
