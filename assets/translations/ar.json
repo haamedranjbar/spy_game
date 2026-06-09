@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "لعبة الجاسوس"
+  },
+  "common": {
+    "retry": "إعادة المحاولة",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "save": "حفظ",
+    "back": "رجوع",
+    "next": "التالي",
+    "done": "تم"
+  },
+  "error": {
+    "database_init": "فشل في تهيئة قاعدة البيانات"
+  },
+  "home": {
+    "subtitle": "لعبة كلمات جماعية بدون إنترنت — ممتعة ومثيرة",
+    "start_game": "بدء اللعبة",
+    "settings": "الإعدادات",
+    "rules": "القواعد",
+    "about": "حول",
+    "iap": "النسخة الذهبية"
+  },
+  "mode": {
+    "classic": "كلاسيكي",
+    "family": "عائلي",
+    "family_title": "الوضع العائلي",
+    "family_description": "كلمات أبسط للعب مع العائلة والأطفال",
+    "show_color_images": "عرض صور ملونة"
+  },
+  "badge": {
+    "pro": "PRO"
+  },
+  "category": {
+    "word_count": "{} كلمة",
+    "create_custom": "إنشاء فئة مخصصة",
+    "create_custom_hint": "أضف كلماتك الخاصة"
+  },
+  "player_setup": {
+    "saved_groups": "المجموعات المحفوظة",
+    "select_group": "اختر مجموعة",
+    "new_group": "مجموعة جديدة",
+    "players": "اللاعبون",
+    "add_player": "إضافة لاعب",
+    "remove_player": "إزالة لاعب"
+  },
+  "game_config": {
+    "player_count": "عدد اللاعبين",
+    "spy_count": "عدد الجواسيس",
+    "start_game": "بدء اللعبة",
+    "show_category_spy": "عرض الفئة للجاسوس",
+    "spy_hint": "تلميح الكلمة للجاسوس",
+    "spies_know_each_other": "الجواسيس يعرفون بعضهم"
+  },
+  "role": {
+    "citizen": "مواطن",
+    "spy": "جاسوس",
+    "detective": "محقق",
+    "infiltrator": "متسلل",
+    "tap_to_reveal": "اضغط لكشف دورك",
+    "reveal": "كشف",
+    "your_word": "كلمتك"
+  },
+  "timer": {
+    "discussion": "وقت النقاش",
+    "end_early": "إنهاء مبكر"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "language": "اللغة",
+    "sound": "الصوت",
+    "vibration": "الاهتزاز",
+    "default_timer": "المؤقت الافتراضي"
+  }
+}

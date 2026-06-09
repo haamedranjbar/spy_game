@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "بازی جاسوس"
+  },
+  "common": {
+    "retry": "تلاش مجدد",
+    "cancel": "لغو",
+    "confirm": "تأیید",
+    "save": "ذخیره",
+    "back": "بازگشت",
+    "next": "بعدی",
+    "done": "تمام"
+  },
+  "error": {
+    "database_init": "خطا در راه‌اندازی دیتابیس"
+  },
+  "home": {
+    "subtitle": "بازی گروهی رد کلمه — آفلاین و هیجان‌انگیز",
+    "start_game": "شروع بازی",
+    "settings": "تنظیمات",
+    "rules": "قوانین",
+    "about": "درباره",
+    "iap": "نسخه طلایی"
+  },
+  "mode": {
+    "classic": "کلاسیک",
+    "family": "خانوادگی",
+    "family_title": "حالت خانوادگی",
+    "family_description": "کلمات ساده‌تر برای بازی با خانواده و کودکان",
+    "show_color_images": "نمایش تصاویر رنگی"
+  },
+  "badge": {
+    "pro": "PRO"
+  },
+  "category": {
+    "word_count": "{} کلمه",
+    "create_custom": "ساخت دسته سفارشی",
+    "create_custom_hint": "کلمات خودت رو اضافه کن"
+  },
+  "player_setup": {
+    "saved_groups": "گروه‌های ذخیره‌شده",
+    "select_group": "انتخاب گروه",
+    "new_group": "گروه جدید",
+    "players": "بازیکنان",
+    "add_player": "افزودن بازیکن",
+    "remove_player": "حذف بازیکن"
+  },
+  "game_config": {
+    "player_count": "تعداد بازیکن",
+    "spy_count": "تعداد جاسوس",
+    "start_game": "شروع بازی",
+    "show_category_spy": "نمایش دسته به جاسوس",
+    "spy_hint": "راهنمای کلمه برای جاسوس",
+    "spies_know_each_other": "جاسوس‌ها همدیگر را بشناسند"
+  },
+  "role": {
+    "citizen": "شهروند",
+    "spy": "جاسوس",
+    "detective": "کاراگاه",
+    "infiltrator": "نفوذی",
+    "tap_to_reveal": "برای دیدن نقش خود ضربه بزنید",
+    "reveal": "نمایش نقش",
+    "your_word": "کلمه شما"
+  },
+  "timer": {
+    "discussion": "زمان بحث",
+    "end_early": "پایان زودهنگام"
+  },
+  "settings": {
+    "title": "تنظیمات",
+    "language": "زبان",
+    "sound": "صدا",
+    "vibration": "ویبره",
+    "default_timer": "تایمر پیش‌فرض"
+  }
+}

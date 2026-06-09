@@ -1,0 +1,56 @@
+---
+description: Spy Game - قوانین و معماری پروژه
+globs: ["lib/**/*.dart", "test/**/*.dart", "pubspec.yaml"]
+alwaysApply: true
+---
+
+# بازی جاسوس — Spy Game
+
+## خلاصه پروژه
+اپ پارتی بازی آفلاین برای Android. انتشار در Cafe Bazaar، Myket، Google Play.
+زبان اصلی فارسی، پشتیبانی از عربی و انگلیسی.
+
+## تصمیم‌های قطعی (تغییر نده)
+- Framework: Flutter — فقط Android
+- State: Riverpod 3.x با riverpod_annotation (code generation)
+- Database: isar_community (local, offline)
+- Navigation: go_router
+- Localization: easy_localization (fa/en/ar)
+- Theme: dark navy (#0A0E1A پس‌زمینه، #E53935 قرمز، #1E88E5 آبی)
+
+## ساختار پوشه‌ها (ثابت — هرگز تغییر نده)
+lib/
+├── core/
+│   ├── constants/     # app_colors.dart, game_config.dart
+│   ├── theme/         # app_theme.dart
+│   ├── router/        # router.dart
+│   ├── iap/           # iap_interface.dart + سه implementation
+│   └── utils/         # market_detector.dart
+├── data/
+│   ├── models/        # Isar collections
+│   ├── repositories/  # word_repository.dart, game_repository.dart
+│   └── seeds/         # fa_words.dart, en_words.dart
+├── presentation/
+│   ├── screens/       # هر صفحه توی پوشه جداگانه
+│   ├── widgets/       # shared widgets
+│   └── providers/     # Riverpod providers
+└── main.dart
+
+## قوانین کدنویسی (اجباری)
+1. business logic هرگز داخل Widget — همه توی Provider
+2. هر Isar model باید @collection و part file داشته باشه
+3. همه string های UI از easy_localization — هیچ hardcode ممنوع
+4. هر صفحه توی پوشه جداگانه: screen.dart + provider.dart
+5. IAP همیشه از طریق IAPInterface — هرگز مستقیم
+6. هیچ await بدون try/catch در Isar یا IAP
+7. هیچ print() — فقط از Logger استفاده کن
+8. همه رنگ‌ها از AppColors — هیچ hardcode رنگ
+9. const constructor هر جا که ممکنه
+
+## فرمت پاسخ (اجباری)
+- همیشه کد کامل بده — هیچ‌وقت snippet ناقص
+- imports را کامل بنویس
+- comment فارسی برای هر بلوک منطق مهم
+- آخر هر پاسخ بنویس: ✅ فایل ساخته شد | ⏭️ فایل بعدی: [نام فایل]
+- اگه جایی نیاز به تصمیم داره، قبل از کد بپرس
+- هیچ‌وقت بیشتر از یک فایل در یک پاسخ نساز مگر صریحاً خواسته شه

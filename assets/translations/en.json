@@ -1,0 +1,76 @@
+{
+  "app": {
+    "name": "Spy Game"
+  },
+  "common": {
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done"
+  },
+  "error": {
+    "database_init": "Failed to initialize database"
+  },
+  "home": {
+    "subtitle": "Offline party word game — exciting and fun",
+    "start_game": "Start Game",
+    "settings": "Settings",
+    "rules": "Rules",
+    "about": "About",
+    "iap": "Golden Edition"
+  },
+  "mode": {
+    "classic": "Classic",
+    "family": "Family",
+    "family_title": "Family Mode",
+    "family_description": "Simpler words for playing with family and kids",
+    "show_color_images": "Show color images"
+  },
+  "badge": {
+    "pro": "PRO"
+  },
+  "category": {
+    "word_count": "{} words",
+    "create_custom": "Create Custom",
+    "create_custom_hint": "Add your own words"
+  },
+  "player_setup": {
+    "saved_groups": "Saved Groups",
+    "select_group": "Select group",
+    "new_group": "New group",
+    "players": "Players",
+    "add_player": "Add Player",
+    "remove_player": "Remove Player"
+  },
+  "game_config": {
+    "player_count": "Players",
+    "spy_count": "Spies",
+    "start_game": "Start Game",
+    "show_category_spy": "Show category to spy",
+    "spy_hint": "Word hint for spy",
+    "spies_know_each_other": "Spies know each other"
+  },
+  "role": {
+    "citizen": "Citizen",
+    "spy": "Spy",
+    "detective": "Detective",
+    "infiltrator": "Infiltrator",
+    "tap_to_reveal": "Tap to reveal your role",
+    "reveal": "Reveal",
+    "your_word": "Your word"
+  },
+  "timer": {
+    "discussion": "Discussion time",
+    "end_early": "End early"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "sound": "Sound",
+    "vibration": "Vibration",
+    "default_timer": "Default timer"
+  }
+}

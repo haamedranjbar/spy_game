@@ -1,0 +1,25 @@
+/// تنظیمات پیش‌فرض بازی — مقادیر ثابت قابل تغییر از settings
+abstract final class GameConfig {
+  // محدوده بازیکنان
+  static const int minPlayers = 3;
+  static const int maxPlayers = 100;
+  static const int defaultPlayerCount = 5;
+
+  // جاسوس
+  static const int minSpies = 1;
+  static const int defaultSpyCount = 1;
+
+  // تایمر بحث (ثانیه)
+  static const int defaultTimerSeconds = 300;
+  static const int minTimerSeconds = 60;
+  static const int maxTimerSeconds = 1800;
+
+  // انیمیشن splash
+  static const Duration splashDuration = Duration(seconds: 2);
+
+  // نسخه دیتابیس برای migration
+  static const int databaseVersion = 1;
+
+  // تعداد دسته‌های رایگان
+  static const int freeCategoryCount = 4;
+}
