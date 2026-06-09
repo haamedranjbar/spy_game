@@ -18,8 +18,11 @@ abstract final class GameConfig {
   static const Duration splashDuration = Duration(seconds: 2);
 
   // نسخه دیتابیس برای migration
-  static const int databaseVersion = 1;
+  static const int databaseVersion = 2;
 
   // تعداد دسته‌های رایگان
   static const int freeCategoryCount = 4;
+
+  // نسخه بسته کلمات seed — با هر آپدیت محتوا افزایش یابد
+  static const int wordSeedVersion = 1;
 }

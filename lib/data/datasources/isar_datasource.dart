@@ -2,7 +2,11 @@ import 'package:isar_community/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spy_game/core/constants/game_config.dart';
 import 'package:spy_game/core/utils/app_logger.dart';
+import 'package:spy_game/data/datasources/default_words.dart';
 import 'package:spy_game/data/models/database_meta.dart';
+import 'package:spy_game/data/models/player_group.dart';
+import 'package:spy_game/data/models/word.dart';
+import 'package:spy_game/data/models/word_category.dart';
 
 /// نام instance دیتابیس Isar
 const String kIsarInstanceName = 'spy_game';
@@ -29,12 +33,18 @@ class IsarDatasource {
       final dir = await getApplicationDocumentsDirectory();
 
       _instance = await Isar.open(
-        [DatabaseMetaSchema],
+        [
+          DatabaseMetaSchema,
+          WordCategorySchema,
+          WordSchema,
+          PlayerGroupSchema,
+        ],
         directory: dir.path,
         name: kIsarInstanceName,
       );
 
       await _ensureDatabaseVersion(_instance!);
+      await DefaultWordsSeeder.seedIfNeeded(_instance!);
 
       appLogger.i('Isar database opened successfully');
       return _instance!;
@@ -44,7 +54,7 @@ class IsarDatasource {
     }
   }
 
-  /// ثبت نسخه دیتابیس در اولین اجرا
+  /// ثبت نسخه دیتابیس و migration در صورت نیاز
   static Future<void> _ensureDatabaseVersion(Isar isar) async {
     try {
       final existing = await isar.databaseMetas.where().findFirst();
@@ -56,6 +66,20 @@ class IsarDatasource {
           );
         });
         appLogger.i('Database version initialized: ${GameConfig.databaseVersion}');
+        return;
+      }
+
+      // migration v1 → v2: افزودن slug و seed کامل
+      if (existing.version < GameConfig.databaseVersion) {
+        await isar.writeTxn(() async {
+          await isar.words.clear();
+          await isar.wordCategorys.clear();
+          existing.version = GameConfig.databaseVersion;
+          await isar.databaseMetas.put(existing);
+        });
+        appLogger.i(
+          'Database migrated to v${GameConfig.databaseVersion}: categories reseeded',
+        );
       }
     } catch (e, stackTrace) {
       appLogger.e('Failed to ensure database version', e, stackTrace);
