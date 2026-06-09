@@ -28,10 +28,7 @@ class GameConfigNotifier extends _$GameConfigNotifier {
 
   int get timerSeconds => ref.read(gameProvider).timerSeconds;
 
-  int get maxSpies {
-    final count = playerCount;
-    return count > 1 ? count - 1 : GameConfig.minSpies;
-  }
+  int get maxSpies => GameConfig.maxSpiesForPlayerCount(playerCount);
 
   void incrementSpyCount() {
     ref.read(gameProvider.notifier).setSpyCount(spyCount + 1);

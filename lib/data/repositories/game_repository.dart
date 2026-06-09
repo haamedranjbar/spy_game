@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:spy_game/core/constants/game_config.dart';
 import 'package:spy_game/data/models/game_winner.dart';
 import 'package:spy_game/data/models/player_role.dart';
 
@@ -34,16 +35,26 @@ class GameRepository {
   }) {
     if (playerNames.isEmpty) return const [];
 
-    final effectiveSpyCount = spyCount.clamp(1, playerNames.length - 1);
-    final shuffled = List<String>.from(playerNames)..shuffle(_random);
-    final spyNames = shuffled.take(effectiveSpyCount).toSet();
+    final effectiveSpyCount = spyCount.clamp(
+      GameConfig.minSpies,
+      GameConfig.maxSpiesForPlayerCount(playerNames.length),
+    );
+    // تخصیص بر اساس ایندکس — با اسامی تکراری هم تعداد جاسوس درست می‌ماند
+    final shuffledIndices = List.generate(playerNames.length, (index) => index)
+      ..shuffle(_random);
+    final spyIndices =
+        shuffledIndices.take(effectiveSpyCount).toSet();
 
     return playerNames
+        .asMap()
+        .entries
         .map(
-          (name) => PlayerRole(
-            playerName: name,
-            role: spyNames.contains(name) ? GameRole.spy : GameRole.citizen,
-            word: spyNames.contains(name) ? null : word,
+          (entry) => PlayerRole(
+            playerName: entry.value,
+            role: spyIndices.contains(entry.key)
+                ? GameRole.spy
+                : GameRole.citizen,
+            word: spyIndices.contains(entry.key) ? null : word,
           ),
         )
         .toList();

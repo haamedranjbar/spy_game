@@ -9,6 +9,13 @@ abstract final class GameConfig {
   static const int minSpies = 1;
   static const int defaultSpyCount = 1;
 
+  /// حداکثر تعداد جاسوس: یکی کمتر از نصف بازیکنان
+  static int maxSpiesForPlayerCount(int playerCount) {
+    if (playerCount <= 1) return minSpies;
+    final halfFloor = playerCount ~/ 2;
+    return (halfFloor - 1).clamp(minSpies, playerCount - 1);
+  }
+
   // تایمر بحث (ثانیه)
   static const int defaultTimerSeconds = 300;
   static const int minTimerSeconds = 60;

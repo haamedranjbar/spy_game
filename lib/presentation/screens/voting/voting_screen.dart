@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:spy_game/core/constants/app_colors.dart';
 import 'package:spy_game/core/router/router.dart';
 import 'package:spy_game/presentation/screens/voting/voting_provider.dart';
-import 'package:spy_game/presentation/widgets/app_card.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
 import 'package:spy_game/presentation/widgets/outlined_action_button.dart';
+import 'package:spy_game/presentation/widgets/result_tile.dart';
 
 /// صفحه پایان بحث — رای شفاهی + افشای نقش‌های مخفی
 class VotingScreen extends ConsumerWidget {
@@ -18,6 +18,31 @@ class VotingScreen extends ConsumerWidget {
     ref.watch(votingProvider);
     final votingUi = ref.watch(votingProvider);
     final notifier = ref.read(votingProvider.notifier);
+
+    final resultTiles = <Widget>[
+      ResultTile(
+        label: 'voting.secret_word'.tr(),
+        value: votingUi.revealedSecretWord,
+        icon: Icons.lightbulb_outline,
+        accentColor: AppColors.accentClassic,
+      ),
+      ...votingUi.revealedSpies.map(
+        (name) => ResultTile(
+          label: 'role.spy'.tr(),
+          value: name,
+          icon: Icons.visibility_off,
+          accentColor: AppColors.accentDanger,
+        ),
+      ),
+      ...votingUi.revealedInfiltrators.map(
+        (name) => ResultTile(
+          label: 'role.infiltrator'.tr(),
+          value: name,
+          icon: Icons.swap_horiz,
+          accentColor: AppColors.accentPremium,
+        ),
+      ),
+    ];
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -59,62 +84,27 @@ class VotingScreen extends ConsumerWidget {
                 GradientButton(
                   label: 'voting.end_game'.tr(),
                   icon: Icons.flag_outlined,
+                  gradientColors: const [
+                    AppColors.accentDanger,
+                    AppColors.primaryRed,
+                  ],
                   onPressed: notifier.endGameAndReveal,
                 ),
               ] else ...[
-                AppCard(
-                  borderColor: AppColors.accentClassic,
-                  child: Column(
-                    children: [
-                      const Icon(
-                        Icons.lightbulb_outline,
-                        color: AppColors.accentClassic,
-                        size: 40,
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'voting.secret_word'.tr(),
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        votingUi.revealedSecretWord,
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      mainAxisExtent: ResultTile.tileHeight,
+                    ),
+                    itemCount: resultTiles.length,
+                    itemBuilder: (context, index) => resultTiles[index],
                   ),
                 ),
                 const SizedBox(height: 16),
-                if (votingUi.revealedSpies.isNotEmpty)
-                  _RoleRevealCard(
-                    title: 'voting.spies_were'.tr(),
-                    names: votingUi.revealedSpies,
-                    accentColor: AppColors.accentDanger,
-                    icon: Icons.visibility_off,
-                  ),
-                if (votingUi.revealedInfiltrators.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  _RoleRevealCard(
-                    title: 'voting.infiltrators_were'.tr(),
-                    names: votingUi.revealedInfiltrators,
-                    accentColor: AppColors.accentPremium,
-                    icon: Icons.swap_horiz,
-                  ),
-                ],
-                if (votingUi.revealedSpies.isEmpty &&
-                    votingUi.revealedInfiltrators.isEmpty)
-                  AppCard(
-                    child: Text(
-                      'voting.no_spies'.tr(),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                const Spacer(),
                 GradientButton(
                   label: 'voting.play_again'.tr(),
                   icon: Icons.replay_rounded,
@@ -122,7 +112,6 @@ class VotingScreen extends ConsumerWidget {
                   onPressed: votingUi.isRestarting
                       ? null
                       : () async {
-                          // اول ناوبری — جلوگیری از فلش کلمه جدید روی کارت نتیجه
                           context.go(AppRoutes.wordReveal);
                           final started = await notifier.playAgain();
                           if (!context.mounted) return;
@@ -152,54 +141,6 @@ class VotingScreen extends ConsumerWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _RoleRevealCard extends StatelessWidget {
-  const _RoleRevealCard({
-    required this.title,
-    required this.names,
-    required this.accentColor,
-    required this.icon,
-  });
-
-  final String title;
-  final List<String> names;
-  final Color accentColor;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppCard(
-      borderColor: accentColor,
-      child: Column(
-        children: [
-          Icon(icon, color: accentColor, size: 36),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: accentColor,
-                  fontWeight: FontWeight.w700,
-                ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-          ...names.map(
-            (name) => Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Text(
-                name,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

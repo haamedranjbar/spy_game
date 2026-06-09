@@ -63,11 +63,13 @@
     "group_saved": "تم حفظ المجموعة بنجاح",
     "delete_group": "حذف المجموعة",
     "delete_group_confirm": "هل أنت متأكد من حذف هذه المجموعة؟",
-    "group_deleted": "تم حذف المجموعة"
+    "group_deleted": "تم حذف المجموعة",
+    "no_saved_groups": "لا توجد مجموعات محفوظة بعد. أدخل الأسماء واحفظها."
   },
   "game_config": {
     "title": "إعداد الجولة",
     "player_count": "عدد اللاعبين",
+    "edit_players_hint": "اضغط لتعديل أسماء اللاعبين",
     "spy_count": "عدد الجواسيس",
     "timer": "المؤقت ({} دقيقة)",
     "categories": "الفئات",
@@ -116,22 +118,32 @@
     "detective": "محقق",
     "infiltrator": "متسلل",
     "tap_to_reveal": "اضغط لكشف دورك",
+    "touch_to_scan": "المس للمسح",
     "reveal": "كشف",
     "your_word": "كلمتك",
+    "secret_word_label": "الكلمة السرية",
+    "secret_identity": "الهوية السرية",
+    "you_are_role": "أنت {}",
+    "dont_reveal": "لا تكشف هويتك!",
     "category": "الفئة",
     "spy_hint": "تلميح الكلمة",
-    "other_spies": "جواسيس آخرون"
+    "other_spies": "جواسيس آخرون",
+    "flip_hint": "اضغط لقلب البطاقة"
   },
   "word_reveal": {
     "title": "كشف الدور",
     "player_turn": "{} — لاعب {}/{}",
     "pass_phone": "مرر الهاتف إلى {}",
+    "tap_to_check": "اضغط على البطاقة لمعرفة دورك",
+    "check_complete": "اكتمل الفحص",
     "next_player": "اللاعب التالي",
+    "pass_to_next": "مرر للاعب التالي",
     "start_timer": "بدء النقاش"
   },
   "timer": {
     "discussion": "وقت النقاش",
     "end_early": "إنهاء مبكر",
+    "hold_end_early_hint": "اضغط مطولاً ٣ ثوانٍ لإنهاء النقاش مبكراً",
     "round": "الجولة {}",
     "hint": "ناقشوا الكلمة — الجاسوس يحاول معرفتها!"
   },
@@ -144,7 +156,8 @@
     "spies_were": "الجواسيس",
     "infiltrators_were": "المتسللون",
     "no_spies": "لا يوجد جواسيس في هذه الجولة",
-    "play_again": "العب مرة أخرى"
+    "play_again": "العب مرة أخرى",
+    "hold_hint": "اضغط مطولاً ٣ ثوانٍ لإنهاء اللعبة"
   },
   "result": {
     "title": "نتيجة الجولة {}",

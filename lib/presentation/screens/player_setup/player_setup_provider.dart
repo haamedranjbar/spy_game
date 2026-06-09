@@ -234,8 +234,27 @@ class PlayerSetupNotifier extends _$PlayerSetupNotifier {
     }
   }
 
-  /// ادامه به تنظیمات دور — فقط ذخیره اسامی در game state
-  void continueToGameConfig() {
+  /// اگر هنوز اسامی در بازی ست نشده، پیش‌فرض را در game state می‌گذارد
+  void syncDefaultsToGameIfEmpty() {
+    final game = ref.read(gameProvider);
+    if (game.playerNames.isNotEmpty) return;
+    ref.read(gameProvider.notifier).setPlayerNames(_defaultPlayerNames());
+  }
+
+  /// همگام‌سازی state صفحه با اسامی فعلی بازی
+  void syncFromGame() {
+    final game = ref.read(gameProvider);
+    final names = game.playerNames.isNotEmpty
+        ? List<String>.from(game.playerNames)
+        : _defaultPlayerNames();
+    state = state.copyWith(
+      playerNames: names,
+      clearSelectedGroup: true,
+    );
+  }
+
+  /// ذخیره اسامی در game state (بازگشت از صفحه اسامی)
+  void applyToGame() {
     ref.read(gameProvider.notifier).setPlayerNames(state.playerNames);
   }
 }

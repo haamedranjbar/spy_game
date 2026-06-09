@@ -6,7 +6,7 @@ import 'package:spy_game/core/constants/app_colors.dart';
 import 'package:spy_game/core/router/router.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
 import 'package:spy_game/presentation/screens/timer/timer_provider.dart';
-import 'package:spy_game/presentation/widgets/outlined_action_button.dart';
+import 'package:spy_game/presentation/widgets/hold_confirm_button.dart';
 import 'package:spy_game/presentation/widgets/timer_widget.dart';
 
 /// صفحه تایمر بحث
@@ -71,11 +71,19 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                 textAlign: TextAlign.center,
               ),
               const Spacer(),
-              OutlinedActionButton(
+              HoldConfirmButton(
                 label: 'timer.end_early'.tr(),
-                onPressed: timerState.isRunning ? notifier.endEarly : null,
-                color: AppColors.accentDanger,
+                hint: 'timer.hold_end_early_hint'.tr(),
                 icon: Icons.stop_circle_outlined,
+                gradientColors: const [
+                  AppColors.accentDanger,
+                  AppColors.primaryRed,
+                ],
+                onConfirmed: () {
+                  if (timerState.isRunning) {
+                    notifier.endEarly();
+                  }
+                },
               ),
             ],
           ),

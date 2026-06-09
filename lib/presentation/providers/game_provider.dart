@@ -102,7 +102,7 @@ class GameState {
       playerNames.length >= GameConfig.minPlayers &&
       selectedCategoryIds.isNotEmpty &&
       spyCount >= GameConfig.minSpies &&
-      spyCount < playerNames.length;
+      spyCount <= GameConfig.maxSpiesForPlayerCount(playerNames.length);
 
   GameState copyWith({
     GamePhase? phase,
@@ -201,7 +201,7 @@ class GameNotifier extends _$GameNotifier {
         .map((name) => name.trim())
         .where((name) => name.isNotEmpty)
         .toList();
-    final maxSpies = trimmed.length > 1 ? trimmed.length - 1 : 1;
+    final maxSpies = GameConfig.maxSpiesForPlayerCount(trimmed.length);
     final adjustedSpyCount =
         state.spyCount.clamp(GameConfig.minSpies, maxSpies);
     state = state.copyWith(
@@ -213,7 +213,8 @@ class GameNotifier extends _$GameNotifier {
   /// تنظیم تعداد جاسوس
   void setSpyCount(int count) {
     if (state.playerNames.isEmpty) return;
-    final maxSpies = state.playerNames.length - 1;
+    final maxSpies =
+        GameConfig.maxSpiesForPlayerCount(state.playerNames.length);
     state = state.copyWith(
       spyCount: count.clamp(GameConfig.minSpies, maxSpies),
     );

@@ -63,11 +63,13 @@
     "group_saved": "Group saved successfully",
     "delete_group": "Delete Group",
     "delete_group_confirm": "Are you sure you want to delete this group?",
-    "group_deleted": "Group deleted"
+    "group_deleted": "Group deleted",
+    "no_saved_groups": "No saved groups yet. Enter names and save them."
   },
   "game_config": {
     "title": "Round Setup",
     "player_count": "Players",
+    "edit_players_hint": "Tap to edit player names",
     "spy_count": "Spies",
     "timer": "Timer ({} min)",
     "categories": "Categories",
@@ -116,22 +118,32 @@
     "detective": "Detective",
     "infiltrator": "Infiltrator",
     "tap_to_reveal": "Tap to reveal your role",
+    "touch_to_scan": "Touch to scan",
     "reveal": "Reveal",
     "your_word": "Your word",
+    "secret_word_label": "Secret word",
+    "secret_identity": "Secret identity",
+    "you_are_role": "You are the {}",
+    "dont_reveal": "Don't reveal your identity!",
     "category": "Category",
     "spy_hint": "Word hint",
-    "other_spies": "Other spies"
+    "other_spies": "Other spies",
+    "flip_hint": "Tap to flip the card"
   },
   "word_reveal": {
     "title": "Reveal Role",
     "player_turn": "{} — Player {}/{}",
     "pass_phone": "Pass the phone to {}",
+    "tap_to_check": "Tap card to check your role",
+    "check_complete": "Check complete",
     "next_player": "Next Player",
+    "pass_to_next": "Pass to Next Player",
     "start_timer": "Start Discussion"
   },
   "timer": {
     "discussion": "Discussion time",
     "end_early": "End early",
+    "hold_end_early_hint": "Hold for 3 seconds to end discussion early",
     "round": "Round {}",
     "hint": "Discuss the word — the spy is trying to figure it out!"
   },
@@ -144,7 +156,8 @@
     "spies_were": "Spies",
     "infiltrators_were": "Infiltrators",
     "no_spies": "No spies in this round",
-    "play_again": "Play Again"
+    "play_again": "Play Again",
+    "hold_hint": "Hold for 3 seconds to end the game"
   },
   "result": {
     "title": "Round {} Result",

@@ -4,9 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spy_game/core/constants/app_colors.dart';
 import 'package:spy_game/core/constants/game_config.dart';
-import 'package:spy_game/core/router/router.dart';
 import 'package:spy_game/presentation/screens/player_setup/player_setup_provider.dart';
-import 'package:spy_game/presentation/widgets/counter_card.dart';
+import 'package:spy_game/presentation/widgets/app_card.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
 import 'package:spy_game/presentation/widgets/group_selector.dart';
 import 'package:spy_game/presentation/widgets/outlined_action_button.dart';
@@ -30,15 +29,6 @@ class PlayerSetupScreen extends ConsumerWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.save_outlined),
-            tooltip: 'player_setup.save_group'.tr(),
-            onPressed: setupState.isSaving
-                ? null
-                : () => _showSaveGroupDialog(context, ref),
-          ),
-        ],
       ),
       body: SafeArea(
         child: Column(
@@ -47,28 +37,18 @@ class PlayerSetupScreen extends ConsumerWidget {
               child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
-                  if (setupState.groups.isNotEmpty)
-                    GroupSelector(
-                      groups: setupState.groups,
-                      selectedGroupId: setupState.selectedGroupId,
-                      onChanged: notifier.selectGroup,
-                      onCreateNew: notifier.createNewGroup,
-                      onDelete: setupState.selectedGroupId != null
-                          ? () => _confirmDeleteGroup(context, ref)
-                          : null,
-                    ),
-                  if (setupState.groups.isNotEmpty) const SizedBox(height: 16),
-                  CounterCard(
-                    title: 'player_setup.players'.tr(),
-                    value: setupState.playerCount,
-                    icon: Icons.people_outline,
-                    accentColor: AppColors.accentDefault,
-                    minValue: GameConfig.minPlayers,
-                    maxValue: GameConfig.maxPlayers,
-                    onIncrement: notifier.addPlayer,
-                    onDecrement: notifier.removePlayer,
+                  _SavedGroupsSection(
+                    groups: setupState.groups,
+                    selectedGroupId: setupState.selectedGroupId,
+                    isSaving: setupState.isSaving,
+                    onGroupChanged: notifier.selectGroup,
+                    onCreateNew: notifier.createNewGroup,
+                    onDelete: setupState.selectedGroupId != null
+                        ? () => _confirmDeleteGroup(context, ref)
+                        : null,
+                    onSave: () => _showSaveGroupDialog(context, ref),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   Text(
                     'player_setup.edit_names'.tr(),
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -91,43 +71,43 @@ class PlayerSetupScreen extends ConsumerWidget {
                           : null,
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AddActionButton(
-                          label: 'player_setup.add_player'.tr(),
-                          onPressed: setupState.playerCount <
-                                  GameConfig.maxPlayers
-                              ? notifier.addPlayer
-                              : null,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: RemoveActionButton(
-                          label: 'player_setup.remove_player'.tr(),
-                          onPressed: setupState.playerCount >
-                                  GameConfig.minPlayers
-                              ? notifier.removePlayer
-                              : null,
-                        ),
-                      ),
-                    ],
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: AddActionButton(
+                      label: 'player_setup.add_player'.tr(),
+                      onPressed: setupState.playerCount < GameConfig.maxPlayers
+                          ? notifier.addPlayer
+                          : null,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: RemoveActionButton(
+                      label: 'player_setup.remove_player'.tr(),
+                      onPressed: setupState.playerCount > GameConfig.minPlayers
+                          ? notifier.removePlayer
+                          : null,
+                    ),
                   ),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: GradientButton(
-                label: 'player_setup.continue'.tr(),
-                icon: Icons.arrow_forward_rounded,
+                label: 'common.done'.tr(),
+                icon: Icons.check_rounded,
                 enabled: setupState.canContinue,
                 onPressed: setupState.canContinue
                     ? () {
-                        notifier.continueToGameConfig();
-                        context.push(AppRoutes.gameConfig);
+                        notifier.applyToGame();
+                        context.pop();
                       }
                     : null,
               ),
@@ -232,6 +212,79 @@ class PlayerSetupScreen extends ConsumerWidget {
         ),
       );
     }
+  }
+}
+
+/// بخش بارگذاری و ذخیره گروه‌های اسامی — همیشه در بالای صفحه نمایش داده می‌شود
+class _SavedGroupsSection extends StatelessWidget {
+  const _SavedGroupsSection({
+    required this.groups,
+    required this.selectedGroupId,
+    required this.isSaving,
+    required this.onGroupChanged,
+    required this.onCreateNew,
+    required this.onSave,
+    this.onDelete,
+  });
+
+  final List<GroupSelectorItem> groups;
+  final int? selectedGroupId;
+  final bool isSaving;
+  final ValueChanged<int?> onGroupChanged;
+  final VoidCallback onCreateNew;
+  final VoidCallback onSave;
+  final VoidCallback? onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    if (groups.isNotEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          GroupSelector(
+            groups: groups,
+            selectedGroupId: selectedGroupId,
+            onChanged: onGroupChanged,
+            onCreateNew: onCreateNew,
+            onDelete: onDelete,
+          ),
+          const SizedBox(height: 12),
+          OutlinedActionButton(
+            label: 'player_setup.save_group'.tr(),
+            icon: Icons.save_outlined,
+            color: AppColors.accentDefault,
+            onPressed: isSaving ? null : onSave,
+          ),
+        ],
+      );
+    }
+
+    return AppCard(
+      borderColor: AppColors.accentDefault,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'player_setup.saved_groups'.tr(),
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'player_setup.no_saved_groups'.tr(),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 12),
+          OutlinedActionButton(
+            label: 'player_setup.save_group'.tr(),
+            icon: Icons.save_outlined,
+            color: AppColors.accentDefault,
+            onPressed: isSaving ? null : onSave,
+          ),
+        ],
+      ),
+    );
   }
 }
 

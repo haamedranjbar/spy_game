@@ -27,11 +27,12 @@ String buildSpyHint(String word) {
 /// محاسبه محتوای نمایشی کارت بر اساس نقش و تنظیمات بازی
 RoleRevealInfo buildRoleRevealInfo({
   required PlayerRole player,
+  required int currentPlayerIndex,
   required String secretWord,
   required bool showCategoryForSpy,
   required bool spyHintEnabled,
   required bool spiesKnowEachOther,
-  required List<PlayerRole> aliveRoles,
+  required List<PlayerRole> allRoles,
   String? categoryName,
 }) {
   // شهروند و نفوذی کلمه را می‌بینند
@@ -50,17 +51,21 @@ RoleRevealInfo buildRoleRevealInfo({
     category = categoryName;
   }
 
-  final coSpies = spiesKnowEachOther
-      ? aliveRoles
-          .where(
-            (role) =>
-                (role.role == GameRole.spy ||
-                    role.role == GameRole.infiltrator) &&
-                role.playerName != player.playerName,
-          )
-          .map((role) => role.playerName)
-          .toList()
-      : const <String>[];
+  // شناسایی جاسوس‌های دیگر با ایندکس در لیست کامل نقش‌ها
+  List<String> coSpies = const [];
+  if (spiesKnowEachOther) {
+    coSpies = allRoles
+        .asMap()
+        .entries
+        .where(
+          (entry) =>
+              entry.key != currentPlayerIndex &&
+              entry.value.role == GameRole.spy,
+        )
+        .map((entry) => entry.value.playerName)
+        .toList()
+      ..sort();
+  }
 
   return RoleRevealInfo(
     categoryName: category,

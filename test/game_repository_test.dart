@@ -10,18 +10,18 @@ void main() {
     test('assigns exact spy count and gives word only to citizens', () {
       final repo = GameRepository(Random(42));
       final roles = repo.assignRoles(
-        playerNames: ['A', 'B', 'C', 'D', 'E'],
+        playerNames: ['A', 'B', 'C', 'D', 'E', 'F'],
         spyCount: 2,
         word: 'سیب',
       );
 
-      expect(roles, hasLength(5));
+      expect(roles, hasLength(6));
 
       final spies = roles.where((r) => r.role == GameRole.spy).toList();
       final citizens = roles.where((r) => r.role == GameRole.citizen).toList();
 
       expect(spies, hasLength(2));
-      expect(citizens, hasLength(3));
+      expect(citizens, hasLength(4));
 
       for (final spy in spies) {
         expect(spy.word, isNull);
@@ -40,7 +40,8 @@ void main() {
       );
 
       final spyCount = roles.where((r) => r.role == GameRole.spy).length;
-      expect(spyCount, 2);
+      // ۳ بازیکن → حداکثر ۱ جاسوس (یکی کمتر از نصف)
+      expect(spyCount, 1);
     });
   });
 

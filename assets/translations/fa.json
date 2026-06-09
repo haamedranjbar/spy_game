@@ -63,11 +63,13 @@
     "group_saved": "گروه با موفقیت ذخیره شد",
     "delete_group": "حذف گروه",
     "delete_group_confirm": "آیا از حذف این گروه مطمئن هستید؟",
-    "group_deleted": "گروه حذف شد"
+    "group_deleted": "گروه حذف شد",
+    "no_saved_groups": "هنوز گروهی ذخیره نشده. اسامی را وارد کنید و ذخیره کنید."
   },
   "game_config": {
     "title": "تنظیمات دور",
     "player_count": "تعداد بازیکن",
+    "edit_players_hint": "برای ویرایش اسامی ضربه بزنید",
     "spy_count": "تعداد جاسوس",
     "timer": "تایمر ({} دقیقه)",
     "categories": "دسته‌بندی‌ها",
@@ -116,22 +118,32 @@
     "detective": "کاراگاه",
     "infiltrator": "نفوذی",
     "tap_to_reveal": "برای دیدن نقش خود ضربه بزنید",
+    "touch_to_scan": "برای اسکن ضربه بزنید",
     "reveal": "نمایش نقش",
     "your_word": "کلمه شما",
+    "secret_word_label": "کلمه مخفی",
+    "secret_identity": "هویت مخفی",
+    "you_are_role": "شما {} هستید",
+    "dont_reveal": "هویت خود را فاش نکنید!",
     "category": "دسته",
     "spy_hint": "راهنمای کلمه",
-    "other_spies": "جاسوس‌های دیگر"
+    "other_spies": "جاسوس‌های دیگر",
+    "flip_hint": "برای چرخاندن کارت ضربه بزنید"
   },
   "word_reveal": {
     "title": "نمایش نقش",
     "player_turn": "{} — بازیکن {}/{}",
     "pass_phone": "گوشی را به {} بدهید",
+    "tap_to_check": "روی کارت بزنید تا نقش خود را ببینید",
+    "check_complete": "بررسی انجام شد",
     "next_player": "بازیکن بعدی",
+    "pass_to_next": "تحویل به بازیکن بعدی",
     "start_timer": "شروع بحث"
   },
   "timer": {
     "discussion": "زمان بحث",
     "end_early": "پایان زودهنگام",
+    "hold_end_early_hint": "۳ ثانیه نگه دارید تا بحث زودتر تمام شود",
     "round": "دور {}",
     "hint": "در این زمان درباره کلمه بحث کنید — جاسوس سعی می‌کند متوجه شود!"
   },
@@ -144,7 +156,8 @@
     "spies_were": "جاسوس‌ها",
     "infiltrators_were": "نفوذی‌ها",
     "no_spies": "جاسوسی در این دور نبود",
-    "play_again": "شروع دوباره"
+    "play_again": "شروع دوباره",
+    "hold_hint": "۳ ثانیه نگه دارید تا بازی تمام شود"
   },
   "result": {
     "title": "نتیجه دور {}",

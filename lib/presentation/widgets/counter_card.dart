@@ -12,6 +12,8 @@ class CounterCard extends StatelessWidget {
     this.accentColor = AppColors.accentDefault,
     this.onIncrement,
     this.onDecrement,
+    this.onTap,
+    this.actionHint,
     this.minValue,
     this.maxValue,
   });
@@ -22,6 +24,8 @@ class CounterCard extends StatelessWidget {
   final Color accentColor;
   final VoidCallback? onIncrement;
   final VoidCallback? onDecrement;
+  final VoidCallback? onTap;
+  final String? actionHint;
   final int? minValue;
   final int? maxValue;
 
@@ -33,8 +37,12 @@ class CounterCard extends StatelessWidget {
         (maxValue == null || value < maxValue!);
 
     return AppCard(
-      child: Column(
+      onTap: onTap,
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
         children: [
           Row(
             children: [
@@ -48,20 +56,24 @@ class CounterCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+              if (onTap != null)
+                const Icon(
+                  Icons.chevron_right,
+                  color: AppColors.textMuted,
+                  size: 22,
+                ),
             ],
           ),
           const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              if (onDecrement != null)
-                _CounterButton(
-                  icon: Icons.remove,
-                  onTap: canDecrement ? onDecrement : null,
-                  color: accentColor,
-                )
-              else
-                const SizedBox(width: 36),
+              _CounterButton(
+                icon: Icons.remove,
+                onTap: canDecrement ? onDecrement : null,
+                color: accentColor,
+                visible: onDecrement != null,
+              ),
               Text(
                 '$value',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -69,17 +81,27 @@ class CounterCard extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                     ),
               ),
-              if (onIncrement != null)
-                _CounterButton(
-                  icon: Icons.add,
-                  onTap: canIncrement ? onIncrement : null,
-                  color: accentColor,
-                )
-              else
-                const SizedBox(width: 36),
+              _CounterButton(
+                icon: Icons.add,
+                onTap: canIncrement ? onIncrement : null,
+                color: accentColor,
+                visible: onIncrement != null,
+              ),
             ],
           ),
+          if (actionHint != null) ...[
+            const Spacer(),
+            Text(
+              actionHint!,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         ],
+        ),
       ),
     );
   }
@@ -90,14 +112,20 @@ class _CounterButton extends StatelessWidget {
     required this.icon,
     required this.onTap,
     required this.color,
+    this.visible = true,
   });
 
   final IconData icon;
   final VoidCallback? onTap;
   final Color color;
+  final bool visible;
 
   @override
   Widget build(BuildContext context) {
+    if (!visible) {
+      return const SizedBox(width: 36, height: 36);
+    }
+
     return Material(
       color: color.withValues(alpha: 0.15),
       borderRadius: BorderRadius.circular(10),

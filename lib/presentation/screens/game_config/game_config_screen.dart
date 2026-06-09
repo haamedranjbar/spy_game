@@ -7,6 +7,7 @@ import 'package:spy_game/core/constants/game_config.dart';
 import 'package:spy_game/core/router/router.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
 import 'package:spy_game/presentation/screens/game_config/game_config_provider.dart';
+import 'package:spy_game/presentation/screens/player_setup/player_setup_provider.dart';
 import 'package:spy_game/presentation/widgets/app_card.dart';
 import 'package:spy_game/presentation/widgets/counter_card.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
@@ -41,30 +42,40 @@ class GameConfigScreen extends ConsumerWidget {
               child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CounterCard(
-                          title: 'game_config.player_count'.tr(),
-                          value: gameState.playerNames.length,
-                          icon: Icons.people_outline,
-                          accentColor: AppColors.accentDefault,
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: CounterCard(
+                            title: 'game_config.player_count'.tr(),
+                            value: gameState.playerNames.length,
+                            icon: Icons.people_outline,
+                            accentColor: AppColors.accentDefault,
+                            actionHint: 'game_config.edit_players_hint'.tr(),
+                            onTap: () {
+                              ref
+                                  .read(playerSetupProvider.notifier)
+                                  .syncFromGame();
+                              context.push(AppRoutes.playerSetup);
+                            },
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: CounterCard(
-                          title: 'game_config.spy_count'.tr(),
-                          value: gameState.spyCount,
-                          icon: Icons.visibility_off,
-                          accentColor: AppColors.accentDanger,
-                          minValue: GameConfig.minSpies,
-                          maxValue: configNotifier.maxSpies,
-                          onIncrement: configNotifier.incrementSpyCount,
-                          onDecrement: configNotifier.decrementSpyCount,
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: CounterCard(
+                            title: 'game_config.spy_count'.tr(),
+                            value: gameState.spyCount,
+                            icon: Icons.visibility_off,
+                            accentColor: AppColors.accentDanger,
+                            minValue: GameConfig.minSpies,
+                            maxValue: configNotifier.maxSpies,
+                            onIncrement: configNotifier.incrementSpyCount,
+                            onDecrement: configNotifier.decrementSpyCount,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 16),
                   CounterCard(
