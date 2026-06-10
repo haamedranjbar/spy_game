@@ -9,6 +9,22 @@ abstract final class GameConfig {
   static const int minSpies = 1;
   static const int defaultSpyCount = 1;
 
+  // نقش‌های ویژه (فاز ۳)
+  static const int maxSpecialRolesPerGame = 1;
+
+  /// حداقل شهروند غیرکاراگاه برای فعال‌سازی کاراگاه
+  static bool canEnableDetective({
+    required int playerCount,
+    required int spyCount,
+  }) {
+    return playerCount - spyCount >= 2;
+  }
+
+  /// نفوذی یکی از جایگاه‌های جاسوس را اشغال می‌کند
+  static bool canEnableInfiltrator({required int spyCount}) {
+    return spyCount >= minSpies;
+  }
+
   /// حداکثر تعداد جاسوس: یکی کمتر از نصف بازیکنان
   static int maxSpiesForPlayerCount(int playerCount) {
     if (playerCount <= 1) return minSpies;

@@ -20,6 +20,11 @@ const List<Color> _infiltratorGradient = [
   AppColors.primaryRed,
 ];
 
+const List<Color> _detectiveGradient = [
+  AppColors.primaryBlue,
+  AppColors.accentDefault,
+];
+
 /// کارت نمایش نقش با انیمیشن چرخش — الهام از الگوی اسکن و هویت مخفی
 class RoleCard extends StatefulWidget {
   const RoleCard({
@@ -102,6 +107,7 @@ class _RoleCardState extends State<RoleCard>
   List<Color> get _roleGradient => switch (widget.role) {
         GameRole.citizen => AppColors.citizenCardGradient,
         GameRole.spy => _spyGradient,
+        GameRole.detective => _detectiveGradient,
         GameRole.infiltrator => _infiltratorGradient,
       };
 
@@ -135,7 +141,8 @@ class _RoleCardState extends State<RoleCard>
                           transform: Matrix4.identity()..rotateY(pi),
                           child: _CardFace(
                             gradient: _roleGradient,
-                            padding: widget.role == GameRole.citizen
+                            padding: widget.role == GameRole.citizen ||
+                                    widget.role == GameRole.detective
                                 ? EdgeInsets.zero
                                 : const EdgeInsets.all(28),
                             child: _BackContent(
@@ -276,6 +283,18 @@ class _BackContent extends StatelessWidget {
       return _CitizenBackContent(word: word);
     }
 
+    if (role == GameRole.detective) {
+      return _DetectiveBackContent(word: word, roleKey: roleKey);
+    }
+
+    if (role == GameRole.infiltrator) {
+      return _InfiltratorBackContent(
+        roleKey: roleKey,
+        word: word,
+        coSpyNames: coSpyNames,
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -393,6 +412,105 @@ class _CitizenBackContent extends StatelessWidget {
   }
 }
 
+/// چیدمان اختصاصی کارت کاراگاه — کلمه + یادآوری بازجویی
+class _DetectiveBackContent extends StatelessWidget {
+  const _DetectiveBackContent({
+    required this.roleKey,
+    this.word,
+  });
+
+  final String roleKey;
+  final String? word;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          clipBehavior: Clip.hardEdge,
+          children: [
+            Positioned(
+              top: -constraints.maxHeight * 0.18,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  width: constraints.maxWidth * 1.1,
+                  height: constraints.maxHeight * 0.62,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        AppColors.primaryBlue.withValues(alpha: 0.35),
+                        AppColors.primaryBlue.withValues(alpha: 0.1),
+                        AppColors.primaryBlue.withValues(alpha: 0),
+                      ],
+                      stops: const [0, 0.45, 1],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Column(
+              children: [
+                SizedBox(height: constraints.maxHeight * 0.12),
+                const _RoleIconBadge(role: GameRole.detective),
+                const SizedBox(height: 12),
+                Text(
+                  'role.you_are_role'.tr(args: [roleKey.tr()]),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: constraints.maxHeight * 0.1),
+                if (word != null) ...[
+                  Text(
+                    'role.secret_word_label'.tr().toUpperCase(),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: AppColors.textPrimary.withValues(alpha: 0.62),
+                          letterSpacing: 2.2,
+                          fontWeight: FontWeight.w500,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    child: Text(
+                      word!,
+                      style:
+                          Theme.of(context).textTheme.displaySmall?.copyWith(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w900,
+                                height: 1.15,
+                              ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  child: Text(
+                    'role.detective_hint'.tr(),
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                          color: AppColors.textPrimary.withValues(alpha: 0.85),
+                          fontWeight: FontWeight.w600,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
 /// آیکون لبخند شهروند — دایره تیره نیمه‌شفاف
 class _CitizenIconBadge extends StatelessWidget {
   const _CitizenIconBadge();
@@ -421,6 +539,65 @@ class _CitizenIconBadge extends StatelessWidget {
         color: AppColors.textPrimary,
         size: 48,
       ),
+    );
+  }
+}
+
+/// چیدمان اختصاصی کارت نفوذی — کلمه + شناسایی جاسوس‌ها
+class _InfiltratorBackContent extends StatelessWidget {
+  const _InfiltratorBackContent({
+    required this.roleKey,
+    this.word,
+    this.coSpyNames = const [],
+  });
+
+  final String roleKey;
+  final String? word;
+  final List<String> coSpyNames;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Center(
+                  child: _RoleIconBadge(role: GameRole.infiltrator),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'role.you_are_role'.tr(args: [roleKey.tr()]),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w800,
+                        height: 1.3,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                if (word != null) ...[
+                  const SizedBox(height: 16),
+                  _SpyInfoBox(
+                    label: 'role.secret_word_label'.tr(),
+                    value: word!,
+                    emphasizeValue: true,
+                  ),
+                ],
+                if (coSpyNames.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  _CoSpyChipRow(names: coSpyNames),
+                ],
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        const _SpyWarningBox(),
+      ],
     );
   }
 }
@@ -584,6 +761,7 @@ class _RoleIconBadge extends StatelessWidget {
     final icon = switch (role) {
       GameRole.citizen => Icons.sentiment_satisfied_alt_outlined,
       GameRole.spy => Icons.dangerous_outlined,
+      GameRole.detective => Icons.search_outlined,
       GameRole.infiltrator => Icons.theater_comedy_outlined,
     };
 

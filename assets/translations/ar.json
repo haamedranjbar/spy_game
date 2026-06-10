@@ -83,7 +83,11 @@
     "start_game": "بدء اللعبة",
     "show_category_spy": "عرض الفئة للجاسوس",
     "spy_hint": "تلميح الكلمة للجاسوس",
-    "spies_know_each_other": "الجواسيس يعرفون بعضهم"
+    "spies_know_each_other": "الجواسيس يعرفون بعضهم",
+    "has_detective": "محقق",
+    "has_detective_hint": "لاعب واحد يمكنه التحقيق مرة قبل التصويت",
+    "has_infiltrator": "متسلل",
+    "has_infiltrator_hint": "جاسوس يرى الكلمة ويعرف الجواسيس الآخرين"
   },
   "custom_category": {
     "title": "فئة مخصصة",
@@ -150,6 +154,7 @@
     "category": "الفئة",
     "spy_hint": "تلميح الكلمة",
     "other_spies": "جواسيس آخرون",
+    "detective_hint": "يمكنك التحقيق مرة واحدة بعد النقاش",
     "flip_hint": "اضغط لقلب البطاقة"
   },
   "word_reveal": {
@@ -172,6 +177,17 @@
     "hold_end_early_hint": "اضغط مطولاً ثانية واحدة لإنهاء النقاش مبكراً",
     "round": "الجولة {}",
     "hint": "ناقشوا الكلمة — الجاسوس يحاول معرفتها!"
+  },
+  "investigation": {
+    "title": "تحقيق المحقق",
+    "round": "الجولة {}",
+    "pass_phone": "مرر الهاتف إلى {} (المحقق)",
+    "select_hint": "اختر لاعباً للتحقيق — مرة واحدة فقط!",
+    "result_title": "نتيجة التحقيق",
+    "appears_spy": "يبدو جاسوساً",
+    "appears_citizen": "يبدو مواطناً",
+    "result_hint": "هذه النتيجة للمحقق فقط — لا تكشفها!",
+    "continue_voting": "المتابعة إلى التصويت"
   },
   "voting": {
     "title": "نهاية النقاش",

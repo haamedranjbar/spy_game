@@ -182,6 +182,7 @@ class ResultScreen extends ConsumerWidget {
     return switch (role) {
       GameRole.citizen => 'role.citizen'.tr(),
       GameRole.spy => 'role.spy'.tr(),
+      GameRole.detective => 'role.detective'.tr(),
       GameRole.infiltrator => 'role.infiltrator'.tr(),
     };
   }

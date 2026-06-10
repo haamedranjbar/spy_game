@@ -158,6 +158,13 @@ class _LanguageSelector extends StatelessWidget {
   final Locale currentLocale;
   final ValueChanged<Locale> onChanged;
 
+  static String _flagForLanguage(String languageCode) => switch (languageCode) {
+        'fa' => '🇮🇷',
+        'en' => '🇬🇧',
+        'ar' => '🇮🇶',
+        _ => '🌐',
+      };
+
   @override
   Widget build(BuildContext context) {
     const locales = [
@@ -180,19 +187,34 @@ class _LanguageSelector extends StatelessWidget {
                     ? AppColors.accentDefault
                     : null,
                 padding: const EdgeInsets.symmetric(vertical: 14),
-                child: Text(
-                  locales[i].$2,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: currentLocale.languageCode ==
-                                locales[i].$1.languageCode
-                            ? AppColors.accentDefault
-                            : AppColors.textPrimary,
-                        fontWeight: currentLocale.languageCode ==
-                                locales[i].$1.languageCode
-                            ? FontWeight.w700
-                            : FontWeight.w400,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // پرچم با فونت سیستمی — Vazirmatn ایموجی را خراب می‌کند
+                    Text(
+                      _flagForLanguage(locales[i].$1.languageCode),
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        locales[i].$2,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            Theme.of(context).textTheme.titleSmall?.copyWith(
+                                  color: currentLocale.languageCode ==
+                                          locales[i].$1.languageCode
+                                      ? AppColors.accentDefault
+                                      : AppColors.textPrimary,
+                                  fontWeight: currentLocale.languageCode ==
+                                          locales[i].$1.languageCode
+                                      ? FontWeight.w700
+                                      : FontWeight.w400,
+                                ),
                       ),
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -60,6 +60,26 @@ class GameConfigNotifier extends _$GameConfigNotifier {
     ref.read(gameProvider.notifier).setSpiesKnowEachOther(value);
   }
 
+  bool get hasDetective => ref.read(gameProvider).hasDetective;
+
+  bool get hasInfiltrator => ref.read(gameProvider).hasInfiltrator;
+
+  bool get canEnableDetective => GameConfig.canEnableDetective(
+        playerCount: playerCount,
+        spyCount: spyCount,
+      );
+
+  bool get canEnableInfiltrator =>
+      GameConfig.canEnableInfiltrator(spyCount: spyCount);
+
+  void setHasDetective(bool value) {
+    ref.read(gameProvider.notifier).setHasDetective(value);
+  }
+
+  void setHasInfiltrator(bool value) {
+    ref.read(gameProvider.notifier).setHasInfiltrator(value);
+  }
+
   /// شروع بازی با تنظیمات فعلی
   Future<bool> startGame() async {
     state = state.copyWith(isStarting: true);

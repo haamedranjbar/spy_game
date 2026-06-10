@@ -42,7 +42,7 @@ final class CustomCategoryNotifierProvider
 }
 
 String _$customCategoryNotifierHash() =>
-    r'd4e5f6789012345678customcat001';
+    r'e923d058f267b42478604fbe23d790bea0b930f1';
 
 abstract class _$CustomCategoryNotifier extends $Notifier<CustomCategoryState> {
   CustomCategoryState build();

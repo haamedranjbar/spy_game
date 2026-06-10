@@ -136,13 +136,9 @@ class CustomCategoryScreen extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: GradientButton(
-                label: 'common.save'.tr(),
-                icon: Icons.save_outlined,
-                enabled: canSaveWords && !state.isSaving,
-                isLoading: state.isSaving,
-                onPressed: canSaveWords && !state.isSaving
-                    ? () => _onSavePressed(context, ref)
-                    : null,
+                label: 'common.done'.tr(),
+                icon: Icons.check_rounded,
+                onPressed: state.isSaving ? null : () => context.pop(),
               ),
             ),
           ],

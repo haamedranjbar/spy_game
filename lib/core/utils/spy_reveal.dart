@@ -35,10 +35,23 @@ RoleRevealInfo buildRoleRevealInfo({
   required List<PlayerRole> allRoles,
   String? categoryName,
 }) {
-  // شهروند و نفوذی کلمه را می‌بینند
+  // شهروند و کاراگاه کلمه را می‌بینند
   if (player.role == GameRole.citizen ||
-      player.role == GameRole.infiltrator) {
+      player.role == GameRole.detective) {
     return RoleRevealInfo(word: player.word);
+  }
+
+  // نفوذی کلمه را می‌بیند و همیشه جاسوس‌های دیگر را می‌شناسد
+  if (player.role == GameRole.infiltrator) {
+    final coSpies = allRoles
+        .where((role) => role.role == GameRole.spy)
+        .map((role) => role.playerName)
+        .toList()
+      ..sort();
+    return RoleRevealInfo(
+      word: player.word,
+      coSpyNames: coSpies,
+    );
   }
 
   String? hint;

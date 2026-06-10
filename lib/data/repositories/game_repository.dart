@@ -27,11 +27,13 @@ class GameRepository {
 
   final Random _random;
 
-  /// تخصیص نقش جاسوس به تعداد مشخص — شهروندها کلمه را می‌بینند
+  /// تخصیص نقش‌ها — شهروند، جاسوس، کاراگاه و نفوذی
   List<PlayerRole> assignRoles({
     required List<String> playerNames,
     required int spyCount,
     required String word,
+    bool hasDetective = false,
+    bool hasInfiltrator = false,
   }) {
     if (playerNames.isEmpty) return const [];
 
@@ -39,25 +41,85 @@ class GameRepository {
       GameConfig.minSpies,
       GameConfig.maxSpiesForPlayerCount(playerNames.length),
     );
+
+    final useDetective = hasDetective &&
+        GameConfig.canEnableDetective(
+          playerCount: playerNames.length,
+          spyCount: effectiveSpyCount,
+        );
+    final useInfiltrator = hasInfiltrator &&
+        GameConfig.canEnableInfiltrator(spyCount: effectiveSpyCount);
+
     // تخصیص بر اساس ایندکس — با اسامی تکراری هم تعداد جاسوس درست می‌ماند
     final shuffledIndices = List.generate(playerNames.length, (index) => index)
       ..shuffle(_random);
     final spyIndices =
         shuffledIndices.take(effectiveSpyCount).toSet();
 
+    // نفوذی یکی از جاسوس‌ها را جایگزین می‌کند
+    int? infiltratorIndex;
+    if (useInfiltrator && spyIndices.isNotEmpty) {
+      final spyList = spyIndices.toList();
+      infiltratorIndex = spyList[_random.nextInt(spyList.length)];
+    }
+
+    // کاراگاه از میان غیرجاسوس‌ها انتخاب می‌شود
+    int? detectiveIndex;
+    if (useDetective) {
+      final citizenPool = shuffledIndices
+          .where((index) => !spyIndices.contains(index))
+          .toList();
+      if (citizenPool.isNotEmpty) {
+        detectiveIndex = citizenPool.first;
+      }
+    }
+
     return playerNames
         .asMap()
         .entries
-        .map(
-          (entry) => PlayerRole(
-            playerName: entry.value,
-            role: spyIndices.contains(entry.key)
-                ? GameRole.spy
-                : GameRole.citizen,
-            word: spyIndices.contains(entry.key) ? null : word,
-          ),
-        )
+        .map((entry) {
+          final index = entry.key;
+          final name = entry.value;
+
+          if (index == infiltratorIndex) {
+            return PlayerRole(
+              playerName: name,
+              role: GameRole.infiltrator,
+              word: word,
+            );
+          }
+
+          if (spyIndices.contains(index)) {
+            return PlayerRole(
+              playerName: name,
+              role: GameRole.spy,
+            );
+          }
+
+          if (index == detectiveIndex) {
+            return PlayerRole(
+              playerName: name,
+              role: GameRole.detective,
+              word: word,
+            );
+          }
+
+          return PlayerRole(
+            playerName: name,
+            role: GameRole.citizen,
+            word: word,
+          );
+        })
         .toList();
+  }
+
+  /// نقش ظاهری بازیکن برای بازجویی کاراگاه — نفوذی «پاک» دیده می‌شود
+  GameRole getInvestigationResult(PlayerRole target) {
+    if (target.role == GameRole.spy) {
+      return GameRole.spy;
+    }
+    // شهروند، کاراگاه و نفوذی همگی شهروند به نظر می‌رسند
+    return GameRole.citizen;
   }
 
   /// آماده‌سازی دور بعدی — نقش‌ها و حذف‌شدگان حفظ، فقط کلمه عوض می‌شود
@@ -70,7 +132,7 @@ class GameRepository {
           (role) => role.isEliminated
               ? role
               : role.copyWith(
-                  word: role.role == GameRole.citizen ? newWord : null,
+                  word: role.role == GameRole.spy ? null : newWord,
                   votedFor: null,
                 ),
         )
@@ -132,19 +194,20 @@ class GameRepository {
     );
   }
 
-  /// بررسی شرط برد — شهروندها: همه جاسوس‌ها حذف | جاسوس‌ها: حداقل یک جاسوس باقی + برتری عددی
+  /// بررسی شرط برد — شهروندها: همه جاسوس‌ها حذف | جاسوس‌ها: برتری عددی تیم جاسوس
   ({GameWinner? winner, bool isGameOver}) checkWinner(
     List<PlayerRole> roles,
   ) {
     final alive = roles.where((role) => !role.isEliminated).toList();
-    final spyCount = alive.where((role) => role.role == GameRole.spy).length;
-    final citizenCount =
-        alive.where((role) => role.role == GameRole.citizen).length;
+    final spyFactionCount =
+        alive.where((role) => role.isSpyFaction).length;
+    final citizenFactionCount =
+        alive.where((role) => role.isCitizenFaction).length;
 
-    if (spyCount == 0) {
+    if (spyFactionCount == 0) {
       return (winner: GameWinner.citizens, isGameOver: true);
     }
-    if (spyCount >= citizenCount) {
+    if (spyFactionCount >= citizenFactionCount) {
       return (winner: GameWinner.spies, isGameOver: true);
     }
     return (winner: null, isGameOver: false);

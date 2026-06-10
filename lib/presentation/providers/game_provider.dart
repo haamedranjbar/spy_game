@@ -19,11 +19,12 @@ enum GamePhase {
   setup,
   wordReveal,
   timer,
+  investigation,
   voting,
   result,
 }
 
-/// State کامل بازی — منطق اصلی فاز ۱ (شهروند + جاسوس)
+/// State کامل بازی — شهروند، جاسوس، کاراگاه و نفوذی
 class GameState {
   const GameState({
     this.phase = GamePhase.setup,
@@ -31,6 +32,8 @@ class GameState {
     this.selectedCategoryIds = const [],
     this.playerNames = const [],
     this.spyCount = GameConfig.defaultSpyCount,
+    this.hasDetective = false,
+    this.hasInfiltrator = false,
     this.timerSeconds = GameConfig.defaultTimerSeconds,
     this.showCategoryForSpy = false,
     this.spyHintEnabled = false,
@@ -42,6 +45,9 @@ class GameState {
     this.currentRevealIndex = 0,
     this.isCurrentRevealed = false,
     this.remainingSeconds = GameConfig.defaultTimerSeconds,
+    this.investigationTargetName,
+    this.investigationResultRole,
+    this.isInvestigationComplete = false,
     this.currentVotingIndex = 0,
     this.votes = const {},
     this.eliminatedPlayerName,
@@ -56,6 +62,8 @@ class GameState {
   final List<int> selectedCategoryIds;
   final List<String> playerNames;
   final int spyCount;
+  final bool hasDetective;
+  final bool hasInfiltrator;
   final int timerSeconds;
   final bool showCategoryForSpy;
   final bool spyHintEnabled;
@@ -67,6 +75,9 @@ class GameState {
   final int currentRevealIndex;
   final bool isCurrentRevealed;
   final int remainingSeconds;
+  final String? investigationTargetName;
+  final GameRole? investigationResultRole;
+  final bool isInvestigationComplete;
   final int currentVotingIndex;
   final Map<String, String> votes;
   final String? eliminatedPlayerName;
@@ -97,12 +108,39 @@ class GameState {
     return alive[currentVotingIndex];
   }
 
+  /// کاراگاه زنده در دور جاری
+  PlayerRole? get aliveDetective {
+    for (final role in aliveRoles) {
+      if (role.role == GameRole.detective) return role;
+    }
+    return null;
+  }
+
+  /// آیا فاز بازجویی لازم است؟
+  bool get needsInvestigationPhase =>
+      hasDetective && aliveDetective != null;
+
   /// آیا می‌توان بازی را شروع کرد؟
-  bool get canStartGame =>
-      playerNames.length >= GameConfig.minPlayers &&
-      selectedCategoryIds.isNotEmpty &&
-      spyCount >= GameConfig.minSpies &&
-      spyCount <= GameConfig.maxSpiesForPlayerCount(playerNames.length);
+  bool get canStartGame {
+    if (playerNames.length < GameConfig.minPlayers) return false;
+    if (selectedCategoryIds.isEmpty) return false;
+    if (spyCount < GameConfig.minSpies) return false;
+    if (spyCount > GameConfig.maxSpiesForPlayerCount(playerNames.length)) {
+      return false;
+    }
+    if (hasDetective &&
+        !GameConfig.canEnableDetective(
+          playerCount: playerNames.length,
+          spyCount: spyCount,
+        )) {
+      return false;
+    }
+    if (hasInfiltrator &&
+        !GameConfig.canEnableInfiltrator(spyCount: spyCount)) {
+      return false;
+    }
+    return true;
+  }
 
   GameState copyWith({
     GamePhase? phase,
@@ -110,6 +148,8 @@ class GameState {
     List<int>? selectedCategoryIds,
     List<String>? playerNames,
     int? spyCount,
+    bool? hasDetective,
+    bool? hasInfiltrator,
     int? timerSeconds,
     bool? showCategoryForSpy,
     bool? spyHintEnabled,
@@ -121,6 +161,9 @@ class GameState {
     int? currentRevealIndex,
     bool? isCurrentRevealed,
     int? remainingSeconds,
+    String? investigationTargetName,
+    GameRole? investigationResultRole,
+    bool? isInvestigationComplete,
     int? currentVotingIndex,
     Map<String, String>? votes,
     String? eliminatedPlayerName,
@@ -130,6 +173,7 @@ class GameState {
     bool? isGameOver,
     bool clearEliminated = false,
     bool clearWinner = false,
+    bool clearInvestigation = false,
   }) {
     return GameState(
       phase: phase ?? this.phase,
@@ -137,6 +181,8 @@ class GameState {
       selectedCategoryIds: selectedCategoryIds ?? this.selectedCategoryIds,
       playerNames: playerNames ?? this.playerNames,
       spyCount: spyCount ?? this.spyCount,
+      hasDetective: hasDetective ?? this.hasDetective,
+      hasInfiltrator: hasInfiltrator ?? this.hasInfiltrator,
       timerSeconds: timerSeconds ?? this.timerSeconds,
       showCategoryForSpy: showCategoryForSpy ?? this.showCategoryForSpy,
       spyHintEnabled: spyHintEnabled ?? this.spyHintEnabled,
@@ -148,6 +194,15 @@ class GameState {
       currentRevealIndex: currentRevealIndex ?? this.currentRevealIndex,
       isCurrentRevealed: isCurrentRevealed ?? this.isCurrentRevealed,
       remainingSeconds: remainingSeconds ?? this.remainingSeconds,
+      investigationTargetName: clearInvestigation
+          ? null
+          : (investigationTargetName ?? this.investigationTargetName),
+      investigationResultRole: clearInvestigation
+          ? null
+          : (investigationResultRole ?? this.investigationResultRole),
+      isInvestigationComplete: clearInvestigation
+          ? false
+          : (isInvestigationComplete ?? this.isInvestigationComplete),
       currentVotingIndex: currentVotingIndex ?? this.currentVotingIndex,
       votes: votes ?? this.votes,
       eliminatedPlayerName: clearEliminated
@@ -220,6 +275,13 @@ class GameNotifier extends _$GameNotifier {
     state = state.copyWith(
       playerNames: trimmed,
       spyCount: adjustedSpyCount,
+      hasDetective: state.hasDetective &&
+          GameConfig.canEnableDetective(
+            playerCount: trimmed.length,
+            spyCount: adjustedSpyCount,
+          ),
+      hasInfiltrator: state.hasInfiltrator &&
+          GameConfig.canEnableInfiltrator(spyCount: adjustedSpyCount),
     );
   }
 
@@ -228,9 +290,38 @@ class GameNotifier extends _$GameNotifier {
     if (state.playerNames.isEmpty) return;
     final maxSpies =
         GameConfig.maxSpiesForPlayerCount(state.playerNames.length);
+    final clamped = count.clamp(GameConfig.minSpies, maxSpies);
     state = state.copyWith(
-      spyCount: count.clamp(GameConfig.minSpies, maxSpies),
+      spyCount: clamped,
+      hasDetective: state.hasDetective &&
+          GameConfig.canEnableDetective(
+            playerCount: state.playerNames.length,
+            spyCount: clamped,
+          ),
+      hasInfiltrator: state.hasInfiltrator &&
+          GameConfig.canEnableInfiltrator(spyCount: clamped),
     );
+  }
+
+  /// فعال/غیرفعال کردن کاراگاه
+  void setHasDetective(bool value) {
+    if (value &&
+        !GameConfig.canEnableDetective(
+          playerCount: state.playerNames.length,
+          spyCount: state.spyCount,
+        )) {
+      return;
+    }
+    state = state.copyWith(hasDetective: value);
+  }
+
+  /// فعال/غیرفعال کردن نفوذی
+  void setHasInfiltrator(bool value) {
+    if (value &&
+        !GameConfig.canEnableInfiltrator(spyCount: state.spyCount)) {
+      return;
+    }
+    state = state.copyWith(hasInfiltrator: value);
   }
 
   /// تنظیم زمان تایمر بحث
@@ -278,6 +369,8 @@ class GameNotifier extends _$GameNotifier {
         playerNames: state.playerNames,
         spyCount: state.spyCount,
         word: word.text,
+        hasDetective: state.hasDetective,
+        hasInfiltrator: state.hasInfiltrator,
       );
 
       state = state.copyWith(
@@ -292,6 +385,7 @@ class GameNotifier extends _$GameNotifier {
         votes: const {},
         clearEliminated: true,
         clearWinner: true,
+        clearInvestigation: true,
         roundNumber: 1,
         isGameOver: false,
       );
@@ -329,9 +423,57 @@ class GameNotifier extends _$GameNotifier {
     );
   }
 
-  /// پایان تایمر — ورود به صفحه بحث شفاهی
+  /// پایان تایمر — بازجویی کاراگاه یا ورود مستقیم به رای‌گیری
   void finishTimer() {
     if (state.phase != GamePhase.timer) return;
+
+    if (state.needsInvestigationPhase) {
+      state = state.copyWith(
+        phase: GamePhase.investigation,
+        clearInvestigation: true,
+      );
+      return;
+    }
+
+    _enterVotingPhase();
+  }
+
+  /// ثبت نتیجه بازجویی و رفتن به رای‌گیری
+  void completeInvestigation(String targetPlayerName) {
+    if (state.phase != GamePhase.investigation) return;
+
+    final detective = state.aliveDetective;
+    if (detective == null) {
+      _enterVotingPhase();
+      return;
+    }
+
+    final targets = state.aliveRoles
+        .where((role) => role.playerName == targetPlayerName)
+        .toList();
+    if (targets.isEmpty || targetPlayerName == detective.playerName) {
+      return;
+    }
+    final target = targets.first;
+
+    final apparentRole =
+        _gameRepository.getInvestigationResult(target);
+
+    state = state.copyWith(
+      investigationTargetName: target.playerName,
+      investigationResultRole: apparentRole,
+      isInvestigationComplete: true,
+    );
+  }
+
+  /// پایان فاز بازجویی — ورود به رای‌گیری شفاهی
+  void proceedToVoting() {
+    if (state.phase != GamePhase.investigation) return;
+    if (!state.isInvestigationComplete) return;
+    _enterVotingPhase();
+  }
+
+  void _enterVotingPhase() {
     state = state.copyWith(
       phase: GamePhase.voting,
       currentVotingIndex: 0,
@@ -389,6 +531,8 @@ class GameNotifier extends _$GameNotifier {
         playerNames: state.playerNames,
         spyCount: state.spyCount,
         word: word.text,
+        hasDetective: state.hasDetective,
+        hasInfiltrator: state.hasInfiltrator,
       );
 
       state = state.copyWith(
@@ -403,6 +547,7 @@ class GameNotifier extends _$GameNotifier {
         votes: const {},
         clearEliminated: true,
         clearWinner: true,
+        clearInvestigation: true,
         roundNumber: state.roundNumber + 1,
         isGameOver: false,
       );
@@ -443,6 +588,7 @@ class GameNotifier extends _$GameNotifier {
         votes: const {},
         clearEliminated: true,
         clearWinner: true,
+        clearInvestigation: true,
         roundNumber: state.roundNumber + 1,
       );
       return true;

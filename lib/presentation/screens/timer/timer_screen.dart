@@ -34,7 +34,9 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
     final notifier = ref.read(timerProvider.notifier);
 
     ref.listen(gameProvider, (previous, next) {
-      if (next.phase == GamePhase.voting) {
+      if (next.phase == GamePhase.investigation) {
+        context.go(AppRoutes.investigation);
+      } else if (next.phase == GamePhase.voting) {
         context.go(AppRoutes.voting);
       }
     });

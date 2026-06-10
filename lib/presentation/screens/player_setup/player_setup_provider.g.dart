@@ -42,7 +42,7 @@ final class PlayerSetupNotifierProvider
 }
 
 String _$playerSetupNotifierHash() =>
-    r'816ad222c36f73b39f37e506db84505b109bdaf6';
+    r'edf745b5e339661f9455957d905eceb0f1a2fa60';
 
 abstract class _$PlayerSetupNotifier extends $Notifier<PlayerSetupState> {
   PlayerSetupState build();
@@ -106,4 +106,4 @@ final class SavedPlayerGroupsProvider
   }
 }
 
-String _$savedPlayerGroupsHash() => r'72e4a22f1e64461df6015f3248100b6b2b056f38';
+String _$savedPlayerGroupsHash() => r'cbd696b6030f1806cdb33b9c00ef3433c7c1dd6f';

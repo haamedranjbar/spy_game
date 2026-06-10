@@ -41,7 +41,7 @@ final class VotingNotifierProvider
   }
 }
 
-String _$votingNotifierHash() => r'3c278951163aadebca76c8a3ab6bf1cc10033798';
+String _$votingNotifierHash() => r'024e319b1fb2bd0e113bb6a7b3471e657d157355';
 
 abstract class _$VotingNotifier extends $Notifier<VotingUiState> {
   VotingUiState build();

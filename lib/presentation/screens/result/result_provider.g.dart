@@ -41,7 +41,7 @@ final class ResultNotifierProvider
   }
 }
 
-String _$resultNotifierHash() => r'71134400a4460b4d210d14ac8a397c27d794e155';
+String _$resultNotifierHash() => r'c87b456ad1092b6b0769609efd2c64f85d41bb8c';
 
 abstract class _$ResultNotifier extends $Notifier<ResultUiState> {
   ResultUiState build();

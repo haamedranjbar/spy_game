@@ -12,6 +12,7 @@ import 'package:spy_game/presentation/widgets/app_card.dart';
 import 'package:spy_game/presentation/widgets/app_snackbar.dart';
 import 'package:spy_game/presentation/widgets/counter_card.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
+import 'package:spy_game/presentation/widgets/pro_badge.dart';
 import 'package:spy_game/presentation/widgets/setting_toggle.dart';
 
 /// صفحه تنظیمات دور — تعداد جاسوس، تایمر، قوانین
@@ -130,6 +131,24 @@ class GameConfigScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  _PremiumRoleToggle(
+                    title: 'game_config.has_detective'.tr(),
+                    subtitle: 'game_config.has_detective_hint'.tr(),
+                    icon: Icons.search_outlined,
+                    value: gameState.hasDetective,
+                    enabled: configNotifier.canEnableDetective,
+                    onChanged: configNotifier.setHasDetective,
+                  ),
+                  const SizedBox(height: 12),
+                  _PremiumRoleToggle(
+                    title: 'game_config.has_infiltrator'.tr(),
+                    subtitle: 'game_config.has_infiltrator_hint'.tr(),
+                    icon: Icons.theater_comedy_outlined,
+                    value: gameState.hasInfiltrator,
+                    enabled: configNotifier.canEnableInfiltrator,
+                    onChanged: configNotifier.setHasInfiltrator,
+                  ),
+                  const SizedBox(height: 12),
                   SettingToggle(
                     title: 'game_config.show_category_spy'.tr(),
                     icon: Icons.category,
@@ -180,6 +199,48 @@ class GameConfigScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// سوئیچ نقش ویژه با نشان PRO
+class _PremiumRoleToggle extends StatelessWidget {
+  const _PremiumRoleToggle({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.value,
+    required this.enabled,
+    required this.onChanged,
+  });
+
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final bool value;
+  final bool enabled;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        SettingToggle(
+          title: title,
+          subtitle: subtitle,
+          icon: icon,
+          value: value,
+          enabled: enabled,
+          accentColor: AppColors.accentPremium,
+          onChanged: onChanged,
+        ),
+        const Positioned(
+          top: 8,
+          right: 56,
+          child: ProBadge(),
+        ),
+      ],
     );
   }
 }

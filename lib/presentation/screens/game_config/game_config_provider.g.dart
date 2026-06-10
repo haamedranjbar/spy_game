@@ -42,7 +42,7 @@ final class GameConfigNotifierProvider
 }
 
 String _$gameConfigNotifierHash() =>
-    r'c3d4e5f6789012345678gameconfig01';
+    r'e410b1ab4ac38fe0677f361c55b078005b15d04e';
 
 abstract class _$GameConfigNotifier extends $Notifier<GameConfigState> {
   GameConfigState build();

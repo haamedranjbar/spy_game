@@ -224,5 +224,95 @@ void main() {
       expect(check.winner, GameWinner.citizens);
       expect(check.isGameOver, isTrue);
     });
+
+    test('citizens win when infiltrator is eliminated and no spies remain', () {
+      final repo = GameRepository();
+      final roles = [
+        const PlayerRole(playerName: 'A', role: GameRole.citizen, word: 'x'),
+        const PlayerRole(
+          playerName: 'B',
+          role: GameRole.infiltrator,
+          word: 'x',
+          isEliminated: true,
+        ),
+      ];
+
+      final check = repo.checkWinner(roles);
+      expect(check.winner, GameWinner.citizens);
+      expect(check.isGameOver, isTrue);
+    });
+
+    test('spies win when infiltrator outnumbers citizens', () {
+      final repo = GameRepository();
+      final roles = [
+        const PlayerRole(playerName: 'A', role: GameRole.citizen, word: 'x'),
+        const PlayerRole(
+          playerName: 'B',
+          role: GameRole.infiltrator,
+          word: 'x',
+        ),
+      ];
+
+      final check = repo.checkWinner(roles);
+      expect(check.winner, GameWinner.spies);
+      expect(check.isGameOver, isTrue);
+    });
+  });
+
+  group('GameRepository.assignRoles special roles', () {
+    test('assigns detective and infiltrator when enabled', () {
+      final repo = GameRepository(Random(7));
+      final roles = repo.assignRoles(
+        playerNames: ['A', 'B', 'C', 'D', 'E', 'F'],
+        spyCount: 2,
+        word: 'کلمه',
+        hasDetective: true,
+        hasInfiltrator: true,
+      );
+
+      expect(
+        roles.where((r) => r.role == GameRole.detective),
+        hasLength(1),
+      );
+      expect(
+        roles.where((r) => r.role == GameRole.infiltrator),
+        hasLength(1),
+      );
+      expect(
+        roles.where((r) => r.role == GameRole.spy),
+        hasLength(1),
+      );
+
+      final detective =
+          roles.firstWhere((r) => r.role == GameRole.detective);
+      final infiltrator =
+          roles.firstWhere((r) => r.role == GameRole.infiltrator);
+
+      expect(detective.word, 'کلمه');
+      expect(infiltrator.word, 'کلمه');
+    });
+  });
+
+  group('GameRepository.getInvestigationResult', () {
+    test('infiltrator appears as citizen to detective', () {
+      final repo = GameRepository();
+      const infiltrator = PlayerRole(
+        playerName: 'X',
+        role: GameRole.infiltrator,
+        word: 'کلمه',
+      );
+
+      expect(
+        repo.getInvestigationResult(infiltrator),
+        GameRole.citizen,
+      );
+    });
+
+    test('spy appears as spy to detective', () {
+      final repo = GameRepository();
+      const spy = PlayerRole(playerName: 'X', role: GameRole.spy);
+
+      expect(repo.getInvestigationResult(spy), GameRole.spy);
+    });
   });
 }

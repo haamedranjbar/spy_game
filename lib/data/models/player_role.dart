@@ -2,6 +2,7 @@
 enum GameRole {
   citizen,
   spy,
+  detective,
   infiltrator,
 }
 
@@ -25,8 +26,17 @@ class PlayerRole {
   String get roleKey => switch (role) {
         GameRole.citizen => 'role.citizen',
         GameRole.spy => 'role.spy',
+        GameRole.detective => 'role.detective',
         GameRole.infiltrator => 'role.infiltrator',
       };
+
+  /// آیا این نقش جزو تیم جاسوس‌هاست؟
+  bool get isSpyFaction =>
+      role == GameRole.spy || role == GameRole.infiltrator;
+
+  /// آیا این نقش جزو تیم شهروندهاست؟
+  bool get isCitizenFaction =>
+      role == GameRole.citizen || role == GameRole.detective;
 
   PlayerRole copyWith({
     String? playerName,

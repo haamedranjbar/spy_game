@@ -38,6 +38,14 @@ final class AudioServiceProvider
   AudioService create(Ref ref) {
     return audioService(ref);
   }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AudioService value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AudioService>(value),
+    );
+  }
 }
 
-String _$audioServiceHash() => r'b2c3d4e5f6789012345678audio00001';
+String _$audioServiceHash() => r'4b0d7b4a7d418368e778dcbf57f8dba7626922b1';

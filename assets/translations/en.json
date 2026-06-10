@@ -83,7 +83,11 @@
     "start_game": "Start Game",
     "show_category_spy": "Show category to spy",
     "spy_hint": "Word hint for spy",
-    "spies_know_each_other": "Spies know each other"
+    "spies_know_each_other": "Spies know each other",
+    "has_detective": "Detective",
+    "has_detective_hint": "One player can investigate once before voting",
+    "has_infiltrator": "Infiltrator",
+    "has_infiltrator_hint": "A spy who sees the word and knows other spies"
   },
   "custom_category": {
     "title": "Custom Category",
@@ -150,6 +154,7 @@
     "category": "Category",
     "spy_hint": "Word hint",
     "other_spies": "Other spies",
+    "detective_hint": "You can investigate once after discussion",
     "flip_hint": "Tap to flip the card"
   },
   "word_reveal": {
@@ -172,6 +177,17 @@
     "hold_end_early_hint": "Hold for 1 second to end discussion early",
     "round": "Round {}",
     "hint": "Discuss the word — the spy is trying to figure it out!"
+  },
+  "investigation": {
+    "title": "Detective Investigation",
+    "round": "Round {}",
+    "pass_phone": "Pass the phone to {} (Detective)",
+    "select_hint": "Select a player to investigate — only once!",
+    "result_title": "Investigation Result",
+    "appears_spy": "Appears to be a spy",
+    "appears_citizen": "Appears to be a citizen",
+    "result_hint": "This result is only for the detective — don't reveal it!",
+    "continue_voting": "Continue to voting"
   },
   "voting": {
     "title": "End Discussion",
