@@ -9,34 +9,44 @@ part 'settings_provider.g.dart';
 /// کلیدهای ذخیره تنظیمات در SharedPreferences
 abstract final class SettingsKeys {
   static const String soundEnabled = 'settings_sound_enabled';
+  static const String musicEnabled = 'settings_music_enabled';
   static const String vibrationEnabled = 'settings_vibration_enabled';
   static const String defaultTimerSeconds = 'settings_default_timer_seconds';
+  static const String defaultPlayerCount = 'settings_default_player_count';
 }
 
-/// تنظیمات اپلیکیشن — صدا، ویبره، تایمر پیش‌فرض
+/// تنظیمات اپلیکیشن — صدا، موسیقی، ویبره، تایمر و تعداد بازیکن پیش‌فرض
 class AppSettings {
   const AppSettings({
     this.soundEnabled = true,
+    this.musicEnabled = true,
     this.vibrationEnabled = true,
     this.defaultTimerSeconds = GameConfig.defaultTimerSeconds,
+    this.defaultPlayerCount = GameConfig.defaultPlayerCount,
     this.isLoaded = false,
   });
 
   final bool soundEnabled;
+  final bool musicEnabled;
   final bool vibrationEnabled;
   final int defaultTimerSeconds;
+  final int defaultPlayerCount;
   final bool isLoaded;
 
   AppSettings copyWith({
     bool? soundEnabled,
+    bool? musicEnabled,
     bool? vibrationEnabled,
     int? defaultTimerSeconds,
+    int? defaultPlayerCount,
     bool? isLoaded,
   }) {
     return AppSettings(
       soundEnabled: soundEnabled ?? this.soundEnabled,
+      musicEnabled: musicEnabled ?? this.musicEnabled,
       vibrationEnabled: vibrationEnabled ?? this.vibrationEnabled,
       defaultTimerSeconds: defaultTimerSeconds ?? this.defaultTimerSeconds,
+      defaultPlayerCount: defaultPlayerCount ?? this.defaultPlayerCount,
       isLoaded: isLoaded ?? this.isLoaded,
     );
   }
@@ -58,12 +68,20 @@ class SettingsNotifier extends _$SettingsNotifier {
           GameConfig.defaultTimerSeconds;
 
       if (!ref.mounted) return;
+      final playerCount = prefs.getInt(SettingsKeys.defaultPlayerCount) ??
+          GameConfig.defaultPlayerCount;
+
       state = AppSettings(
         soundEnabled: prefs.getBool(SettingsKeys.soundEnabled) ?? true,
+        musicEnabled: prefs.getBool(SettingsKeys.musicEnabled) ?? true,
         vibrationEnabled: prefs.getBool(SettingsKeys.vibrationEnabled) ?? true,
         defaultTimerSeconds: timer.clamp(
           GameConfig.minTimerSeconds,
           GameConfig.maxTimerSeconds,
+        ),
+        defaultPlayerCount: playerCount.clamp(
+          GameConfig.minPlayers,
+          GameConfig.maxPlayers,
         ),
         isLoaded: true,
       );
@@ -99,10 +117,16 @@ class SettingsNotifier extends _$SettingsNotifier {
     }
   }
 
-  /// تغییر وضعیت صدا
+  /// تغییر وضعیت افکت صوتی
   Future<void> setSoundEnabled(bool value) async {
     state = state.copyWith(soundEnabled: value);
     await _saveBool(SettingsKeys.soundEnabled, value);
+  }
+
+  /// تغییر وضعیت موسیقی
+  Future<void> setMusicEnabled(bool value) async {
+    state = state.copyWith(musicEnabled: value);
+    await _saveBool(SettingsKeys.musicEnabled, value);
   }
 
   /// تغییر وضعیت ویبره
@@ -124,5 +148,15 @@ class SettingsNotifier extends _$SettingsNotifier {
     if (game.phase == GamePhase.setup) {
       ref.read(gameProvider.notifier).setTimerSeconds(clamped);
     }
+  }
+
+  /// تغییر تعداد بازیکن پیش‌فرض
+  Future<void> setDefaultPlayerCount(int count) async {
+    final clamped = count.clamp(
+      GameConfig.minPlayers,
+      GameConfig.maxPlayers,
+    );
+    state = state.copyWith(defaultPlayerCount: clamped);
+    await _saveInt(SettingsKeys.defaultPlayerCount, clamped);
   }
 }

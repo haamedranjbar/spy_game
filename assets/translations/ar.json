@@ -99,8 +99,11 @@
     "deleted": "تم حذف الفئة",
     "name": "اسم الفئة",
     "name_hint": "مثلاً أطعمة محلية",
+    "save_category": "حفظ الفئة",
+    "edit_words": "تعديل الكلمات",
     "words": "الكلمات",
     "add_word": "إضافة كلمة",
+    "remove_word": "حذف كلمة",
     "word_hint": "أدخل كلمة",
     "min_words": "مطلوب كلمتان على الأقل",
     "words_progress": "{current} من {min} كلمات",
@@ -198,9 +201,15 @@
     "language_fa": "فارسی",
     "language_en": "English",
     "language_ar": "العربية",
-    "sound": "الصوت",
+    "audio_section": "الصوت والاهتزاز",
+    "sound_effects": "المؤثرات الصوتية",
+    "music": "الموسيقى",
     "vibration": "الاهتزاز",
     "default_timer": "المؤقت الافتراضي",
-    "timer_minutes": "{} دقيقة"
+    "timer_minutes": "{} دقيقة",
+    "minutes_short": "دقيقة",
+    "default_player_count": "عدد اللاعبين الافتراضي",
+    "player_count": "{} لاعبين",
+    "players_short": "لاعب"
   }
 }

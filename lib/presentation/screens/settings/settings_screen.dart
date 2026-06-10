@@ -7,13 +7,13 @@ import 'package:go_router/go_router.dart';
 import 'package:spy_game/core/constants/app_colors.dart';
 import 'package:spy_game/presentation/providers/settings_provider.dart';
 import 'package:spy_game/presentation/widgets/app_card.dart';
-import 'package:spy_game/presentation/widgets/setting_toggle.dart';
 
-/// صفحه تنظیمات — زبان، صدا، ویبره، تایمر پیش‌فرض
+/// صفحه تنظیمات — زبان، صدا، تایمر و تعداد بازیکن پیش‌فرض
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-  static const List<int> _timerPresets = [180, 300, 420, 600];
+  static const List<int> _timerPresets = [180, 300, 420, 600, 900];
+  static const List<int> _playerCountPresets = [3, 4, 5, 6, 8];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,18 +48,51 @@ class SettingsScreen extends ConsumerWidget {
                     onChanged: (locale) => context.setLocale(locale),
                   ),
                   const SizedBox(height: 24),
-                  SettingToggle(
-                    title: 'settings.sound'.tr(),
-                    icon: Icons.volume_up_outlined,
-                    value: settings.soundEnabled,
-                    onChanged: notifier.setSoundEnabled,
+                  Text(
+                    'settings.audio_section'.tr(),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                   ),
-                  const SizedBox(height: 12),
-                  SettingToggle(
-                    title: 'settings.vibration'.tr(),
-                    icon: Icons.vibration,
-                    value: settings.vibrationEnabled,
-                    onChanged: notifier.setVibrationEnabled,
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _AudioSettingCard(
+                          title: 'settings.sound_effects'.tr(),
+                          icon: Icons.graphic_eq_rounded,
+                          accentColor: AppColors.accentDefault,
+                          isEnabled: settings.soundEnabled,
+                          onTap: () => notifier.setSoundEnabled(
+                            !settings.soundEnabled,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _AudioSettingCard(
+                          title: 'settings.music'.tr(),
+                          icon: Icons.music_note_outlined,
+                          accentColor: AppColors.accentClassic,
+                          isEnabled: settings.musicEnabled,
+                          onTap: () => notifier.setMusicEnabled(
+                            !settings.musicEnabled,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _AudioSettingCard(
+                          title: 'settings.vibration'.tr(),
+                          icon: Icons.vibration,
+                          accentColor: AppColors.accentPremium,
+                          isEnabled: settings.vibrationEnabled,
+                          onTap: () => notifier.setVibrationEnabled(
+                            !settings.vibrationEnabled,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 24),
                   Text(
@@ -69,15 +102,40 @@ class SettingsScreen extends ConsumerWidget {
                         ),
                   ),
                   const SizedBox(height: 8),
-                  ..._timerPresets.map(
-                    (seconds) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: _TimerPresetCard(
-                        seconds: seconds,
+                  _SquarePresetRow(
+                    itemCount: _timerPresets.length,
+                    itemBuilder: (index) {
+                      final seconds = _timerPresets[index];
+                      final minutes = seconds ~/ 60;
+                      return _SquarePresetCard(
                         isSelected: settings.defaultTimerSeconds == seconds,
                         onTap: () => notifier.setDefaultTimerSeconds(seconds),
-                      ),
-                    ),
+                        value: minutes.toString(),
+                        label: 'settings.minutes_short'.tr(),
+                        accentColor: AppColors.accentDefault,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'settings.default_player_count'.tr(),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  _SquarePresetRow(
+                    itemCount: _playerCountPresets.length,
+                    itemBuilder: (index) {
+                      final count = _playerCountPresets[index];
+                      return _SquarePresetCard(
+                        isSelected: settings.defaultPlayerCount == count,
+                        onTap: () => notifier.setDefaultPlayerCount(count),
+                        value: count.toString(),
+                        label: 'settings.players_short'.tr(),
+                        accentColor: AppColors.accentClassic,
+                      );
+                    },
                   ),
                 ],
               )
@@ -102,14 +160,12 @@ class _LanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // عناوین زبان همیشه ثابت — وابسته به locale فعلی نیستند
     const locales = [
       (Locale('fa'), 'فارسی'),
       (Locale('en'), 'English'),
       (Locale('ar'), 'العربية'),
     ];
 
-    // چینش فیزیکی ثابت از راست: فارسی | English | العربية
     return Directionality(
       textDirection: ui.TextDirection.rtl,
       child: Row(
@@ -147,51 +203,147 @@ class _LanguageSelector extends StatelessWidget {
   }
 }
 
-class _TimerPresetCard extends StatelessWidget {
-  const _TimerPresetCard({
-    required this.seconds,
-    required this.isSelected,
+/// کارت روشن/خاموش تنظیمات صوتی — شبیه کارت دسته
+class _AudioSettingCard extends StatelessWidget {
+  const _AudioSettingCard({
+    required this.title,
+    required this.icon,
+    required this.accentColor,
+    required this.isEnabled,
     required this.onTap,
   });
 
-  final int seconds;
-  final bool isSelected;
+  final String title;
+  final IconData icon;
+  final Color accentColor;
+  final bool isEnabled;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final minutes = seconds ~/ 60;
-    return AppCard(
-      onTap: onTap,
-      borderColor: isSelected ? AppColors.accentDefault : null,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: Row(
-        children: [
-          Icon(
-            Icons.timer_outlined,
-            color: isSelected
-                ? AppColors.accentDefault
-                : AppColors.textSecondary,
-            size: 22,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              'settings.timer_minutes'.tr(args: [minutes.toString()]),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: isSelected
-                        ? AppColors.accentDefault
-                        : AppColors.textPrimary,
+    return AspectRatio(
+      aspectRatio: 1,
+      child: AppCard(
+        onTap: onTap,
+        isSelected: isEnabled,
+        selectedGlowColor: accentColor,
+        backgroundColor: isEnabled
+            ? null
+            : AppColors.surface,
+        borderColor: isEnabled ? accentColor : AppColors.cardBorder,
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 24,
+              color: isEnabled ? accentColor : AppColors.textMuted,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: isEnabled
+                        ? AppColors.textPrimary
+                        : AppColors.textMuted,
+                    fontWeight:
+                        isEnabled ? FontWeight.w700 : FontWeight.w500,
+                    height: 1.25,
                   ),
             ),
-          ),
-          if (isSelected)
-            const Icon(
-              Icons.check_circle,
-              color: AppColors.accentDefault,
-              size: 22,
-            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// ردیف پنج‌تایی کادرهای مربعی
+class _SquarePresetRow extends StatelessWidget {
+  const _SquarePresetRow({
+    required this.itemCount,
+    required this.itemBuilder,
+  });
+
+  final int itemCount;
+  final Widget Function(int index) itemBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (var i = 0; i < itemCount; i++) ...[
+          if (i > 0) const SizedBox(width: 8),
+          Expanded(child: itemBuilder(i)),
         ],
+      ],
+    );
+  }
+}
+
+/// کادر مربعی انتخاب مقدار — تایمر یا تعداد بازیکن
+class _SquarePresetCard extends StatelessWidget {
+  const _SquarePresetCard({
+    required this.isSelected,
+    required this.onTap,
+    required this.value,
+    required this.label,
+    required this.accentColor,
+  });
+
+  final bool isSelected;
+  final VoidCallback onTap;
+  final String value;
+  final String label;
+  final Color accentColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1,
+      child: AppCard(
+        onTap: onTap,
+        isSelected: isSelected,
+        selectedGlowColor: accentColor,
+        borderColor: isSelected ? accentColor : AppColors.cardBorder,
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+        child: Center(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  value,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: isSelected
+                            ? accentColor
+                            : AppColors.textSecondary,
+                        fontWeight: FontWeight.w800,
+                        height: 1,
+                      ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: isSelected
+                            ? AppColors.textPrimary
+                            : AppColors.textMuted,
+                        fontWeight:
+                            isSelected ? FontWeight.w600 : FontWeight.w500,
+                        height: 1.1,
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

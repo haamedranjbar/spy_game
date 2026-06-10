@@ -99,8 +99,11 @@
     "deleted": "Category deleted",
     "name": "Category name",
     "name_hint": "e.g. Local foods",
+    "save_category": "Save category",
+    "edit_words": "Edit words",
     "words": "Words",
     "add_word": "Add word",
+    "remove_word": "Remove word",
     "word_hint": "Enter a word",
     "min_words": "At least 2 words required",
     "words_progress": "{current} of {min} words",
@@ -198,9 +201,15 @@
     "language_fa": "فارسی",
     "language_en": "English",
     "language_ar": "العربية",
-    "sound": "Sound",
+    "audio_section": "Audio & haptics",
+    "sound_effects": "Sound effects",
+    "music": "Music",
     "vibration": "Vibration",
     "default_timer": "Default timer",
-    "timer_minutes": "{} min"
+    "timer_minutes": "{} min",
+    "minutes_short": "min",
+    "default_player_count": "Default player count",
+    "player_count": "{} players",
+    "players_short": "players"
   }
 }

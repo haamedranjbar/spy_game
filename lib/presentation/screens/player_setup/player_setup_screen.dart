@@ -132,79 +132,26 @@ class PlayerSetupScreen extends ConsumerWidget {
   Future<void> _showSaveGroupDialog(BuildContext context, WidgetRef ref) async {
     final setupState = ref.read(playerSetupProvider);
     final notifier = ref.read(playerSetupProvider.notifier);
-    final controller = TextEditingController(
-      text: setupState.selectedGroupId != null
-          ? setupState.groups
-              .where((g) => g.id == setupState.selectedGroupId)
-              .map((g) => g.name)
-              .firstOrNull
-          : '',
+    final initialName = setupState.selectedGroupId != null
+        ? setupState.groups
+            .where((g) => g.id == setupState.selectedGroupId)
+            .map((g) => g.name)
+            .firstOrNull
+        : '';
+
+    final groupName = await showDialog<String>(
+      context: context,
+      builder: (_) => _SaveGroupDialog(initialName: initialName ?? ''),
     );
 
-    var showNameError = false;
+    if (groupName == null || !context.mounted) return;
 
-    try {
-      final saved = await showDialog<bool>(
-        context: context,
-        builder: (dialogContext) => StatefulBuilder(
-          builder: (context, setDialogState) => AlertDialog(
-            backgroundColor: AppColors.surface,
-            title: Text('player_setup.save_group'.tr()),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextField(
-                  controller: controller,
-                  autofocus: true,
-                  onChanged: (_) {
-                    if (showNameError) {
-                      setDialogState(() => showNameError = false);
-                    }
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'player_setup.group_name'.tr(),
-                    filled: true,
-                    fillColor: AppColors.surfaceLight,
-                    errorText: showNameError
-                        ? 'player_setup.group_name_required'.tr()
-                        : null,
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext, false),
-                child: Text('common.cancel'.tr()),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (controller.text.trim().isEmpty) {
-                    setDialogState(() => showNameError = true);
-                    return;
-                  }
-                  Navigator.pop(dialogContext, true);
-                },
-                child: Text('common.save'.tr()),
-              ),
-            ],
-          ),
-        ),
-      );
-
-      if (saved == true && context.mounted) {
-        final success =
-            await notifier.saveCurrentGroup(controller.text.trim());
-        if (!context.mounted) return;
-        if (success) {
-          AppSnackBar.success(context, 'player_setup.group_saved'.tr());
-        } else {
-          AppSnackBar.error(context, 'error.save_failed'.tr());
-        }
-      }
-    } finally {
-      controller.dispose();
+    final success = await notifier.saveCurrentGroup(groupName);
+    if (!context.mounted) return;
+    if (success) {
+      AppSnackBar.success(context, 'player_setup.group_saved'.tr());
+    } else {
+      AppSnackBar.error(context, 'error.save_failed'.tr());
     }
   }
 
@@ -315,6 +262,81 @@ class _SavedGroupsSection extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// دیالوگ نام گروه — کنترلر داخل State تا dispose امن باشد
+class _SaveGroupDialog extends StatefulWidget {
+  const _SaveGroupDialog({required this.initialName});
+
+  final String initialName;
+
+  @override
+  State<_SaveGroupDialog> createState() => _SaveGroupDialogState();
+}
+
+class _SaveGroupDialogState extends State<_SaveGroupDialog> {
+  late final TextEditingController _controller;
+  bool _showNameError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialName);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: AppColors.surface,
+      title: Text('player_setup.save_group'.tr()),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            controller: _controller,
+            autofocus: true,
+            onChanged: (_) {
+              if (_showNameError) {
+                setState(() => _showNameError = false);
+              }
+            },
+            decoration: InputDecoration(
+              hintText: 'player_setup.group_name'.tr(),
+              filled: true,
+              fillColor: AppColors.surfaceLight,
+              errorText: _showNameError
+                  ? 'player_setup.group_name_required'.tr()
+                  : null,
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('common.cancel'.tr()),
+        ),
+        TextButton(
+          onPressed: () {
+            final name = _controller.text.trim();
+            if (name.isEmpty) {
+              setState(() => _showNameError = true);
+              return;
+            }
+            Navigator.pop(context, name);
+          },
+          child: Text('common.save'.tr()),
+        ),
+      ],
     );
   }
 }

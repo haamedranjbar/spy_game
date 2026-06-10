@@ -13,7 +13,7 @@ import 'package:spy_game/presentation/widgets/gradient_button.dart';
 import 'package:spy_game/presentation/widgets/outlined_action_button.dart';
 import 'package:spy_game/presentation/widgets/segmented_tab.dart';
 
-/// صفحه ساخت و ویرایش دسته‌بندی سفارشی
+/// صفحه ساخت و ویرایش دسته‌بندی سفارشی — مشابه تعریف گروه بازیکنان
 class CustomCategoryScreen extends ConsumerWidget {
   const CustomCategoryScreen({super.key});
 
@@ -21,6 +21,8 @@ class CustomCategoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(customCategoryProvider);
     final notifier = ref.read(customCategoryProvider.notifier);
+    final canSaveWords =
+        state.validWordCount >= GameConfig.minCustomCategoryWords;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -47,30 +49,13 @@ class CustomCategoryScreen extends ConsumerWidget {
                   _SavedCategoriesSection(
                     categories: state.savedCategories,
                     selectedCategoryId: state.selectedCategoryId,
+                    isSaving: state.isSaving,
                     onCategoryChanged: notifier.selectCategory,
                     onCreateNew: notifier.createNewCategory,
+                    onSave: () => _onSavePressed(context, ref),
                     onDelete: state.selectedCategoryId != null
                         ? () => _confirmDeleteCategory(context, ref)
                         : null,
-                  ),
-                  const SizedBox(height: 16),
-                  AppCard(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'custom_category.name'.tr(),
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                        const SizedBox(height: 8),
-                        _NameInputTile(
-                          key: ValueKey('name_${state.selectedCategoryId}'),
-                          initialValue: state.name,
-                          onChanged: notifier.setName,
-                        ),
-                      ],
-                    ),
                   ),
                   const SizedBox(height: 16),
                   SegmentedTab(
@@ -83,7 +68,7 @@ class CustomCategoryScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'custom_category.words'.tr(),
+                    'custom_category.edit_words'.tr(),
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           color: AppColors.textSecondary,
                         ),
@@ -102,7 +87,7 @@ class CustomCategoryScreen extends ConsumerWidget {
                       },
                     ),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: state.canSave
+                          color: canSaveWords
                               ? AppColors.accentCustomCategory
                               : AppColors.textMuted,
                         ),
@@ -122,24 +107,42 @@ class CustomCategoryScreen extends ConsumerWidget {
                       onRemove: () => notifier.removeWord(index),
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  AddActionButton(
-                    label: 'custom_category.add_word'.tr(),
-                    onPressed: notifier.addWord,
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: AddActionButton(
+                      label: 'custom_category.add_word'.tr(),
+                      onPressed: notifier.addWord,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: RemoveActionButton(
+                      label: 'custom_category.remove_word'.tr(),
+                      onPressed: state.words.length >
+                              GameConfig.minCustomCategoryWords
+                          ? () => notifier.removeWord(state.words.length - 1)
+                          : null,
+                    ),
                   ),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: GradientButton(
                 label: 'common.save'.tr(),
                 icon: Icons.save_outlined,
-                enabled: !state.isSaving,
+                enabled: canSaveWords && !state.isSaving,
                 isLoading: state.isSaving,
-                onPressed: state.isSaving
-                    ? null
-                    : () => _onSavePressed(context, notifier),
+                onPressed: canSaveWords && !state.isSaving
+                    ? () => _onSavePressed(context, ref)
+                    : null,
               ),
             ),
           ],
@@ -148,11 +151,31 @@ class CustomCategoryScreen extends ConsumerWidget {
     );
   }
 
-  /// ذخیره دسته و نمایش پیام مناسب بر اساس نتیجه
-  Future<void> _onSavePressed(
-    BuildContext context,
-    CustomCategoryNotifier notifier,
-  ) async {
+  /// ذخیره — ابتدا نام در دیالوگ، سپس ثبت در دیتابیس
+  Future<void> _onSavePressed(BuildContext context, WidgetRef ref) async {
+    final state = ref.read(customCategoryProvider);
+    final notifier = ref.read(customCategoryProvider.notifier);
+
+    if (state.validWordCount < GameConfig.minCustomCategoryWords) {
+      AppSnackBar.warning(
+        context,
+        'custom_category.words_required'.tr(
+          namedArgs: {
+            'min': GameConfig.minCustomCategoryWords.toString(),
+          },
+        ),
+      );
+      return;
+    }
+
+    final categoryName = await showDialog<String>(
+      context: context,
+      builder: (_) => _SaveCategoryDialog(initialName: state.name),
+    );
+
+    if (categoryName == null || !context.mounted) return;
+
+    notifier.setName(categoryName);
     final saveResult = await notifier.save();
     if (!context.mounted) return;
 
@@ -224,26 +247,42 @@ class _SavedCategoriesSection extends StatelessWidget {
   const _SavedCategoriesSection({
     required this.categories,
     required this.selectedCategoryId,
+    required this.isSaving,
     required this.onCategoryChanged,
     required this.onCreateNew,
+    required this.onSave,
     this.onDelete,
   });
 
   final List<CustomCategorySelectorItem> categories;
   final int? selectedCategoryId;
+  final bool isSaving;
   final ValueChanged<int?> onCategoryChanged;
   final VoidCallback onCreateNew;
+  final VoidCallback onSave;
   final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
     if (categories.isNotEmpty) {
-      return CustomCategorySelector(
-        categories: categories,
-        selectedCategoryId: selectedCategoryId,
-        onChanged: onCategoryChanged,
-        onCreateNew: onCreateNew,
-        onDelete: onDelete,
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          CustomCategorySelector(
+            categories: categories,
+            selectedCategoryId: selectedCategoryId,
+            onChanged: onCategoryChanged,
+            onCreateNew: onCreateNew,
+            onDelete: onDelete,
+          ),
+          const SizedBox(height: 12),
+          OutlinedActionButton(
+            label: 'custom_category.save_category'.tr(),
+            icon: Icons.save_outlined,
+            color: AppColors.accentCustomCategory,
+            onPressed: isSaving ? null : onSave,
+          ),
+        ],
       );
     }
 
@@ -263,42 +302,37 @@ class _SavedCategoriesSection extends StatelessWidget {
             'custom_category.no_saved_categories'.tr(),
             style: Theme.of(context).textTheme.bodySmall,
           ),
+          const SizedBox(height: 12),
+          OutlinedActionButton(
+            label: 'custom_category.save_category'.tr(),
+            icon: Icons.save_outlined,
+            color: AppColors.accentCustomCategory,
+            onPressed: isSaving ? null : onSave,
+          ),
         ],
       ),
     );
   }
 }
 
-class _NameInputTile extends StatefulWidget {
-  const _NameInputTile({
-    super.key,
-    required this.initialValue,
-    required this.onChanged,
-  });
+/// دیالوگ نام دسته — مشابه ذخیره گروه بازیکنان
+class _SaveCategoryDialog extends StatefulWidget {
+  const _SaveCategoryDialog({required this.initialName});
 
-  final String initialValue;
-  final ValueChanged<String> onChanged;
+  final String initialName;
 
   @override
-  State<_NameInputTile> createState() => _NameInputTileState();
+  State<_SaveCategoryDialog> createState() => _SaveCategoryDialogState();
 }
 
-class _NameInputTileState extends State<_NameInputTile> {
+class _SaveCategoryDialogState extends State<_SaveCategoryDialog> {
   late final TextEditingController _controller;
+  bool _showNameError = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.initialValue);
-  }
-
-  @override
-  void didUpdateWidget(covariant _NameInputTile oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.initialValue != widget.initialValue &&
-        _controller.text != widget.initialValue) {
-      _controller.text = widget.initialValue;
-    }
+    _controller = TextEditingController(text: widget.initialName);
   }
 
   @override
@@ -309,27 +343,54 @@ class _NameInputTileState extends State<_NameInputTile> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: _controller,
-      onChanged: widget.onChanged,
-      style: Theme.of(context).textTheme.bodyLarge,
-      decoration: InputDecoration(
-        hintText: 'custom_category.name_hint'.tr(),
-        filled: true,
-        fillColor: AppColors.surfaceLight,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.cardBorder),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.cardBorder),
-        ),
+    return AlertDialog(
+      backgroundColor: AppColors.surface,
+      title: Text('custom_category.save_category'.tr()),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            controller: _controller,
+            autofocus: true,
+            onChanged: (_) {
+              if (_showNameError) {
+                setState(() => _showNameError = false);
+              }
+            },
+            decoration: InputDecoration(
+              hintText: 'custom_category.name_hint'.tr(),
+              filled: true,
+              fillColor: AppColors.surfaceLight,
+              errorText: _showNameError
+                  ? 'custom_category.name_required'.tr()
+                  : null,
+            ),
+          ),
+        ],
       ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('common.cancel'.tr()),
+        ),
+        TextButton(
+          onPressed: () {
+            final name = _controller.text.trim();
+            if (name.isEmpty) {
+              setState(() => _showNameError = true);
+              return;
+            }
+            Navigator.pop(context, name);
+          },
+          child: Text('common.save'.tr()),
+        ),
+      ],
     );
   }
 }
 
+/// کادر ورود کلمه — مشابه کادر نام بازیکن
 class _WordInputTile extends StatefulWidget {
   const _WordInputTile({
     super.key,
@@ -378,7 +439,7 @@ class _WordInputTileState extends State<_WordInputTile> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(14),
@@ -386,32 +447,47 @@ class _WordInputTileState extends State<_WordInputTile> {
       ),
       child: Row(
         children: [
-          Text(
-            '${widget.index}.',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.textMuted,
-                ),
+          CircleAvatar(
+            radius: 18,
+            backgroundColor:
+                AppColors.accentCustomCategory.withValues(alpha: 0.25),
+            child: Text(
+              '${widget.index}',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: AppColors.accentCustomCategory,
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           Expanded(
             child: TextField(
               controller: _controller,
               onChanged: widget.onChanged,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.titleMedium,
+              textAlign: TextAlign.start,
               decoration: InputDecoration(
                 hintText: 'custom_category.word_hint'.tr(),
                 border: InputBorder.none,
                 isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 4,
+                ),
               ),
             ),
           ),
-          if (widget.canRemove)
+          if (widget.canRemove) ...[
+            const SizedBox(width: 4),
             IconButton(
               onPressed: widget.onRemove,
               icon: const Icon(Icons.close, size: 20),
               color: AppColors.accentDanger,
               visualDensity: VisualDensity.compact,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
             ),
+          ],
         ],
       ),
     );

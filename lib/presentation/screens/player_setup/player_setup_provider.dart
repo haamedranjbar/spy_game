@@ -6,6 +6,7 @@ import 'package:spy_game/data/models/player_group.dart';
 import 'package:spy_game/data/repositories/player_repository.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
 import 'package:spy_game/presentation/providers/isar_provider.dart';
+import 'package:spy_game/presentation/providers/settings_provider.dart';
 import 'package:spy_game/presentation/widgets/group_selector.dart';
 
 part 'player_setup_provider.g.dart';
@@ -55,23 +56,32 @@ class PlayerSetupNotifier extends _$PlayerSetupNotifier {
   @override
   PlayerSetupState build() {
     _loadGroups();
+    final settings = ref.watch(settingsProvider);
     final game = ref.read(gameProvider);
     if (game.playerNames.isNotEmpty) {
       return PlayerSetupState(playerNames: List<String>.from(game.playerNames));
     }
     return PlayerSetupState(
-      playerNames: _defaultPlayerNames(),
+      playerNames: _defaultPlayerNames(settings.defaultPlayerCount),
     );
   }
 
-  /// اسامی پیش‌فرض برای شروع سریع
-  List<String> _defaultPlayerNames() {
+  /// اسامی پیش‌فرض برای شروع سریع — بر اساس تنظیمات کاربر
+  List<String> _defaultPlayerNames(int count) {
+    final playerCount = count.clamp(
+      GameConfig.minPlayers,
+      GameConfig.maxPlayers,
+    );
     return List.generate(
-      GameConfig.defaultPlayerCount,
+      playerCount,
       (index) => 'player_setup.default_name'.tr(
         args: [(index + 1).toString()],
       ),
     );
+  }
+
+  List<String> _defaultPlayerNamesFromSettings() {
+    return _defaultPlayerNames(ref.read(settingsProvider).defaultPlayerCount);
   }
 
   /// بارگذاری گروه‌های ذخیره‌شده از Isar
@@ -163,7 +173,7 @@ class PlayerSetupNotifier extends _$PlayerSetupNotifier {
   void createNewGroup() {
     state = state.copyWith(
       clearSelectedGroup: true,
-      playerNames: _defaultPlayerNames(),
+      playerNames: _defaultPlayerNamesFromSettings(),
     );
   }
 
@@ -224,7 +234,7 @@ class PlayerSetupNotifier extends _$PlayerSetupNotifier {
       if (success && ref.mounted) {
         state = state.copyWith(
           clearSelectedGroup: true,
-          playerNames: _defaultPlayerNames(),
+          playerNames: _defaultPlayerNamesFromSettings(),
         );
         await _loadGroups();
       }
@@ -239,7 +249,7 @@ class PlayerSetupNotifier extends _$PlayerSetupNotifier {
   void syncDefaultsToGameIfEmpty() {
     final game = ref.read(gameProvider);
     if (game.playerNames.isNotEmpty) return;
-    ref.read(gameProvider.notifier).setPlayerNames(_defaultPlayerNames());
+    ref.read(gameProvider.notifier).setPlayerNames(_defaultPlayerNamesFromSettings());
   }
 
   /// همگام‌سازی state صفحه با اسامی فعلی بازی
@@ -247,7 +257,7 @@ class PlayerSetupNotifier extends _$PlayerSetupNotifier {
     final game = ref.read(gameProvider);
     final names = game.playerNames.isNotEmpty
         ? List<String>.from(game.playerNames)
-        : _defaultPlayerNames();
+        : _defaultPlayerNamesFromSettings();
     state = state.copyWith(
       playerNames: names,
       clearSelectedGroup: true,

@@ -12,6 +12,9 @@ class AudioService {
 
   AppSettings get _settings => _ref.read(settingsProvider);
 
+  /// آیا موسیقی پس‌زمینه فعال است؟
+  bool get isMusicEnabled => _settings.musicEnabled;
+
   /// بازخورد صوتی کلیک / اکشن
   void playTap() {
     if (!_settings.soundEnabled) return;

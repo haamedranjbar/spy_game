@@ -99,8 +99,11 @@
     "deleted": "دسته حذف شد",
     "name": "نام دسته",
     "name_hint": "مثلاً غذاهای محلی",
+    "save_category": "ذخیره دسته",
+    "edit_words": "ویرایش کلمات",
     "words": "کلمات",
     "add_word": "افزودن کلمه",
+    "remove_word": "حذف کلمه",
     "word_hint": "یک کلمه وارد کنید",
     "min_words": "حداقل ۲ کلمه لازم است",
     "words_progress": "{current} از {min} کلمه",
@@ -198,9 +201,15 @@
     "language_fa": "فارسی",
     "language_en": "English",
     "language_ar": "العربية",
-    "sound": "صدا",
+    "audio_section": "صدا و لرزش",
+    "sound_effects": "افکت صوتی",
+    "music": "موسیقی",
     "vibration": "ویبره",
     "default_timer": "تایمر پیش‌فرض",
-    "timer_minutes": "{} دقیقه"
+    "timer_minutes": "{} دقیقه",
+    "minutes_short": "دقیقه",
+    "default_player_count": "تعداد بازیکن پیش‌فرض",
+    "player_count": "{} نفر",
+    "players_short": "نفر"
   }
 }
