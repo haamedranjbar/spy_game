@@ -28,9 +28,9 @@ class TimerWidget extends StatelessWidget {
         : null;
 
     final fontSize = switch (size) {
-      TimerSize.small => 32.0,
-      TimerSize.medium => 48.0,
-      TimerSize.large => 72.0,
+      TimerSize.small => 28.0,
+      TimerSize.medium => 42.0,
+      TimerSize.large => 60.0,
     };
 
     final ringSize = switch (size) {
@@ -54,7 +54,8 @@ class TimerWidget extends StatelessWidget {
                   height: ringSize,
                   child: CircularProgressIndicator(
                     value: progress.clamp(0.0, 1.0),
-                    strokeWidth: size == TimerSize.large ? 8 : 6,
+                    strokeWidth: size == TimerSize.large ? 20 : 14,
+                    strokeCap: StrokeCap.round,
                     backgroundColor: AppColors.surfaceLight,
                     color: _progressColor(progress),
                   ),
@@ -63,8 +64,8 @@ class TimerWidget extends StatelessWidget {
                 timeText,
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                       fontSize: fontSize,
-                      fontWeight: FontWeight.w800,
-                      color: accentColor,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.textPrimary,
                       fontFeatures: const [FontFeature.tabularFigures()],
                     ),
               ),

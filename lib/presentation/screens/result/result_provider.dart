@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
+import 'package:spy_game/presentation/screens/timer/timer_provider.dart';
 
 part 'result_provider.g.dart';
 
@@ -7,12 +8,20 @@ part 'result_provider.g.dart';
 class ResultUiState {
   const ResultUiState({
     this.isLoadingNext = false,
+    this.isRestarting = false,
   });
 
   final bool isLoadingNext;
+  final bool isRestarting;
 
-  ResultUiState copyWith({bool? isLoadingNext}) {
-    return ResultUiState(isLoadingNext: isLoadingNext ?? this.isLoadingNext);
+  ResultUiState copyWith({
+    bool? isLoadingNext,
+    bool? isRestarting,
+  }) {
+    return ResultUiState(
+      isLoadingNext: isLoadingNext ?? this.isLoadingNext,
+      isRestarting: isRestarting ?? this.isRestarting,
+    );
   }
 }
 
@@ -27,6 +36,20 @@ class ResultNotifier extends _$ResultNotifier {
     final started = await ref.read(gameProvider.notifier).startNextRound();
     if (ref.mounted) {
       state = state.copyWith(isLoadingNext: false);
+    }
+    return started;
+  }
+
+  /// شروع دوباره — همان بازیکنان و تنظیمات
+  Future<bool> playAgain() async {
+    if (!ref.mounted) return false;
+    state = state.copyWith(isRestarting: true);
+
+    final started = await ref.read(gameProvider.notifier).playAgain();
+
+    if (ref.mounted) {
+      ref.invalidate(timerProvider);
+      state = state.copyWith(isRestarting: false);
     }
     return started;
   }

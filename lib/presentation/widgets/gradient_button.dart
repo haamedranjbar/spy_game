@@ -11,6 +11,7 @@ class GradientButton extends StatelessWidget {
     this.icon,
     this.isLoading = false,
     this.enabled = true,
+    this.height = 52,
   });
 
   final String label;
@@ -19,6 +20,7 @@ class GradientButton extends StatelessWidget {
   final IconData? icon;
   final bool isLoading;
   final bool enabled;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class GradientButton extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
-      height: 52,
+      height: height,
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(

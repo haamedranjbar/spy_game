@@ -28,7 +28,9 @@ class ExitConfirmScope extends StatelessWidget {
             onPressed: () => Navigator.pop(dialogContext, true),
             child: Text(
               'common.exit'.tr(),
-              style: const TextStyle(color: AppColors.accentDanger),
+              style: Theme.of(dialogContext).textTheme.labelLarge?.copyWith(
+                    color: AppColors.accentDanger,
+                  ),
             ),
           ),
         ],

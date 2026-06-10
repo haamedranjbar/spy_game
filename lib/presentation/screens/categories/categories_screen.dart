@@ -10,10 +10,10 @@ import 'package:spy_game/data/models/word_category.dart';
 import 'package:spy_game/presentation/providers/category_provider.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
 import 'package:spy_game/presentation/screens/categories/categories_provider.dart';
-import 'package:spy_game/presentation/screens/player_setup/player_setup_provider.dart';
 import 'package:spy_game/presentation/widgets/category_card.dart';
 import 'package:spy_game/presentation/widgets/create_custom_card.dart';
 import 'package:spy_game/presentation/widgets/family_mode_banner.dart';
+import 'package:spy_game/presentation/widgets/app_snackbar.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
 import 'package:spy_game/presentation/widgets/segmented_tab.dart';
 
@@ -101,12 +101,7 @@ class CategoriesScreen extends ConsumerWidget {
                 isLoading: uiState.isLoadingNext,
                 onPressed: gameState.selectedCategoryIds.isEmpty
                     ? null
-                    : () {
-                        ref
-                            .read(playerSetupProvider.notifier)
-                            .syncDefaultsToGameIfEmpty();
-                        context.push(AppRoutes.gameConfig);
-                      },
+                    : () => context.push(AppRoutes.gameConfig),
               ),
             ),
           ],
@@ -116,12 +111,7 @@ class CategoriesScreen extends ConsumerWidget {
   }
 
   void _showLockedSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('categories.locked_premium'.tr()),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    AppSnackBar.warning(context, 'categories.locked_premium'.tr());
   }
 
 }

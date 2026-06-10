@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:spy_game/core/constants/app_colors.dart';
 import 'package:spy_game/core/router/router.dart';
 import 'package:spy_game/presentation/screens/voting/voting_provider.dart';
+import 'package:spy_game/presentation/widgets/app_snackbar.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
 import 'package:spy_game/presentation/widgets/outlined_action_button.dart';
 import 'package:spy_game/presentation/widgets/result_tile.dart';
@@ -105,37 +106,43 @@ class VotingScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                GradientButton(
-                  label: 'voting.play_again'.tr(),
-                  icon: Icons.replay_rounded,
-                  isLoading: votingUi.isRestarting,
-                  onPressed: votingUi.isRestarting
-                      ? null
-                      : () async {
-                          context.go(AppRoutes.wordReveal);
-                          final started = await notifier.playAgain();
-                          if (!context.mounted) return;
-                          if (!started) {
-                            context.go(AppRoutes.voting);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('error.start_game'.tr()),
-                              ),
-                            );
-                          }
-                        },
-                ),
-                const SizedBox(height: 12),
-                OutlinedActionButton(
-                  label: 'result.back_home'.tr(),
-                  icon: Icons.home_outlined,
-                  color: AppColors.textSecondary,
-                  onPressed: votingUi.isRestarting
-                      ? null
-                      : () {
-                          notifier.endGame();
-                          context.go(AppRoutes.home);
-                        },
+                Row(
+                  children: [
+                    Expanded(
+                      child: GradientButton(
+                        label: 'voting.play_again'.tr(),
+                        icon: Icons.replay_rounded,
+                        isLoading: votingUi.isRestarting,
+                        onPressed: votingUi.isRestarting
+                            ? null
+                            : () async {
+                                context.go(AppRoutes.wordReveal);
+                                final started = await notifier.playAgain();
+                                if (!context.mounted) return;
+                                if (!started) {
+                                  context.go(AppRoutes.voting);
+                                  AppSnackBar.error(
+                                    context,
+                                    'error.start_game'.tr(),
+                                  );
+                                }
+                              },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    OutlinedActionButton(
+                      label: '',
+                      iconOnly: true,
+                      icon: Icons.home_outlined,
+                      color: AppColors.textSecondary,
+                      onPressed: votingUi.isRestarting
+                          ? null
+                          : () {
+                              notifier.endGame();
+                              context.go(AppRoutes.home);
+                            },
+                    ),
+                  ],
                 ),
               ],
             ],

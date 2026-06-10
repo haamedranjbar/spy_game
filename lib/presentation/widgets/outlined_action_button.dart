@@ -10,6 +10,7 @@ class OutlinedActionButton extends StatelessWidget {
     required this.color,
     this.icon,
     this.expanded = true,
+    this.iconOnly = false,
   });
 
   final String label;
@@ -17,9 +18,31 @@ class OutlinedActionButton extends StatelessWidget {
   final Color color;
   final IconData? icon;
   final bool expanded;
+  final bool iconOnly;
 
   @override
   Widget build(BuildContext context) {
+    // دکمه فقط آیکون — هم‌ارتفاع با دکمه‌های اصلی
+    if (iconOnly) {
+      assert(icon != null, 'iconOnly requires an icon');
+      return SizedBox(
+        width: 52,
+        height: 52,
+        child: OutlinedButton(
+          onPressed: onPressed,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: color,
+            side: BorderSide(color: color),
+            padding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+          child: Icon(icon, size: 22),
+        ),
+      );
+    }
+
     final button = OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(

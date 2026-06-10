@@ -40,7 +40,7 @@ class SpyGameApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'app.name'.tr(),
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.dark,
+      theme: AppTheme.dark(context.locale),
       locale: context.locale,
       supportedLocales: context.supportedLocales,
       localizationsDelegates: context.localizationDelegates,

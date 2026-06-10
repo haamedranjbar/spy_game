@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spy_game/core/constants/app_colors.dart';
+import 'package:spy_game/core/router/router.dart';
 import 'package:spy_game/core/constants/game_config.dart';
 import 'package:spy_game/presentation/screens/player_setup/player_setup_provider.dart';
 import 'package:spy_game/presentation/widgets/app_card.dart';
+import 'package:spy_game/presentation/widgets/app_snackbar.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
 import 'package:spy_game/presentation/widgets/group_selector.dart';
 import 'package:spy_game/presentation/widgets/outlined_action_button.dart';
@@ -18,6 +20,8 @@ class PlayerSetupScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final setupState = ref.watch(playerSetupProvider);
     final notifier = ref.read(playerSetupProvider.notifier);
+    final continueToCategories =
+        GoRouterState.of(context).uri.queryParameters['next'] == 'categories';
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -100,13 +104,21 @@ class PlayerSetupScreen extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: GradientButton(
-                label: 'common.done'.tr(),
-                icon: Icons.check_rounded,
+                label: continueToCategories
+                    ? 'common.next'.tr()
+                    : 'common.done'.tr(),
+                icon: continueToCategories
+                    ? Icons.arrow_forward_rounded
+                    : Icons.check_rounded,
                 enabled: setupState.canContinue,
                 onPressed: setupState.canContinue
                     ? () {
                         notifier.applyToGame();
-                        context.pop();
+                        if (continueToCategories) {
+                          context.push(AppRoutes.categories);
+                        } else {
+                          context.pop();
+                        }
                       }
                     : null,
               ),
@@ -131,70 +143,67 @@ class PlayerSetupScreen extends ConsumerWidget {
 
     var showNameError = false;
 
-    final saved = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          backgroundColor: AppColors.surface,
-          title: Text('player_setup.save_group'.tr()),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: controller,
-                autofocus: true,
-                onChanged: (_) {
-                  if (showNameError) {
-                    setDialogState(() => showNameError = false);
-                  }
-                },
-                decoration: InputDecoration(
-                  hintText: 'player_setup.group_name'.tr(),
-                  filled: true,
-                  fillColor: AppColors.surfaceLight,
-                  errorText: showNameError
-                      ? 'player_setup.group_name_required'.tr()
-                      : null,
+    try {
+      final saved = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => StatefulBuilder(
+          builder: (context, setDialogState) => AlertDialog(
+            backgroundColor: AppColors.surface,
+            title: Text('player_setup.save_group'.tr()),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: controller,
+                  autofocus: true,
+                  onChanged: (_) {
+                    if (showNameError) {
+                      setDialogState(() => showNameError = false);
+                    }
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'player_setup.group_name'.tr(),
+                    filled: true,
+                    fillColor: AppColors.surfaceLight,
+                    errorText: showNameError
+                        ? 'player_setup.group_name_required'.tr()
+                        : null,
+                  ),
                 ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: Text('common.cancel'.tr()),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (controller.text.trim().isEmpty) {
+                    setDialogState(() => showNameError = true);
+                    return;
+                  }
+                  Navigator.pop(dialogContext, true);
+                },
+                child: Text('common.save'.tr()),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext, false),
-              child: Text('common.cancel'.tr()),
-            ),
-            TextButton(
-              onPressed: () {
-                if (controller.text.trim().isEmpty) {
-                  setDialogState(() => showNameError = true);
-                  return;
-                }
-                Navigator.pop(dialogContext, true);
-              },
-              child: Text('common.save'.tr()),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    if (saved == true && context.mounted) {
-      final success =
-          await notifier.saveCurrentGroup(controller.text.trim());
-      controller.dispose();
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? 'player_setup.group_saved'.tr()
-                : 'error.save_failed'.tr(),
-          ),
         ),
       );
-    } else {
+
+      if (saved == true && context.mounted) {
+        final success =
+            await notifier.saveCurrentGroup(controller.text.trim());
+        if (!context.mounted) return;
+        if (success) {
+          AppSnackBar.success(context, 'player_setup.group_saved'.tr());
+        } else {
+          AppSnackBar.error(context, 'error.save_failed'.tr());
+        }
+      }
+    } finally {
       controller.dispose();
     }
   }
@@ -215,7 +224,9 @@ class PlayerSetupScreen extends ConsumerWidget {
             onPressed: () => Navigator.pop(dialogContext, true),
             child: Text(
               'common.confirm'.tr(),
-              style: const TextStyle(color: AppColors.accentDanger),
+              style: Theme.of(dialogContext).textTheme.labelLarge?.copyWith(
+                    color: AppColors.accentDanger,
+                  ),
             ),
           ),
         ],
@@ -226,15 +237,11 @@ class PlayerSetupScreen extends ConsumerWidget {
       final success =
           await ref.read(playerSetupProvider.notifier).deleteSelectedGroup();
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? 'player_setup.group_deleted'.tr()
-                : 'error.delete_failed'.tr(),
-          ),
-        ),
-      );
+      if (success) {
+        AppSnackBar.success(context, 'player_setup.group_deleted'.tr());
+      } else {
+        AppSnackBar.error(context, 'error.delete_failed'.tr());
+      }
     }
   }
 }
@@ -355,10 +362,6 @@ class _EditablePlayerTileState extends State<_EditablePlayerTile> {
 
   @override
   Widget build(BuildContext context) {
-    final initial = widget.name.isNotEmpty
-        ? widget.name.substring(0, 1).toUpperCase()
-        : '?';
-
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -373,7 +376,7 @@ class _EditablePlayerTileState extends State<_EditablePlayerTile> {
             radius: 18,
             backgroundColor: AppColors.accentDefault.withValues(alpha: 0.25),
             child: Text(
-              initial,
+              '${widget.index}',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: AppColors.accentDefault,
                     fontWeight: FontWeight.w700,
@@ -395,17 +398,6 @@ class _EditablePlayerTileState extends State<_EditablePlayerTile> {
                   horizontal: 4,
                 ),
               ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 28,
-            child: Text(
-              '#${widget.index}',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.textMuted,
-                  ),
             ),
           ),
           if (widget.onRemove != null) ...[

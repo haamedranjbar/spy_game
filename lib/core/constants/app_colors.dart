@@ -48,6 +48,16 @@ abstract final class AppColors {
     Color(0xFFF472B6),
   ];
 
+  /// گرادیان کارت شهروند — آبی سلطنتی به بنفش
+  static const List<Color> citizenCardGradient = [
+    Color(0xFF1A4FA0),
+    Color(0xFF3B4DB8),
+    Color(0xFF6B3FA0),
+  ];
+
+  /// هاله نوری پشت آیکون کارت شهروند
+  static const Color citizenCardGlow = Color(0xFF4A7FD4);
+
   // سایه و overlay
   static const Color overlay = Color(0x80000000);
   static const Color divider = Color(0xFF334155);

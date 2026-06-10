@@ -166,7 +166,7 @@
   "timer": {
     "discussion": "Discussion time",
     "end_early": "End early",
-    "hold_end_early_hint": "Hold for 2 seconds to end discussion early",
+    "hold_end_early_hint": "Hold for 1 second to end discussion early",
     "round": "Round {}",
     "hint": "Discuss the word — the spy is trying to figure it out!"
   },

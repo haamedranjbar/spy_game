@@ -31,6 +31,9 @@ abstract final class AppRoutes {
   static const String voting = '/voting';
   static const String result = '/result';
   static const String customCategory = '/custom-category';
+
+  /// مسیر تنظیم بازیکنان در شروع بازی جدید
+  static const String playerSetupNewGame = '$playerSetup?next=categories';
 }
 
 /// پیکربندی go_router

@@ -10,11 +10,6 @@ const double kRoleCardHeight = 420;
 
 const Duration _flipDuration = Duration(milliseconds: 380);
 
-const List<Color> _citizenGradient = [
-  AppColors.primaryBlue,
-  AppColors.accentDefault,
-];
-
 const List<Color> _spyGradient = [
   AppColors.primaryRed,
   AppColors.accentDanger,
@@ -105,7 +100,7 @@ class _RoleCardState extends State<RoleCard>
   }
 
   List<Color> get _roleGradient => switch (widget.role) {
-        GameRole.citizen => _citizenGradient,
+        GameRole.citizen => AppColors.citizenCardGradient,
         GameRole.spy => _spyGradient,
         GameRole.infiltrator => _infiltratorGradient,
       };
@@ -140,6 +135,9 @@ class _RoleCardState extends State<RoleCard>
                           transform: Matrix4.identity()..rotateY(pi),
                           child: _CardFace(
                             gradient: _roleGradient,
+                            padding: widget.role == GameRole.citizen
+                                ? EdgeInsets.zero
+                                : const EdgeInsets.all(28),
                             child: _BackContent(
                               role: widget.role,
                               roleKey: widget.roleKey,
@@ -164,17 +162,19 @@ class _CardFace extends StatelessWidget {
   const _CardFace({
     required this.child,
     this.gradient,
+    this.padding = const EdgeInsets.all(28),
   });
 
   final Widget child;
   final List<Color>? gradient;
+  final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      padding: const EdgeInsets.all(28),
+      padding: padding,
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         gradient: gradient != null
@@ -272,6 +272,10 @@ class _BackContent extends StatelessWidget {
       );
     }
 
+    if (role == GameRole.citizen) {
+      return _CitizenBackContent(word: word);
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -309,6 +313,114 @@ class _BackContent extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+/// چیدمان اختصاصی کارت شهروند — گرادیان آبی-بنفش با هاله و کلمه بزرگ
+class _CitizenBackContent extends StatelessWidget {
+  const _CitizenBackContent({this.word});
+
+  final String? word;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          clipBehavior: Clip.hardEdge,
+          children: [
+            // هاله نیم‌دایره‌ای در نیمه بالایی کارت
+            Positioned(
+              top: -constraints.maxHeight * 0.18,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  width: constraints.maxWidth * 1.1,
+                  height: constraints.maxHeight * 0.62,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        AppColors.citizenCardGlow.withValues(alpha: 0.38),
+                        AppColors.citizenCardGlow.withValues(alpha: 0.12),
+                        AppColors.citizenCardGlow.withValues(alpha: 0),
+                      ],
+                      stops: const [0, 0.45, 1],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            // محتوای مرکزی — آیکون در ثلث بالا، کلمه در میانه پایین
+            Column(
+              children: [
+                SizedBox(height: constraints.maxHeight * 0.16),
+                const _CitizenIconBadge(),
+                SizedBox(height: constraints.maxHeight * 0.14),
+                if (word != null) ...[
+                  Text(
+                    'role.secret_word_label'.tr().toUpperCase(),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: AppColors.textPrimary.withValues(alpha: 0.62),
+                          letterSpacing: 2.2,
+                          fontWeight: FontWeight.w500,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    child: Text(
+                      word!,
+                      style:
+                          Theme.of(context).textTheme.displaySmall?.copyWith(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w900,
+                                height: 1.15,
+                              ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// آیکون لبخند شهروند — دایره تیره نیمه‌شفاف
+class _CitizenIconBadge extends StatelessWidget {
+  const _CitizenIconBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 96,
+      height: 96,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: AppColors.background.withValues(alpha: 0.38),
+        border: Border.all(
+          color: AppColors.textPrimary.withValues(alpha: 0.14),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.background.withValues(alpha: 0.25),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: const Icon(
+        Icons.sentiment_satisfied_alt_outlined,
+        color: AppColors.textPrimary,
+        size: 48,
+      ),
     );
   }
 }

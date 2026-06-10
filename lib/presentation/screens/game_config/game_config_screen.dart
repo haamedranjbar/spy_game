@@ -9,6 +9,7 @@ import 'package:spy_game/presentation/providers/game_provider.dart';
 import 'package:spy_game/presentation/screens/game_config/game_config_provider.dart';
 import 'package:spy_game/presentation/screens/player_setup/player_setup_provider.dart';
 import 'package:spy_game/presentation/widgets/app_card.dart';
+import 'package:spy_game/presentation/widgets/app_snackbar.dart';
 import 'package:spy_game/presentation/widgets/counter_card.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
 import 'package:spy_game/presentation/widgets/setting_toggle.dart';
@@ -167,10 +168,9 @@ class GameConfigScreen extends ConsumerWidget {
                         if (started) {
                           context.go(AppRoutes.wordReveal);
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('error.start_game'.tr()),
-                            ),
+                          AppSnackBar.error(
+                            context,
+                            'error.start_game'.tr(),
                           );
                         }
                       }

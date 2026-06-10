@@ -8,6 +8,7 @@ import 'package:spy_game/data/models/player_role.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
 import 'package:spy_game/presentation/screens/result/result_provider.dart';
 import 'package:spy_game/presentation/widgets/app_card.dart';
+import 'package:spy_game/presentation/widgets/app_snackbar.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
 import 'package:spy_game/presentation/widgets/outlined_action_button.dart';
 
@@ -107,7 +108,46 @@ class ResultScreen extends ConsumerWidget {
                 ),
               ],
               const Spacer(),
-              if (!game.isGameOver) ...[
+              if (game.isGameOver)
+                Row(
+                  children: [
+                    Expanded(
+                      child: GradientButton(
+                        label: 'voting.play_again'.tr(),
+                        icon: Icons.replay_rounded,
+                        isLoading: resultUi.isRestarting,
+                        onPressed: resultUi.isRestarting
+                            ? null
+                            : () async {
+                                context.go(AppRoutes.wordReveal);
+                                final started = await notifier.playAgain();
+                                if (!context.mounted) return;
+                                if (!started) {
+                                  context.go(AppRoutes.result);
+                                  AppSnackBar.error(
+                                    context,
+                                    'error.start_game'.tr(),
+                                  );
+                                }
+                              },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    OutlinedActionButton(
+                      label: '',
+                      iconOnly: true,
+                      icon: Icons.home_outlined,
+                      color: AppColors.textSecondary,
+                      onPressed: resultUi.isRestarting
+                          ? null
+                          : () {
+                              notifier.endGame();
+                              context.go(AppRoutes.home);
+                            },
+                    ),
+                  ],
+                )
+              else ...[
                 GradientButton(
                   label: 'result.continue_game'.tr(),
                   icon: Icons.replay_rounded,
@@ -121,16 +161,16 @@ class ResultScreen extends ConsumerWidget {
                   },
                 ),
                 const SizedBox(height: 12),
+                OutlinedActionButton(
+                  label: 'result.back_home'.tr(),
+                  onPressed: () {
+                    notifier.endGame();
+                    context.go(AppRoutes.home);
+                  },
+                  color: AppColors.textSecondary,
+                  icon: Icons.home_outlined,
+                ),
               ],
-              OutlinedActionButton(
-                label: 'result.back_home'.tr(),
-                onPressed: () {
-                  notifier.endGame();
-                  context.go(AppRoutes.home);
-                },
-                color: AppColors.textSecondary,
-                icon: Icons.home_outlined,
-              ),
             ],
           ),
         ),

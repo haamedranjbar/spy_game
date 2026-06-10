@@ -7,6 +7,7 @@ import 'package:spy_game/core/constants/game_config.dart';
 import 'package:spy_game/data/models/word_category.dart';
 import 'package:spy_game/presentation/screens/custom_category/custom_category_provider.dart';
 import 'package:spy_game/presentation/widgets/app_card.dart';
+import 'package:spy_game/presentation/widgets/app_snackbar.dart';
 import 'package:spy_game/presentation/widgets/custom_category_selector.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
 import 'package:spy_game/presentation/widgets/outlined_action_button.dart';
@@ -157,34 +158,23 @@ class CustomCategoryScreen extends ConsumerWidget {
 
     switch (saveResult.result) {
       case CustomCategorySaveResult.success:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('custom_category.saved'.tr())),
-        );
+        AppSnackBar.success(context, 'custom_category.saved'.tr());
         context.pop();
       case CustomCategorySaveResult.updated:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('custom_category.updated'.tr())),
-        );
+        AppSnackBar.success(context, 'custom_category.updated'.tr());
       case CustomCategorySaveResult.missingName:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('custom_category.name_required'.tr())),
-        );
+        AppSnackBar.warning(context, 'custom_category.name_required'.tr());
       case CustomCategorySaveResult.missingWords:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'custom_category.words_required'.tr(
-                namedArgs: {
-                  'min': GameConfig.minCustomCategoryWords.toString(),
-                },
-              ),
-            ),
+        AppSnackBar.warning(
+          context,
+          'custom_category.words_required'.tr(
+            namedArgs: {
+              'min': GameConfig.minCustomCategoryWords.toString(),
+            },
           ),
         );
       case CustomCategorySaveResult.failed:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('error.save_failed'.tr())),
-        );
+        AppSnackBar.error(context, 'error.save_failed'.tr());
     }
   }
 
@@ -207,7 +197,9 @@ class CustomCategoryScreen extends ConsumerWidget {
             onPressed: () => Navigator.pop(dialogContext, true),
             child: Text(
               'common.confirm'.tr(),
-              style: const TextStyle(color: AppColors.accentDanger),
+              style: Theme.of(dialogContext).textTheme.labelLarge?.copyWith(
+                    color: AppColors.accentDanger,
+                  ),
             ),
           ),
         ],
@@ -218,15 +210,11 @@ class CustomCategoryScreen extends ConsumerWidget {
       final success =
           await ref.read(customCategoryProvider.notifier).deleteSelectedCategory();
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            success
-                ? 'custom_category.deleted'.tr()
-                : 'error.delete_failed'.tr(),
-          ),
-        ),
-      );
+      if (success) {
+        AppSnackBar.success(context, 'custom_category.deleted'.tr());
+      } else {
+        AppSnackBar.error(context, 'error.delete_failed'.tr());
+      }
     }
   }
 }
