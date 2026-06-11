@@ -1,14 +1,14 @@
 import 'package:spy_game/data/seeds/category_seed.dart';
 
 /// دسته‌های پولی باقی‌مانده + دسته‌های فرهنگی جدید
-const List<CategorySeed> faPremiumMoreCategorySeeds = [
+final List<CategorySeed> faPremiumMoreCategorySeeds = [
   CategorySeed(
     slug: 'foreign_films',
     iconName: 'theaters',
     nameFa: 'فیلم خارجی',
     nameEn: 'Foreign Films',
     isPremium: true,
-    words: [
+    wordTexts: [
       'تایتانیک', 'آواتار', 'تلقین', 'شوالیه تاریکی', 'انتقام‌جویان',
       'هری پاتر', 'جنگ ستارگان', 'ارباب حلقه‌ها', 'ماتریکس', 'فارست گامپ',
       'گلادیاتور', 'جوکر', 'بتمن', 'سوپرمن', 'مرد عنکبوتی',
@@ -36,7 +36,7 @@ const List<CategorySeed> faPremiumMoreCategorySeeds = [
     nameFa: 'انیمیشن',
     nameEn: 'Animation',
     isPremium: true,
-    words: [
+    wordTexts: [
       'شیرشاه', 'یخ‌زده', 'شجاع', 'وال-ای', 'بالا',
       'رستوران موش‌ها', 'کوکو', 'موانا', 'روح', 'داستان اسباب‌بازی',
       'شگفت‌انگیزان', 'مینیون‌ها', 'پاندای کونگ‌فوکار', 'ماداگاسکار', 'شریک',
@@ -64,7 +64,7 @@ const List<CategorySeed> faPremiumMoreCategorySeeds = [
     nameFa: 'حیوانات',
     nameEn: 'Animals',
     isPremium: true,
-    words: [
+    wordTexts: [
       'شیر', 'ببر', 'پلنگ', 'خرس', 'گرگ',
       'روباه', 'گوزن', 'آهو', 'اسب', 'الاغ',
       'گاو', 'گوسفند', 'بز', 'خوک', 'مرغ',
@@ -90,7 +90,7 @@ const List<CategorySeed> faPremiumMoreCategorySeeds = [
     nameFa: 'شهرهای ایران',
     nameEn: 'Iranian Cities',
     isPremium: true,
-    words: [
+    wordTexts: [
       'تهران', 'مشهد', 'اصفهان', 'شیراز', 'تبریز',
       'کرمان', 'یزد', 'رشت', 'اهواز', 'قم',
       'کرج', 'همدان', 'کرمانشاه', 'ارومیه', 'زاهدان',
@@ -116,7 +116,7 @@ const List<CategorySeed> faPremiumMoreCategorySeeds = [
     nameFa: 'کشورها',
     nameEn: 'Countries',
     isPremium: true,
-    words: [
+    wordTexts: [
       'ایران', 'عراق', 'ترکیه', 'عربستان', 'امارات',
       'قطر', 'کویت', 'بحرین', 'عمان', 'یمن',
       'افغانستان', 'پاکستان', 'هند', 'چین', 'ژاپن',

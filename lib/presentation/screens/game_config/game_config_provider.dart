@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spy_game/core/constants/game_config.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
+import 'package:spy_game/presentation/providers/monetization_provider.dart';
 
 part 'game_config_provider.g.dart';
 
@@ -72,11 +73,17 @@ class GameConfigNotifier extends _$GameConfigNotifier {
   bool get canEnableInfiltrator =>
       GameConfig.canEnableInfiltrator(spyCount: spyCount);
 
+  /// نقش‌های ویژه فقط برای نسخه طلایی
+  bool get canUsePremiumRoles =>
+      ref.read(monetizationProvider).isGoldenUser;
+
   void setHasDetective(bool value) {
+    if (!canUsePremiumRoles && value) return;
     ref.read(gameProvider.notifier).setHasDetective(value);
   }
 
   void setHasInfiltrator(bool value) {
+    if (!canUsePremiumRoles && value) return;
     ref.read(gameProvider.notifier).setHasInfiltrator(value);
   }
 

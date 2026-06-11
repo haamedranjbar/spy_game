@@ -1,13 +1,13 @@
 import 'package:spy_game/data/seeds/category_seed.dart';
 
 /// چهار دسته رایگان — غالباً ایرانی و روزمره
-const List<CategorySeed> faFreeCategorySeeds = [
+final List<CategorySeed> faFreeCategorySeeds = [
   CategorySeed(
     slug: 'food_drinks',
     iconName: 'restaurant',
     nameFa: 'خوراکی و نوشیدنی',
     nameEn: 'Food & Drinks',
-    words: [
+    wordTexts: [
       'چای',
       'قهوه',
       'دوغ',
@@ -90,7 +90,7 @@ const List<CategorySeed> faFreeCategorySeeds = [
     iconName: 'place',
     nameFa: 'مکان‌ها',
     nameEn: 'Places',
-    words: [
+    wordTexts: [
       'مسجد',
       'حرم',
       'امامزاده',
@@ -175,7 +175,7 @@ const List<CategorySeed> faFreeCategorySeeds = [
     iconName: 'sports_soccer',
     nameFa: 'ورزش',
     nameEn: 'Sports',
-    words: [
+    wordTexts: [
       'فوتبال',
       'فوتسال',
       'والیبال',
@@ -290,7 +290,7 @@ const List<CategorySeed> faFreeCategorySeeds = [
     iconName: 'category',
     nameFa: 'اشیاء',
     nameEn: 'Objects',
-    words: [
+    wordTexts: [
       'میز',
       'صندلی',
       'مبل',

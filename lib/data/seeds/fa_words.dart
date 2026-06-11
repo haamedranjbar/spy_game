@@ -9,7 +9,7 @@ import 'package:spy_game/data/seeds/fa_words_premium_more.dart';
 export 'package:spy_game/data/seeds/category_seed.dart';
 
 /// همه دسته‌های seed فارسی — رایگان، ویدیو، طلایی
-const List<CategorySeed> allFaCategorySeeds = [
+final List<CategorySeed> allFaCategorySeeds = [
   ...faFreeCategorySeeds,
   ...faAdCategorySeeds,
   ...faPremiumCategorySeeds,
@@ -19,4 +19,4 @@ const List<CategorySeed> allFaCategorySeeds = [
 ];
 
 /// دسته‌های رایگان (سازگاری با کد قبلی)
-const List<CategorySeed> faFreeCategorySeedsExport = faFreeCategorySeeds;
+final List<CategorySeed> faFreeCategorySeedsExport = faFreeCategorySeeds;

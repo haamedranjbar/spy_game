@@ -48,6 +48,13 @@ abstract final class AppColors {
     Color(0xFFF472B6),
   ];
 
+  // گرادیان طلایی — خرید و PRO
+  static const List<Color> gradientGold = [
+    Color(0xFFB8860B),
+    Color(0xFFD4AF37),
+    Color(0xFFE6C65C),
+  ];
+
   /// گرادیان کارت شهروند — آبی سلطنتی به بنفش
   static const List<Color> citizenCardGradient = [
     Color(0xFF1A4FA0),

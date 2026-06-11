@@ -3,14 +3,14 @@ import 'package:spy_game/data/models/word_category.dart';
 import 'package:spy_game/data/seeds/category_seed.dart';
 
 /// دسته‌های فرهنگی جدید: غذای محلی، میوه، آداب و جشن
-const List<CategorySeed> faPremiumCultureCategorySeeds = [
+final List<CategorySeed> faPremiumCultureCategorySeeds = [
   CategorySeed(
     slug: 'local_foods',
     iconName: 'ramen_dining',
     nameFa: 'غذاهای محلی ایران',
     nameEn: 'Iranian Local Foods',
     isPremium: true,
-    words: [
+    wordTexts: [
       'دولمه برگ مو', 'کلم‌پلو', 'باقالاقاتق', 'شیرین‌پلو', 'عدسی',
       'حلیم', 'آش انار', 'آش شله‌قلمکار', 'آش دوغ', 'کله‌جوش',
       'بورانی اسفناج', 'دلمه فلفل', 'کوکو سبزی', 'کوکو سیب‌زمینی', 'کباب برگ',
@@ -39,7 +39,7 @@ const List<CategorySeed> faPremiumCultureCategorySeeds = [
     type: CategoryType.family,
     isPremium: true,
     difficulty: WordDifficulty.easy,
-    words: [
+    wordTexts: [
       'سیب', 'پرتقال', 'نارنگی', 'لیمو', 'انگور',
       'انار', 'هندوانه', 'خربزه', 'طالبی', 'شلیل',
       'هلو', 'زردآلو', 'آلو', 'گیلاس', 'گوجه‌فرنگی',
@@ -69,7 +69,7 @@ const List<CategorySeed> faPremiumCultureCategorySeeds = [
     type: CategoryType.family,
     isPremium: true,
     difficulty: WordDifficulty.easy,
-    words: [
+    wordTexts: [
       'نوروز', 'یلدا', 'چهارشنبه‌سوری', 'سیزده‌به‌در', 'عید فطر',
       'عید قربان', 'مولود', 'عروسی', 'خواستگاری', 'نامزدی',
       'تولد', 'خانه‌تکانی', 'سفره هفت‌سین', 'تخم‌مرغ رنگی', 'هدیه',

@@ -1,14 +1,14 @@
 import 'package:spy_game/data/seeds/category_seed.dart';
 
 /// دسته‌های پولی: برند، شغل، بازی، تکنولوژی، ابزار، وسیله نقلیه
-const List<CategorySeed> faPremiumLifeCategorySeeds = [
+final List<CategorySeed> faPremiumLifeCategorySeeds = [
   CategorySeed(
     slug: 'brands',
     iconName: 'store',
     nameFa: 'برندها',
     nameEn: 'Brands',
     isPremium: true,
-    words: [
+    wordTexts: [
       'سامسونگ', 'اپل', 'شیائومی', 'نوکیا', 'سونی',
       'ال‌جی', 'پاناسونیک', 'بوش', 'ایران‌خودرو', 'سایپا',
       'کاله', 'میهن', 'پگاه', 'رامک', 'مرسدس',
@@ -36,7 +36,7 @@ const List<CategorySeed> faPremiumLifeCategorySeeds = [
     nameFa: 'مشاغل',
     nameEn: 'Jobs',
     isPremium: true,
-    words: [
+    wordTexts: [
       'پزشک', 'پرستار', 'ماما', 'دندانپزشک', 'داروساز',
       'معلم', 'استاد', 'مدیر مدرسه', 'مهندس', 'معمار',
       'وکیل', 'قاضی', 'دادیار', 'منشی', 'حسابدار',
@@ -63,7 +63,7 @@ const List<CategorySeed> faPremiumLifeCategorySeeds = [
     nameFa: 'بازی',
     nameEn: 'Games',
     isPremium: true,
-    words: [
+    wordTexts: [
       'شطرنج', 'منچ', 'مار و پله', 'دبرنا', 'پاسور',
       'حکم', 'شلم', 'تخته‌نرد', 'گل یا پوچ', 'بله',
       'پانتومیم', 'گرگم به هوا', 'تیله‌بازی', 'لی‌لی', 'وسطی',
@@ -89,7 +89,7 @@ const List<CategorySeed> faPremiumLifeCategorySeeds = [
     nameFa: 'تکنولوژی',
     nameEn: 'Technology',
     isPremium: true,
-    words: [
+    wordTexts: [
       'رایانه', 'لپ‌تاپ', 'تبلت', 'موبایل', 'اینترنت',
       'وای‌فای', 'بلوتوث', 'پرینتر', 'اسکنر', 'هارد',
       'حافظه', 'پردازنده', 'مانیتور', 'وب‌کم', 'میکروفون',
@@ -115,7 +115,7 @@ const List<CategorySeed> faPremiumLifeCategorySeeds = [
     nameFa: 'ابزار',
     nameEn: 'Tools',
     isPremium: true,
-    words: [
+    wordTexts: [
       'چکش', 'انبر', 'پیچ‌گوشتی', 'آچار فرانسه', 'متر',
       'تراز', 'اره', 'دریل', 'مته', 'انبرک',
       'قیچی', 'چسب', 'نوار چسب', 'رنده', 'سیم‌چین',
@@ -142,7 +142,7 @@ const List<CategorySeed> faPremiumLifeCategorySeeds = [
     nameFa: 'وسایل نقلیه',
     nameEn: 'Vehicles',
     isPremium: true,
-    words: [
+    wordTexts: [
       'خودرو', 'سواری', 'کامیون', 'اتوبوس', 'مینی‌بوس',
       'ون', 'موتورسیکلت', 'دوچرخه', 'قطار', 'مترو',
       'تراموا', 'هواپیما', 'هلیکوپتر', 'قایق', 'کشتی',

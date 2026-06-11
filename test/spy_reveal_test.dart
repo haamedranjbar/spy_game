@@ -15,7 +15,7 @@ void main() {
       final info = buildRoleRevealInfo(
         player: roles[0],
         currentPlayerIndex: 0,
-        secretWord: 'کلمه',
+        secretWordHint: 'قرمز',
         showCategoryForSpy: false,
         spyHintEnabled: false,
         spiesKnowEachOther: true,
@@ -35,7 +35,7 @@ void main() {
       final firstSpy = buildRoleRevealInfo(
         player: duplicateRoles[0],
         currentPlayerIndex: 0,
-        secretWord: 'کلمه',
+        secretWordHint: 'قرمز',
         showCategoryForSpy: false,
         spyHintEnabled: false,
         spiesKnowEachOther: true,
@@ -45,7 +45,7 @@ void main() {
       final secondSpy = buildRoleRevealInfo(
         player: duplicateRoles[1],
         currentPlayerIndex: 1,
-        secretWord: 'کلمه',
+        secretWordHint: 'قرمز',
         showCategoryForSpy: false,
         spyHintEnabled: false,
         spiesKnowEachOther: true,
@@ -60,7 +60,7 @@ void main() {
       final info = buildRoleRevealInfo(
         player: roles[1],
         currentPlayerIndex: 1,
-        secretWord: 'کلمه',
+        secretWordHint: 'قرمز',
         showCategoryForSpy: false,
         spyHintEnabled: false,
         spiesKnowEachOther: false,

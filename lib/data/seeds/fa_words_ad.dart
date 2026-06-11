@@ -3,14 +3,15 @@ import 'package:spy_game/data/models/word_category.dart';
 import 'package:spy_game/data/seeds/category_seed.dart';
 
 /// دسته‌های باز شدنی با ویدیو یا اشتراک طلایی
-const List<CategorySeed> faAdCategorySeeds = [
+final List<CategorySeed> faAdCategorySeeds = [
   CategorySeed(
     slug: 'iranian_cinema',
     iconName: 'movie',
     nameFa: 'فیلم و سریال ایرانی',
     nameEn: 'Iranian Cinema',
+    isPremium: true,
     isUnlockedByAd: true,
-    words: [
+    wordTexts: [
       'پایتخت',
       'شب‌های برره',
       'خندوانه',
@@ -154,9 +155,10 @@ const List<CategorySeed> faAdCategorySeeds = [
     nameFa: 'رنگ‌ها',
     nameEn: 'Colors',
     type: CategoryType.family,
+    isPremium: true,
     isUnlockedByAd: true,
     difficulty: WordDifficulty.easy,
-    words: [
+    wordTexts: [
       'قرمز',
       'آبی',
       'سبز',

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'result_provider.dart';
+part of 'iap_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,51 +9,51 @@ part of 'result_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(ResultNotifier)
-final resultProvider = ResultNotifierProvider._();
+@ProviderFor(IapNotifier)
+final iapProvider = IapNotifierProvider._();
 
-final class ResultNotifierProvider
-    extends $NotifierProvider<ResultNotifier, ResultUiState> {
-  ResultNotifierProvider._()
+final class IapNotifierProvider
+    extends $NotifierProvider<IapNotifier, IapUiState> {
+  IapNotifierProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'resultProvider',
+        name: r'iapProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$resultNotifierHash();
+  String debugGetCreateSourceHash() => _$iapNotifierHash();
 
   @$internal
   @override
-  ResultNotifier create() => ResultNotifier();
+  IapNotifier create() => IapNotifier();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(ResultUiState value) {
+  Override overrideWithValue(IapUiState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<ResultUiState>(value),
+      providerOverride: $SyncValueProvider<IapUiState>(value),
     );
   }
 }
 
-String _$resultNotifierHash() => r'941cfa8aa4f3fa5189743a3e8ea767bcc899e814';
+String _$iapNotifierHash() => r'063dbfb26d554d93139c94d820eb8537ff5a3f6c';
 
-abstract class _$ResultNotifier extends $Notifier<ResultUiState> {
-  ResultUiState build();
+abstract class _$IapNotifier extends $Notifier<IapUiState> {
+  IapUiState build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final ref = this.ref as $Ref<ResultUiState, ResultUiState>;
+    final ref = this.ref as $Ref<IapUiState, IapUiState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<ResultUiState, ResultUiState>,
-              ResultUiState,
+              AnyNotifier<IapUiState, IapUiState>,
+              IapUiState,
               Object?,
               Object?
             >;

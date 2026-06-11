@@ -227,5 +227,32 @@
     "default_player_count": "عدد اللاعبين الافتراضي",
     "player_count": "{} لاعبين",
     "players_short": "لاعب"
+  },
+  "iap": {
+    "title": "النسخة الذهبية",
+    "golden_title": "لعبة الجاسوس — النسخة الذهبية",
+    "golden_description": "جميع الفئات والأدوار الخاصة وبدون إعلانات بين الجولات",
+    "already_golden": "لديك النسخة الذهبية — استمتع بكل الميزات!",
+    "feature_categories": "الوصول لجميع الفئات المدفوعة",
+    "feature_detective": "دور المحقق",
+    "feature_infiltrator": "دور المتسلل",
+    "feature_no_ads": "بدون إعلانات بين الجولات",
+    "buy_now": "شراء النسخة الذهبية",
+    "buy_unavailable": "الشراء غير متاح",
+    "restore": "استعادة الشراء",
+    "restoring": "جارٍ الاستعادة...",
+    "purchase_success": "تم الشراء بنجاح!",
+    "purchase_cancelled": "تم إلغاء الشراء",
+    "purchase_pending": "الشراء في انتظار التأكيد",
+    "purchase_unavailable": "الشراء غير متاح على هذا الجهاز",
+    "purchase_error": "فشل الشراء — حاول مرة أخرى",
+    "unlock_sheet_ad_title": "فتح الفئة",
+    "unlock_sheet_premium_title": "الفئة مقفلة",
+    "unlock_sheet_ad_hint": "شاهد فيديو لفتح هذه الفئة أو اشترِ النسخة الذهبية",
+    "unlock_sheet_premium_hint": "هذه الفئة للنسخة الذهبية فقط",
+    "watch_video": "مشاهدة فيديو",
+    "buy_golden": "شراء النسخة الذهبية",
+    "category_unlocked": "تم فتح الفئة!",
+    "video_failed": "فشل تشغيل الفيديو"
   }
 }

@@ -8,7 +8,6 @@ import 'package:spy_game/presentation/providers/game_provider.dart';
 import 'package:spy_game/presentation/screens/player_setup/player_setup_provider.dart';
 import 'package:spy_game/presentation/widgets/app_card.dart';
 import 'package:spy_game/presentation/widgets/exit_confirm_scope.dart';
-import 'package:spy_game/presentation/widgets/app_snackbar.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
 
 /// ارتفاع یکسان دکمه‌های پایین صفحه اصلی — دوبرابر دکمه استاندارد
@@ -48,7 +47,7 @@ class HomeScreen extends ConsumerWidget {
                   onSettings: () => context.push(AppRoutes.settings),
                   onRules: () => context.push(AppRoutes.rules),
                   onAbout: () => context.push(AppRoutes.about),
-                  onIap: () => _showComingSoon(context),
+                  onIap: () => context.push(AppRoutes.iap),
                 ),
                 const SizedBox(height: 8),
               ],
@@ -59,9 +58,6 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void _showComingSoon(BuildContext context) {
-    AppSnackBar.info(context, 'common.coming_soon'.tr());
-  }
 }
 
 class _MenuGrid extends StatelessWidget {

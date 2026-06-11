@@ -9,12 +9,13 @@ import 'package:spy_game/core/utils/category_name.dart';
 import 'package:spy_game/data/models/word_category.dart';
 import 'package:spy_game/presentation/providers/category_provider.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
+import 'package:spy_game/presentation/providers/monetization_provider.dart';
 import 'package:spy_game/presentation/screens/categories/categories_provider.dart';
 import 'package:spy_game/presentation/widgets/category_card.dart';
 import 'package:spy_game/presentation/widgets/create_custom_card.dart';
 import 'package:spy_game/presentation/widgets/family_mode_banner.dart';
-import 'package:spy_game/presentation/widgets/app_snackbar.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
+import 'package:spy_game/presentation/widgets/premium_unlock_sheet.dart';
 import 'package:spy_game/presentation/widgets/segmented_tab.dart';
 
 /// صفحه انتخاب دسته‌بندی — Classic / Family
@@ -25,6 +26,7 @@ class CategoriesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final uiState = ref.watch(categoriesProvider);
     final gameState = ref.watch(gameProvider);
+    final monetizationNotifier = ref.read(monetizationProvider.notifier);
     final categoriesAsync = ref.watch(
       categoriesByTypeProvider(uiState.categoryType),
     );
@@ -75,14 +77,26 @@ class CategoriesScreen extends ConsumerWidget {
                   onShowColorImagesChanged: (value) => ref
                       .read(gameProvider.notifier)
                       .setShowColorImages(value),
+                  isCategoryLocked: monetizationNotifier.isCategoryLocked,
+                  isCategoryUnlockedByVideo:
+                      monetizationNotifier.isCategoryUnlockedByVideo,
                   onCategoryTap: (category) {
-                    if (category.isPremium) {
-                      _showLockedSnackBar(context);
+                    if (monetizationNotifier.isCategoryLocked(category)) {
+                      showPremiumUnlockSheet(
+                        context: context,
+                        ref: ref,
+                        category: category,
+                        onUnlocked: () {
+                          ref
+                              .read(categoriesProvider.notifier)
+                              .toggleCategory(category);
+                        },
+                      );
                       return;
                     }
                     ref
                         .read(categoriesProvider.notifier)
-                        .toggleCategory(category, isGoldenUser: false);
+                        .toggleCategory(category);
                   },
                   onCreateCustom: () =>
                       context.push(AppRoutes.customCategory),
@@ -109,11 +123,6 @@ class CategoriesScreen extends ConsumerWidget {
       ),
     );
   }
-
-  void _showLockedSnackBar(BuildContext context) {
-    AppSnackBar.warning(context, 'categories.locked_premium'.tr());
-  }
-
 }
 
 class _CategoryGrid extends StatelessWidget {
@@ -124,6 +133,8 @@ class _CategoryGrid extends StatelessWidget {
     required this.isFamilyMode,
     required this.showColorImages,
     required this.onShowColorImagesChanged,
+    required this.isCategoryLocked,
+    required this.isCategoryUnlockedByVideo,
     required this.onCategoryTap,
     required this.onCreateCustom,
   });
@@ -134,6 +145,8 @@ class _CategoryGrid extends StatelessWidget {
   final bool isFamilyMode;
   final bool showColorImages;
   final ValueChanged<bool> onShowColorImagesChanged;
+  final bool Function(WordCategory) isCategoryLocked;
+  final bool Function(WordCategory) isCategoryUnlockedByVideo;
   final ValueChanged<WordCategory> onCategoryTap;
   final VoidCallback onCreateCustom;
 
@@ -162,20 +175,23 @@ class _CategoryGrid extends StatelessWidget {
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                // باکس ساخت دسته سفارشی همیشه اولین آیتم grid
                 if (index == 0) {
                   return CreateCustomCard(onTap: onCreateCustom);
                 }
 
                 final category = categories[index - 1];
+                final locked = isCategoryLocked(category);
+                final unlockedByVideo = isCategoryUnlockedByVideo(category);
+
                 return CategoryCard(
                   name: localizedCategoryName(
                     category,
                     context.locale,
                   ),
                   wordCount: category.wordCount,
-                  isPremium: category.isPremium,
-                  isUnlockedByAd: category.isUnlockedByAd,
+                  isPremium: category.isPremium || category.isUnlockedByAd,
+                  isLocked: locked,
+                  showPlayIcon: unlockedByVideo,
                   isCustom: !category.isDefault,
                   isSelected: selectedIds.contains(category.id),
                   accentColor: accentColor,

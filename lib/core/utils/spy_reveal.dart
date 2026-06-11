@@ -15,24 +15,15 @@ class RoleRevealInfo {
   final List<String> coSpyNames;
 }
 
-/// ساخت راهنمای کلمه برای جاسوس — حرف اول + ماسک
-String buildSpyHint(String word) {
-  if (word.isEmpty) return '';
-  final runes = word.runes.toList();
-  if (runes.length <= 1) return word;
-  final first = String.fromCharCode(runes.first);
-  return '$first${'•' * (runes.length - 1)}';
-}
-
 /// محاسبه محتوای نمایشی کارت بر اساس نقش و تنظیمات بازی
 RoleRevealInfo buildRoleRevealInfo({
   required PlayerRole player,
   required int currentPlayerIndex,
-  required String secretWord,
   required bool showCategoryForSpy,
   required bool spyHintEnabled,
   required bool spiesKnowEachOther,
   required List<PlayerRole> allRoles,
+  String? secretWordHint,
   String? categoryName,
 }) {
   // شهروند و کاراگاه کلمه را می‌بینند
@@ -54,9 +45,12 @@ RoleRevealInfo buildRoleRevealInfo({
     );
   }
 
+  // راهنمای توصیفی از دیتابیس — نه حرف اول کلمه
   String? hint;
-  if (spyHintEnabled && secretWord.isNotEmpty) {
-    hint = buildSpyHint(secretWord);
+  if (spyHintEnabled &&
+      secretWordHint != null &&
+      secretWordHint.isNotEmpty) {
+    hint = secretWordHint;
   }
 
   String? category;

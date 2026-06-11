@@ -227,5 +227,32 @@
     "default_player_count": "تعداد بازیکن پیش‌فرض",
     "player_count": "{} نفر",
     "players_short": "نفر"
+  },
+  "iap": {
+    "title": "نسخه طلایی",
+    "golden_title": "بازی جاسوس — نسخه طلایی",
+    "golden_description": "همه دسته‌ها، نقش‌های ویژه و بدون تبلیغ بین‌دوری",
+    "already_golden": "شما نسخه طلایی دارید — از همه امکانات لذت ببرید!",
+    "feature_categories": "دسترسی به همه دسته‌های پولی",
+    "feature_detective": "نقش کاراگاه",
+    "feature_infiltrator": "نقش نفوذی",
+    "feature_no_ads": "بدون تبلیغ بین‌دوری",
+    "buy_now": "خرید نسخه طلایی",
+    "buy_unavailable": "خرید در دسترس نیست",
+    "restore": "بازیابی خرید",
+    "restoring": "در حال بازیابی...",
+    "purchase_success": "خرید با موفقیت انجام شد!",
+    "purchase_cancelled": "خرید لغو شد",
+    "purchase_pending": "خرید در انتظار تأیید است",
+    "purchase_unavailable": "خرید در این دستگاه در دسترس نیست",
+    "purchase_error": "خطا در خرید — دوباره تلاش کنید",
+    "unlock_sheet_ad_title": "باز کردن دسته",
+    "unlock_sheet_premium_title": "دسته قفل است",
+    "unlock_sheet_ad_hint": "با تماشای یک ویدیو این دسته را باز کنید یا نسخه طلایی بخرید",
+    "unlock_sheet_premium_hint": "این دسته فقط در نسخه طلایی است",
+    "watch_video": "تماشای ویدیو",
+    "buy_golden": "خرید نسخه طلایی",
+    "category_unlocked": "دسته با موفقیت باز شد!",
+    "video_failed": "تماشای ویدیو ناموفق بود"
   }
 }

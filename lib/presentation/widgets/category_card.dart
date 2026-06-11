@@ -12,7 +12,8 @@ class CategoryCard extends StatelessWidget {
     required this.wordCount,
     required this.onTap,
     this.isPremium = false,
-    this.isUnlockedByAd = false,
+    this.isLocked = false,
+    this.showPlayIcon = false,
     this.isCustom = false,
     this.isSelected = false,
     this.accentColor = AppColors.accentClassic,
@@ -23,7 +24,8 @@ class CategoryCard extends StatelessWidget {
   final int wordCount;
   final VoidCallback onTap;
   final bool isPremium;
-  final bool isUnlockedByAd;
+  final bool isLocked;
+  final bool showPlayIcon;
   final bool isCustom;
   final bool isSelected;
   final Color accentColor;
@@ -31,15 +33,13 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLockedPremium = isPremium && !isUnlockedByAd;
-
     return AppCard(
       onTap: onTap,
       isSelected: isSelected,
       selectedGlowColor: accentColor,
-      borderColor: isLockedPremium ? AppColors.accentPremium : null,
+      borderColor: isLocked ? AppColors.accentPremium : null,
       backgroundColor:
-          isLockedPremium ? AppColors.premiumLockedBackground() : null,
+          isLocked ? AppColors.premiumLockedBackground() : null,
       padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,7 +48,6 @@ class CategoryCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // دسته سفارشی: فقط آیکن نشانگر — بقیه ظاهر مثل دسته‌های عادی
                 if (isCustom)
                   const Icon(
                     Icons.folder_special_outlined,
@@ -59,7 +58,7 @@ class CategoryCard extends StatelessWidget {
                   Icon(icon, color: accentColor, size: 28),
                 const Spacer(),
                 if (isPremium)
-                  ProBadge(showPlayIcon: isUnlockedByAd, compact: true),
+                  ProBadge(showPlayIcon: showPlayIcon, compact: true),
               ],
             ),
             const SizedBox(height: 8),

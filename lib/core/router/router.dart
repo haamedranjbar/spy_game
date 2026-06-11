@@ -5,6 +5,7 @@ import 'package:spy_game/presentation/screens/categories/categories_screen.dart'
 import 'package:spy_game/presentation/screens/custom_category/custom_category_screen.dart';
 import 'package:spy_game/presentation/screens/game_config/game_config_screen.dart';
 import 'package:spy_game/presentation/screens/home/home_screen.dart';
+import 'package:spy_game/presentation/screens/iap/iap_screen.dart';
 import 'package:spy_game/presentation/screens/investigation/investigation_screen.dart';
 import 'package:spy_game/presentation/screens/player_setup/player_setup_screen.dart';
 import 'package:spy_game/presentation/screens/result/result_screen.dart';
@@ -80,6 +81,14 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => _fadePage(
         state: state,
         child: const AboutScreen(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.iap,
+      name: 'iap',
+      pageBuilder: (context, state) => _fadePage(
+        state: state,
+        child: const IapScreen(),
       ),
     ),
     GoRoute(

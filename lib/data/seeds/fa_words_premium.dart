@@ -1,14 +1,14 @@
 import 'package:spy_game/data/seeds/category_seed.dart';
 
 /// دسته‌های فقط طلایی + دسته‌های جدید پیشنهادی
-const List<CategorySeed> faPremiumCategorySeeds = [
+final List<CategorySeed> faPremiumCategorySeeds = [
   CategorySeed(
     slug: 'iranian_celebrities',
     iconName: 'star',
     nameFa: 'چهره‌های سرشناس ایرانی',
     nameEn: 'Iranian Celebrities',
     isPremium: true,
-    words: [
+    wordTexts: [
       'رضا عطاران',
       'محمدرضا گلزار',
       'بهرام رادان',

@@ -28,7 +28,8 @@ const WordSchema = CollectionSchema(
       type: IsarType.byte,
       enumMap: _WorddifficultyEnumValueMap,
     ),
-    r'text': PropertySchema(id: 2, name: r'text', type: IsarType.string),
+    r'hint': PropertySchema(id: 2, name: r'hint', type: IsarType.string),
+    r'text': PropertySchema(id: 3, name: r'text', type: IsarType.string),
   },
 
   estimateSize: _wordEstimateSize,
@@ -66,6 +67,12 @@ int _wordEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  {
+    final value = object.hint;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.text.length * 3;
   return bytesCount;
 }
@@ -78,7 +85,8 @@ void _wordSerialize(
 ) {
   writer.writeLong(offsets[0], object.categoryId);
   writer.writeByte(offsets[1], object.difficulty.index);
-  writer.writeString(offsets[2], object.text);
+  writer.writeString(offsets[2], object.hint);
+  writer.writeString(offsets[3], object.text);
 }
 
 Word _wordDeserialize(
@@ -92,8 +100,9 @@ Word _wordDeserialize(
   object.difficulty =
       _WorddifficultyValueEnumMap[reader.readByteOrNull(offsets[1])] ??
       WordDifficulty.easy;
+  object.hint = reader.readStringOrNull(offsets[2]);
   object.id = id;
-  object.text = reader.readString(offsets[2]);
+  object.text = reader.readString(offsets[3]);
   return object;
 }
 
@@ -111,6 +120,8 @@ P _wordDeserializeProp<P>(
               WordDifficulty.easy)
           as P;
     case 2:
+      return (reader.readStringOrNull(offset)) as P;
+    case 3:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -444,6 +455,168 @@ extension WordQueryFilter on QueryBuilder<Word, Word, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Word, Word, QAfterFilterCondition> hintIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'hint'),
+      );
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterFilterCondition> hintIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'hint'),
+      );
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterFilterCondition> hintEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'hint',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterFilterCondition> hintGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'hint',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterFilterCondition> hintLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'hint',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterFilterCondition> hintBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'hint',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterFilterCondition> hintStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'hint',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterFilterCondition> hintEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'hint',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterFilterCondition> hintContains(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'hint',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterFilterCondition> hintMatches(
+    String pattern, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'hint',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterFilterCondition> hintIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'hint', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterFilterCondition> hintIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'hint', value: ''),
+      );
+    });
+  }
+
   QueryBuilder<Word, Word, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -677,6 +850,18 @@ extension WordQuerySortBy on QueryBuilder<Word, Word, QSortBy> {
     });
   }
 
+  QueryBuilder<Word, Word, QAfterSortBy> sortByHint() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hint', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterSortBy> sortByHintDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hint', Sort.desc);
+    });
+  }
+
   QueryBuilder<Word, Word, QAfterSortBy> sortByText() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'text', Sort.asc);
@@ -712,6 +897,18 @@ extension WordQuerySortThenBy on QueryBuilder<Word, Word, QSortThenBy> {
   QueryBuilder<Word, Word, QAfterSortBy> thenByDifficultyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'difficulty', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterSortBy> thenByHint() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hint', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Word, Word, QAfterSortBy> thenByHintDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hint', Sort.desc);
     });
   }
 
@@ -753,6 +950,14 @@ extension WordQueryWhereDistinct on QueryBuilder<Word, Word, QDistinct> {
     });
   }
 
+  QueryBuilder<Word, Word, QDistinct> distinctByHint({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'hint', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Word, Word, QDistinct> distinctByText({
     bool caseSensitive = true,
   }) {
@@ -778,6 +983,12 @@ extension WordQueryProperty on QueryBuilder<Word, Word, QQueryProperty> {
   QueryBuilder<Word, WordDifficulty, QQueryOperations> difficultyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'difficulty');
+    });
+  }
+
+  QueryBuilder<Word, String?, QQueryOperations> hintProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'hint');
     });
   }
 

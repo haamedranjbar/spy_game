@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spy_game/core/router/router.dart';
 import 'package:spy_game/core/theme/app_theme.dart';
+import 'package:spy_game/presentation/providers/monetization_provider.dart';
 import 'package:spy_game/presentation/providers/settings_provider.dart';
 
 Future<void> main() async {
@@ -34,8 +35,9 @@ class SpyGameApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // بارگذاری تنظیمات در شروع اپ
+    // بارگذاری تنظیمات و درآمدزایی در شروع اپ
     ref.watch(settingsProvider);
+    ref.watch(monetizationProvider);
 
     return MaterialApp.router(
       title: 'app.name'.tr(),

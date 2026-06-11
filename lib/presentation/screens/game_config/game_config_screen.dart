@@ -6,6 +6,7 @@ import 'package:spy_game/core/constants/app_colors.dart';
 import 'package:spy_game/core/constants/game_config.dart';
 import 'package:spy_game/core/router/router.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
+import 'package:spy_game/presentation/providers/monetization_provider.dart';
 import 'package:spy_game/presentation/screens/game_config/game_config_provider.dart';
 import 'package:spy_game/presentation/screens/player_setup/player_setup_provider.dart';
 import 'package:spy_game/presentation/widgets/app_card.dart';
@@ -24,6 +25,7 @@ class GameConfigScreen extends ConsumerWidget {
     final gameState = ref.watch(gameProvider);
     final configNotifier = ref.read(gameConfigProvider.notifier);
     final configState = ref.watch(gameConfigProvider);
+    final isGoldenUser = ref.watch(monetizationProvider).isGoldenUser;
     final timerMinutes = gameState.timerSeconds ~/ 60;
 
     return Scaffold(
@@ -136,8 +138,11 @@ class GameConfigScreen extends ConsumerWidget {
                     subtitle: 'game_config.has_detective_hint'.tr(),
                     icon: Icons.search_outlined,
                     value: gameState.hasDetective,
-                    enabled: configNotifier.canEnableDetective,
+                    enabled: isGoldenUser && configNotifier.canEnableDetective,
                     onChanged: configNotifier.setHasDetective,
+                    onPremiumTap: isGoldenUser
+                        ? null
+                        : () => context.push(AppRoutes.iap),
                   ),
                   const SizedBox(height: 12),
                   _PremiumRoleToggle(
@@ -145,8 +150,11 @@ class GameConfigScreen extends ConsumerWidget {
                     subtitle: 'game_config.has_infiltrator_hint'.tr(),
                     icon: Icons.theater_comedy_outlined,
                     value: gameState.hasInfiltrator,
-                    enabled: configNotifier.canEnableInfiltrator,
+                    enabled: isGoldenUser && configNotifier.canEnableInfiltrator,
                     onChanged: configNotifier.setHasInfiltrator,
+                    onPremiumTap: isGoldenUser
+                        ? null
+                        : () => context.push(AppRoutes.iap),
                   ),
                   const SizedBox(height: 12),
                   SettingToggle(
@@ -212,6 +220,7 @@ class _PremiumRoleToggle extends StatelessWidget {
     required this.value,
     required this.enabled,
     required this.onChanged,
+    this.onPremiumTap,
   });
 
   final String title;
@@ -220,20 +229,25 @@ class _PremiumRoleToggle extends StatelessWidget {
   final bool value;
   final bool enabled;
   final ValueChanged<bool> onChanged;
+  final VoidCallback? onPremiumTap;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        SettingToggle(
-          title: title,
-          subtitle: subtitle,
-          icon: icon,
-          value: value,
-          enabled: enabled,
-          accentColor: AppColors.accentPremium,
-          onChanged: onChanged,
+        GestureDetector(
+          onTap: onPremiumTap,
+          behavior: HitTestBehavior.translucent,
+          child: SettingToggle(
+            title: title,
+            subtitle: subtitle,
+            icon: icon,
+            value: value,
+            enabled: enabled,
+            accentColor: AppColors.accentPremium,
+            onChanged: onChanged,
+          ),
         ),
         const Positioned(
           top: 8,

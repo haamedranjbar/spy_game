@@ -51,4 +51,9 @@ abstract final class GameConfig {
 
   // نسخه بسته کلمات seed — با هر آپدیت محتوا افزایش یابد
   static const int wordSeedVersion = 1;
+
+  // شناسه محصول نسخه طلایی در فروشگاه‌ها
+  static const String goldenProductIdGoogle = 'golden_edition';
+  static const String goldenProductIdBazaar = 'golden_edition';
+  static const String goldenProductIdMyket = 'golden_edition';
 }

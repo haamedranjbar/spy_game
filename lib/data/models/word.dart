@@ -17,6 +17,9 @@ class Word {
   /// متن کلمه
   late String text;
 
+  /// راهنمای یک‌کلمه‌ای برای جاسوس — توصیفی بدون لو دادن کلمه
+  String? hint;
+
   /// شناسه دسته‌بندی والد
   @Index()
   late int categoryId;

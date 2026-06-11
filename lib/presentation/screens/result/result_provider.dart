@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
+import 'package:spy_game/presentation/providers/monetization_provider.dart';
 import 'package:spy_game/presentation/screens/timer/timer_provider.dart';
 
 part 'result_provider.g.dart';
@@ -30,9 +31,10 @@ class ResultNotifier extends _$ResultNotifier {
   @override
   ResultUiState build() => const ResultUiState();
 
-  /// شروع دور بعدی
+  /// شروع دور بعدی — قبلش تبلیغ بین‌دوری برای کاربران رایگان
   Future<bool> continueGame() async {
     state = state.copyWith(isLoadingNext: true);
+    await ref.read(monetizationProvider.notifier).showInterstitialIfNeeded();
     final started = await ref.read(gameProvider.notifier).startNextRound();
     if (ref.mounted) {
       state = state.copyWith(isLoadingNext: false);

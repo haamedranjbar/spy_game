@@ -79,17 +79,28 @@ class DefaultWordsSeeder {
         .categoryIdEqualTo(category.id)
         .findAll();
 
-    final existingTexts = existingWords.map((w) => w.text).toSet();
+    final existingByText = {
+      for (final word in existingWords) word.text: word,
+    };
     final newWords = <Word>[];
+    var updatedHints = 0;
 
-    for (final text in seed.words) {
-      if (existingTexts.contains(text)) {
+    for (final entry in seed.words) {
+      final existing = existingByText[entry.text];
+      if (existing != null) {
+        // به‌روزرسانی hint در صورت تغییر seed
+        if (entry.hint != null && existing.hint != entry.hint) {
+          existing.hint = entry.hint;
+          await isar.words.put(existing);
+          updatedHints++;
+        }
         continue;
       }
 
       newWords.add(
         Word()
-          ..text = text
+          ..text = entry.text
+          ..hint = entry.hint
           ..categoryId = category.id
           ..difficulty = seed.difficulty,
       );
@@ -97,6 +108,12 @@ class DefaultWordsSeeder {
 
     if (newWords.isNotEmpty) {
       await isar.words.putAll(newWords);
+    }
+
+    if (updatedHints > 0) {
+      appLogger.i(
+        'Updated $updatedHints hints for category ${seed.slug}',
+      );
     }
 
     final totalWords = existingWords.length + newWords.length;

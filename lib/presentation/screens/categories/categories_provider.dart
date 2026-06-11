@@ -46,8 +46,7 @@ class CategoriesNotifier extends _$CategoriesNotifier {
   }
 
   /// انتخاب دسته — فقط دسته‌های قابل بازی
-  void toggleCategory(WordCategory category, {required bool isGoldenUser}) {
-    if (category.isPremium && !isGoldenUser) return;
+  void toggleCategory(WordCategory category) {
     ref.read(gameProvider.notifier).toggleCategory(category.id);
   }
 

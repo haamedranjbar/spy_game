@@ -104,7 +104,7 @@ class WordRevealScreen extends ConsumerWidget {
 
       currentPlayerIndex: safeIndex,
 
-      secretWord: game.secretWord,
+      secretWordHint: game.secretWordHint,
 
       showCategoryForSpy: game.showCategoryForSpy,
 

@@ -41,6 +41,7 @@ class GameState {
     this.showColorImages = false,
     this.roles = const [],
     this.secretWord = '',
+    this.secretWordHint,
     this.secretCategoryId = 0,
     this.currentRevealIndex = 0,
     this.isCurrentRevealed = false,
@@ -71,6 +72,7 @@ class GameState {
   final bool showColorImages;
   final List<PlayerRole> roles;
   final String secretWord;
+  final String? secretWordHint;
   final int secretCategoryId;
   final int currentRevealIndex;
   final bool isCurrentRevealed;
@@ -157,7 +159,9 @@ class GameState {
     bool? showColorImages,
     List<PlayerRole>? roles,
     String? secretWord,
+    String? secretWordHint,
     int? secretCategoryId,
+    bool clearSecretWordHint = false,
     int? currentRevealIndex,
     bool? isCurrentRevealed,
     int? remainingSeconds,
@@ -190,6 +194,9 @@ class GameState {
       showColorImages: showColorImages ?? this.showColorImages,
       roles: roles ?? this.roles,
       secretWord: secretWord ?? this.secretWord,
+      secretWordHint: clearSecretWordHint
+          ? null
+          : (secretWordHint ?? this.secretWordHint),
       secretCategoryId: secretCategoryId ?? this.secretCategoryId,
       currentRevealIndex: currentRevealIndex ?? this.currentRevealIndex,
       isCurrentRevealed: isCurrentRevealed ?? this.isCurrentRevealed,
@@ -376,6 +383,7 @@ class GameNotifier extends _$GameNotifier {
       state = state.copyWith(
         phase: GamePhase.wordReveal,
         secretWord: word.text,
+        secretWordHint: word.hint,
         secretCategoryId: word.categoryId,
         roles: roles,
         currentRevealIndex: 0,
@@ -386,6 +394,7 @@ class GameNotifier extends _$GameNotifier {
         clearEliminated: true,
         clearWinner: true,
         clearInvestigation: true,
+        clearSecretWordHint: word.hint == null,
         roundNumber: 1,
         isGameOver: false,
       );
@@ -538,6 +547,7 @@ class GameNotifier extends _$GameNotifier {
       state = state.copyWith(
         phase: GamePhase.wordReveal,
         secretWord: word.text,
+        secretWordHint: word.hint,
         secretCategoryId: word.categoryId,
         roles: roles,
         currentRevealIndex: 0,
@@ -548,6 +558,7 @@ class GameNotifier extends _$GameNotifier {
         clearEliminated: true,
         clearWinner: true,
         clearInvestigation: true,
+        clearSecretWordHint: word.hint == null,
         roundNumber: state.roundNumber + 1,
         isGameOver: false,
       );
@@ -579,6 +590,7 @@ class GameNotifier extends _$GameNotifier {
       state = state.copyWith(
         phase: GamePhase.wordReveal,
         secretWord: word.text,
+        secretWordHint: word.hint,
         secretCategoryId: word.categoryId,
         roles: roles,
         currentRevealIndex: 0,
@@ -589,6 +601,7 @@ class GameNotifier extends _$GameNotifier {
         clearEliminated: true,
         clearWinner: true,
         clearInvestigation: true,
+        clearSecretWordHint: word.hint == null,
         roundNumber: state.roundNumber + 1,
       );
       return true;

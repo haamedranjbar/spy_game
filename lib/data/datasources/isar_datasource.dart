@@ -3,8 +3,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:spy_game/core/constants/game_config.dart';
 import 'package:spy_game/core/utils/app_logger.dart';
 import 'package:spy_game/data/datasources/default_words.dart';
+import 'package:spy_game/data/models/ad_unlocked_category.dart';
 import 'package:spy_game/data/models/database_meta.dart';
 import 'package:spy_game/data/models/player_group.dart';
+import 'package:spy_game/data/models/purchase_state.dart';
 import 'package:spy_game/data/models/word.dart';
 import 'package:spy_game/data/models/word_category.dart';
 
@@ -38,6 +40,8 @@ class IsarDatasource {
           WordCategorySchema,
           WordSchema,
           PlayerGroupSchema,
+          PurchaseStateSchema,
+          AdUnlockedCategorySchema,
         ],
         directory: dir.path,
         name: kIsarInstanceName,

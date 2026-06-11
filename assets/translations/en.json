@@ -227,5 +227,32 @@
     "default_player_count": "Default player count",
     "player_count": "{} players",
     "players_short": "players"
+  },
+  "iap": {
+    "title": "Golden Edition",
+    "golden_title": "Spy Game — Golden Edition",
+    "golden_description": "All categories, special roles, and no between-round ads",
+    "already_golden": "You have Golden Edition — enjoy all features!",
+    "feature_categories": "Access to all premium categories",
+    "feature_detective": "Detective role",
+    "feature_infiltrator": "Infiltrator role",
+    "feature_no_ads": "No between-round ads",
+    "buy_now": "Buy Golden Edition",
+    "buy_unavailable": "Purchase unavailable",
+    "restore": "Restore purchase",
+    "restoring": "Restoring...",
+    "purchase_success": "Purchase successful!",
+    "purchase_cancelled": "Purchase cancelled",
+    "purchase_pending": "Purchase pending confirmation",
+    "purchase_unavailable": "Purchase not available on this device",
+    "purchase_error": "Purchase failed — please try again",
+    "unlock_sheet_ad_title": "Unlock category",
+    "unlock_sheet_premium_title": "Category locked",
+    "unlock_sheet_ad_hint": "Watch a video to unlock this category or buy Golden Edition",
+    "unlock_sheet_premium_hint": "This category is Golden Edition only",
+    "watch_video": "Watch video",
+    "buy_golden": "Buy Golden Edition",
+    "category_unlocked": "Category unlocked!",
+    "video_failed": "Video failed to play"
   }
 }
