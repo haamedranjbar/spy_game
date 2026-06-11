@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spy_game/core/constants/app_assets.dart';
 import 'package:spy_game/core/constants/app_colors.dart';
 import 'package:spy_game/core/router/router.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
@@ -22,15 +23,38 @@ class HomeScreen extends ConsumerWidget {
     return ExitConfirmScope(
       child: Scaffold(
         backgroundColor: AppColors.background,
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // فضای خالی بالا — بعداً تصویر زمینه اضافه می‌شود
-                const Spacer(),
-                GradientButton(
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            // والپیپر تم جاسوس — بالای صفحه
+            Image.asset(
+              AppAssets.homeWallpaper,
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+            ),
+            // گرادیان پایین برای خوانایی دکمه‌ها
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.background.withValues(alpha: 0),
+                    AppColors.background.withValues(alpha: 0.6),
+                    AppColors.background.withValues(alpha: 0.9),
+                  ],
+                  stops: const [0.35, 0.65, 1.0],
+                ),
+              ),
+            ),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Spacer(),
+                    GradientButton(
                   label: 'home.start_game'.tr(),
                   icon: Icons.play_arrow_rounded,
                   height: kHomeButtonHeight,
@@ -49,10 +73,12 @@ class HomeScreen extends ConsumerWidget {
                   onAbout: () => context.push(AppRoutes.about),
                   onIap: () => context.push(AppRoutes.iap),
                 ),
-                const SizedBox(height: 8),
-              ],
+                    const SizedBox(height: 8),
+                  ],
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
