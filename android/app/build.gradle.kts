@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.spy_game"
+    namespace = "ir.hamed.spygame"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -43,7 +43,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.spy_game"
+        applicationId = "ir.hamed.spygame"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

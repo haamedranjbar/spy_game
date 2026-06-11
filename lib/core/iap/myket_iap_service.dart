@@ -5,7 +5,7 @@ import 'package:spy_game/core/utils/app_logger.dart';
 
 /// پیاده‌سازی IAP برای مایکت — از MethodChannel استفاده می‌کند
 class MyketIapService implements IapService {
-  static const _channel = MethodChannel('com.example.spy_game/myket_iap');
+  static const _channel = MethodChannel('ir.hamed.spygame/myket_iap');
 
   @override
   Future<void> initialize() async {

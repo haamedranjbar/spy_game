@@ -5,7 +5,7 @@ import 'package:spy_game/core/utils/app_logger.dart';
 
 /// پیاده‌سازی IAP برای کافه‌بازار — از MethodChannel استفاده می‌کند
 class BazaarIapService implements IapService {
-  static const _channel = MethodChannel('com.example.spy_game/bazaar_iap');
+  static const _channel = MethodChannel('ir.hamed.spygame/bazaar_iap');
 
   @override
   Future<void> initialize() async {

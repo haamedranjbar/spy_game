@@ -1,4 +1,4 @@
-package com.example.spy_game
+package ir.hamed.spygame
 
 import android.content.pm.PackageManager
 import io.flutter.embedding.android.FlutterActivity
@@ -21,7 +21,7 @@ class MainActivity : FlutterActivity() {
     private fun registerBazaarChannel(flutterEngine: FlutterEngine) {
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
-            "com.example.spy_game/bazaar_iap",
+            "ir.hamed.spygame/bazaar_iap",
         ).setMethodCallHandler { call, result ->
             when (call.method) {
                 "initialize" -> result.success(null)
@@ -68,7 +68,7 @@ class MainActivity : FlutterActivity() {
     private fun registerMyketChannel(flutterEngine: FlutterEngine) {
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
-            "com.example.spy_game/myket_iap",
+            "ir.hamed.spygame/myket_iap",
         ).setMethodCallHandler { call, result ->
             when (call.method) {
                 "initialize" -> result.success(null)
