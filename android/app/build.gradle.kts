@@ -35,6 +35,11 @@ android {
             dimension = "store"
             applicationIdSuffix = ".myket"
             resValue("string", "app_name", "بازی جاسوس")
+            // پیکربندی billing مایکت — طبق مستند myket_iap
+            manifestPlaceholders["marketApplicationId"] = "ir.mservices.market"
+            manifestPlaceholders["marketBindAddress"] =
+                "ir.mservices.market.InAppBillingService.BIND"
+            manifestPlaceholders["marketPermission"] = "ir.mservices.market.BILLING"
         }
         create("google") {
             dimension = "store"

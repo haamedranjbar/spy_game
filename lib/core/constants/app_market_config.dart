@@ -17,12 +17,15 @@ abstract final class AppMarketConfig {
     defaultValue: 'google',
   );
 
-  /// فروشگاه این بیلد
-  static AppMarket get market => switch (_raw) {
+  /// فروشگاه از dart-define — fallback وقتی flavor bridge در دسترس نیست
+  static AppMarket get marketFromDartDefine => switch (_raw) {
         'bazaar' => AppMarket.bazaar,
         'myket' => AppMarket.myket,
         _ => AppMarket.google,
       };
+
+  /// فروشگاه این بیلد (فقط dart-define — ترجیحاً از AppFlavorBridge استفاده کن)
+  static AppMarket get market => marketFromDartDefine;
 
   /// نام نمایشی برای لاگ و دیباگ
   static String get marketLabel => switch (market) {

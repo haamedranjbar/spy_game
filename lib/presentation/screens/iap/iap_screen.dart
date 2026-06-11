@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:spy_game/core/constants/app_colors.dart';
+import 'package:spy_game/core/constants/app_market_config.dart';
 import 'package:spy_game/core/iap/iap_interface.dart';
 import 'package:spy_game/presentation/providers/monetization_provider.dart';
 import 'package:spy_game/presentation/screens/iap/iap_provider.dart';
@@ -83,6 +84,11 @@ class IapScreen extends ConsumerWidget {
                         ],
                       ),
                     ),
+                    if (!monetization.isGoldenUser &&
+                        !monetization.isProductAvailable) ...[
+                      const SizedBox(height: 12),
+                      _PurchaseHintCard(monetization: monetization),
+                    ],
                     const SizedBox(height: 20),
                     Expanded(
                       child: ListView(
@@ -149,7 +155,7 @@ class IapScreen extends ConsumerWidget {
   ) async {
     final result = await notifier.purchase();
     if (!context.mounted) return;
-    _showResultSnackBar(context, result);
+    _showResultSnackBar(context, ref, result);
   }
 
   Future<void> _handleRestore(
@@ -159,16 +165,27 @@ class IapScreen extends ConsumerWidget {
   ) async {
     final result = await notifier.restore();
     if (!context.mounted) return;
-    _showResultSnackBar(context, result);
+    _showResultSnackBar(context, ref, result);
   }
 
-  void _showResultSnackBar(BuildContext context, IapPurchaseResult result) {
+  void _showResultSnackBar(
+    BuildContext context,
+    WidgetRef ref,
+    IapPurchaseResult result,
+  ) {
+    final market = ref.read(monetizationProvider).activeMarket;
     final message = switch (result) {
       IapPurchaseResult.success => 'iap.purchase_success'.tr(),
       IapPurchaseResult.cancelled => 'iap.purchase_cancelled'.tr(),
       IapPurchaseResult.pending => 'iap.purchase_pending'.tr(),
-      IapPurchaseResult.unavailable => 'iap.purchase_unavailable'.tr(),
-      IapPurchaseResult.error => 'iap.purchase_error'.tr(),
+      IapPurchaseResult.unavailable => switch (market) {
+        AppMarket.myket => 'iap.purchase_unavailable_myket'.tr(),
+        AppMarket.bazaar => 'iap.purchase_unavailable_bazaar'.tr(),
+        AppMarket.google => 'iap.purchase_unavailable'.tr(),
+      },
+      IapPurchaseResult.error => market == AppMarket.myket
+          ? 'iap.purchase_error_myket'.tr()
+          : 'iap.purchase_error'.tr(),
     };
 
     if (result == IapPurchaseResult.success) {
@@ -178,6 +195,47 @@ class IapScreen extends ConsumerWidget {
     } else {
       AppSnackBar.error(context, message);
     }
+  }
+}
+
+class _PurchaseHintCard extends StatelessWidget {
+  const _PurchaseHintCard({required this.monetization});
+
+  final MonetizationState monetization;
+
+  @override
+  Widget build(BuildContext context) {
+    final hintKey = switch (monetization.activeMarket) {
+      AppMarket.myket when !monetization.isStoreAppInstalled =>
+        'iap.hint_install_myket',
+      AppMarket.myket when !monetization.isIapReady =>
+        'iap.hint_myket_login',
+      AppMarket.myket => 'iap.hint_myket_upload_apk',
+      AppMarket.bazaar when !monetization.isStoreAppInstalled =>
+        'iap.hint_install_bazaar',
+      AppMarket.bazaar => 'iap.hint_bazaar_stub',
+      AppMarket.google => 'iap.hint_google_play',
+    };
+
+    return AppCard(
+      borderColor: AppColors.primaryBlue,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.info_outline, color: AppColors.primaryBlue, size: 22),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              hintKey.tr(),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: AppColors.textSecondary),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

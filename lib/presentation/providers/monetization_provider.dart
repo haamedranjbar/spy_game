@@ -1,8 +1,10 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spy_game/core/ads/ad_interface.dart';
 import 'package:spy_game/core/ads/ad_service_factory.dart';
+import 'package:spy_game/core/constants/app_market_config.dart';
 import 'package:spy_game/core/iap/iap_interface.dart';
 import 'package:spy_game/core/iap/iap_service_factory.dart';
+import 'package:spy_game/core/utils/app_flavor_bridge.dart';
 import 'package:spy_game/core/utils/app_logger.dart';
 import 'package:spy_game/core/utils/category_access.dart';
 import 'package:spy_game/data/models/word_category.dart';
@@ -18,6 +20,9 @@ class MonetizationState {
     this.adUnlockedSlugs = const {},
     this.productTitle = '',
     this.productPrice = '',
+    this.activeMarket = AppMarket.google,
+    this.isIapReady = false,
+    this.isStoreAppInstalled = true,
     this.isProductAvailable = false,
     this.isLoading = true,
     this.isPurchasing = false,
@@ -30,6 +35,9 @@ class MonetizationState {
   final Set<String> adUnlockedSlugs;
   final String productTitle;
   final String productPrice;
+  final AppMarket activeMarket;
+  final bool isIapReady;
+  final bool isStoreAppInstalled;
   final bool isProductAvailable;
   final bool isLoading;
   final bool isPurchasing;
@@ -42,6 +50,9 @@ class MonetizationState {
     Set<String>? adUnlockedSlugs,
     String? productTitle,
     String? productPrice,
+    AppMarket? activeMarket,
+    bool? isIapReady,
+    bool? isStoreAppInstalled,
     bool? isProductAvailable,
     bool? isLoading,
     bool? isPurchasing,
@@ -54,6 +65,9 @@ class MonetizationState {
       adUnlockedSlugs: adUnlockedSlugs ?? this.adUnlockedSlugs,
       productTitle: productTitle ?? this.productTitle,
       productPrice: productPrice ?? this.productPrice,
+      activeMarket: activeMarket ?? this.activeMarket,
+      isIapReady: isIapReady ?? this.isIapReady,
+      isStoreAppInstalled: isStoreAppInstalled ?? this.isStoreAppInstalled,
       isProductAvailable: isProductAvailable ?? this.isProductAvailable,
       isLoading: isLoading ?? this.isLoading,
       isPurchasing: isPurchasing ?? this.isPurchasing,
@@ -83,6 +97,9 @@ class MonetizationNotifier extends _$MonetizationNotifier {
 
   Future<void> _initialize() async {
     try {
+      final market = await AppFlavorBridge.resolveMarket();
+      final storeInstalled = await AppFlavorBridge.isStoreAppInstalled(market);
+
       _iapService = await IapServiceFactory.create();
       _adService = await AdServiceFactory.create();
 
@@ -91,7 +108,13 @@ class MonetizationNotifier extends _$MonetizationNotifier {
       final isar = await ref.read(isarProvider.future);
       final purchaseState = await _repository.getPurchaseState(isar: isar);
       final adUnlocked = await _repository.getAdUnlockedSlugs(isar: isar);
+      final iapReady = await _iapService!.isAvailable();
       final product = await _iapService!.getGoldenProduct();
+      final canPurchase = _canPurchase(
+        market: market,
+        iapReady: iapReady,
+        storeInstalled: storeInstalled,
+      );
 
       if (ref.mounted) {
         state = state.copyWith(
@@ -99,8 +122,21 @@ class MonetizationNotifier extends _$MonetizationNotifier {
           adUnlockedSlugs: adUnlocked,
           productTitle: product?.title ?? '',
           productPrice: product?.price ?? '',
-          isProductAvailable: product?.isAvailable ?? false,
+          activeMarket: market,
+          isIapReady: iapReady,
+          isStoreAppInstalled: storeInstalled,
+          isProductAvailable: canPurchase,
           isLoading: false,
+        );
+      }
+
+      if (!storeInstalled && market != AppMarket.google) {
+        appLogger.w('Store app not installed for $market');
+      } else if (!iapReady) {
+        appLogger.w('IAP billing not ready — check store app install/login');
+      } else if (product == null) {
+        appLogger.w(
+          'IAP ready but product details missing — purchase may still work',
         );
       }
 
@@ -114,6 +150,20 @@ class MonetizationNotifier extends _$MonetizationNotifier {
         state = state.copyWith(isLoading: false);
       }
     }
+  }
+
+  /// آیا دکمه خرید باید فعال باشد؟
+  bool _canPurchase({
+    required AppMarket market,
+    required bool iapReady,
+    required bool storeInstalled,
+  }) {
+    return switch (market) {
+      // مایکت: اجازه تلاش خرید حتی بدون قیمت — intent از سمت مایکت باز می‌شود
+      AppMarket.myket => storeInstalled,
+      AppMarket.bazaar => iapReady && storeInstalled,
+      AppMarket.google => iapReady,
+    };
   }
 
   /// آیا دسته قفل است؟

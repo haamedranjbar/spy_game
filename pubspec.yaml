@@ -29,6 +29,7 @@ dependencies:
   # Utils
   logger: ^2.3.0
   shared_preferences: ^2.5.3
+  myket_iap: ^1.1.12
 
 dev_dependencies:
   flutter_test:
