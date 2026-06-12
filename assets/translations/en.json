@@ -87,7 +87,10 @@
     "has_detective": "Detective",
     "has_detective_hint": "One player can investigate once before voting",
     "has_infiltrator": "Infiltrator",
-    "has_infiltrator_hint": "A spy who sees the word and knows other spies"
+    "has_infiltrator_hint": "A spy who sees the word and knows other spies",
+    "detective_help_detail": "The Detective is a Golden Edition special role.\n\n• Sees the secret word like a citizen\n• After discussion and before voting, can investigate one player once\n• Uses targeted questions to find the spy\n\nRequires Golden Edition to enable.",
+    "infiltrator_help_detail": "The Infiltrator is a Golden Edition special role.\n\n• Is a spy but sees the secret word\n• Knows the names of other spies\n• Can blend into discussion without looking suspicious\n\nRequires Golden Edition to enable.",
+    "role_help_understood": "Got it"
   },
   "custom_category": {
     "title": "Custom Category",

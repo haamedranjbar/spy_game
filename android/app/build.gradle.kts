@@ -1,9 +1,33 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+// خواندن اطلاعات keystore از key.properties (فایل محلی — داخل git نیست)
+val keystorePropertiesFile = rootProject.file("key.properties")
+val keystoreProperties = Properties()
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.reader(Charsets.UTF_8).use { reader ->
+        keystoreProperties.load(reader)
+    }
+    // PowerShell گاهی UTF-8 BOM می‌گذارد و storePassword null می‌شود
+    val bomKey = keystoreProperties.keys.firstOrNull { (it as String).startsWith("\uFEFF") } as String?
+    if (bomKey != null) {
+        keystoreProperties.setProperty(
+            bomKey.removePrefix("\uFEFF"),
+            keystoreProperties.getProperty(bomKey),
+        )
+        keystoreProperties.remove(bomKey)
+    }
+}
+
+fun Properties.keystoreProp(name: String): String =
+    getProperty(name)?.trim()
+        ?: error("android/key.properties: '$name' پیدا نشد یا خالی است")
 
 android {
     namespace = "ir.hamed.spygame"
@@ -55,10 +79,24 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        create("release") {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias = keystoreProperties.keystoreProp("keyAlias")
+                keyPassword = keystoreProperties.keystoreProp("keyPassword")
+                storeFile = file(keystoreProperties.keystoreProp("storeFile"))
+                storePassword = keystoreProperties.keystoreProp("storePassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (keystorePropertiesFile.exists()) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 }

@@ -13,7 +13,6 @@ import 'package:spy_game/presentation/widgets/app_card.dart';
 import 'package:spy_game/presentation/widgets/app_snackbar.dart';
 import 'package:spy_game/presentation/widgets/counter_card.dart';
 import 'package:spy_game/presentation/widgets/gradient_button.dart';
-import 'package:spy_game/presentation/widgets/pro_badge.dart';
 import 'package:spy_game/presentation/widgets/setting_toggle.dart';
 
 /// صفحه تنظیمات دور — تعداد جاسوس، تایمر، قوانین
@@ -133,34 +132,59 @@ class GameConfigScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  _PremiumRoleToggle(
-                    title: 'game_config.has_detective'.tr(),
-                    subtitle: 'game_config.has_detective_hint'.tr(),
-                    icon: Icons.search_outlined,
-                    value: gameState.hasDetective,
-                    enabled: isGoldenUser && configNotifier.canEnableDetective,
-                    onChanged: configNotifier.setHasDetective,
-                    onPremiumTap: isGoldenUser
-                        ? null
-                        : () => context.push(AppRoutes.iap),
-                  ),
-                  const SizedBox(height: 12),
-                  _PremiumRoleToggle(
-                    title: 'game_config.has_infiltrator'.tr(),
-                    subtitle: 'game_config.has_infiltrator_hint'.tr(),
-                    icon: Icons.theater_comedy_outlined,
-                    value: gameState.hasInfiltrator,
-                    enabled: isGoldenUser && configNotifier.canEnableInfiltrator,
-                    onChanged: configNotifier.setHasInfiltrator,
-                    onPremiumTap: isGoldenUser
-                        ? null
-                        : () => context.push(AppRoutes.iap),
+                  // کارت مربع کنار هم — ارتفاع صریح از عرض ستون
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      const gap = 12.0;
+                      final cardWidth = (constraints.maxWidth - gap) / 2;
+
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: cardWidth,
+                            height: cardWidth,
+                            child: _PremiumRoleToggle(
+                              title: 'game_config.has_detective'.tr(),
+                              helpBodyKey: 'game_config.detective_help_detail',
+                              icon: Icons.search_outlined,
+                              value: gameState.hasDetective,
+                              enabled: isGoldenUser &&
+                                  configNotifier.canEnableDetective,
+                              onChanged: configNotifier.setHasDetective,
+                              onPremiumTap: isGoldenUser
+                                  ? null
+                                  : () => context.push(AppRoutes.iap),
+                            ),
+                          ),
+                          const SizedBox(width: gap),
+                          SizedBox(
+                            width: cardWidth,
+                            height: cardWidth,
+                            child: _PremiumRoleToggle(
+                              title: 'game_config.has_infiltrator'.tr(),
+                              helpBodyKey:
+                                  'game_config.infiltrator_help_detail',
+                              icon: Icons.theater_comedy_outlined,
+                              value: gameState.hasInfiltrator,
+                              enabled: isGoldenUser &&
+                                  configNotifier.canEnableInfiltrator,
+                              onChanged: configNotifier.setHasInfiltrator,
+                              onPremiumTap: isGoldenUser
+                                  ? null
+                                  : () => context.push(AppRoutes.iap),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 12),
                   SettingToggle(
                     title: 'game_config.show_category_spy'.tr(),
                     icon: Icons.category,
                     value: gameState.showCategoryForSpy,
+                    accentColor: AppColors.accentDefault,
                     onChanged: configNotifier.setShowCategoryForSpy,
                   ),
                   const SizedBox(height: 12),
@@ -168,6 +192,7 @@ class GameConfigScreen extends ConsumerWidget {
                     title: 'game_config.spy_hint'.tr(),
                     icon: Icons.lightbulb_outline,
                     value: gameState.spyHintEnabled,
+                    accentColor: AppColors.accentPremium,
                     onChanged: configNotifier.setSpyHintEnabled,
                   ),
                   const SizedBox(height: 12),
@@ -175,6 +200,7 @@ class GameConfigScreen extends ConsumerWidget {
                     title: 'game_config.spies_know_each_other'.tr(),
                     icon: Icons.group_outlined,
                     value: gameState.spiesKnowEachOther,
+                    accentColor: AppColors.accentClassic,
                     onChanged: configNotifier.setSpiesKnowEachOther,
                   ),
                 ],
@@ -211,11 +237,105 @@ class GameConfigScreen extends ConsumerWidget {
   }
 }
 
-/// سوئیچ نقش ویژه با نشان PRO
+/// نمایش مودال راهنمای نقش ویژه
+Future<void> _showRoleHelpDialog(
+  BuildContext context, {
+  required String title,
+  required String body,
+  required IconData icon,
+}) {
+  return showDialog<void>(
+    context: context,
+    builder: (dialogContext) => Dialog(
+      backgroundColor: AppColors.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 16, 12, 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Icon(icon, color: AppColors.accentPremium, size: 26),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: Theme.of(dialogContext).textTheme.titleMedium,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.pop(dialogContext),
+                  icon: const Icon(Icons.close, color: AppColors.textMuted),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              body,
+              style: Theme.of(dialogContext).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textSecondary,
+                    height: 1.55,
+                  ),
+            ),
+            const SizedBox(height: 20),
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: Text('game_config.role_help_understood'.tr()),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+/// آیکن گوشه کارت — راهنما یا قفل با اندازه یکسان
+class _CornerIconButton extends StatelessWidget {
+  const _CornerIconButton({
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  static const double _size = 28;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          width: _size,
+          height: _size,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: color),
+          ),
+          alignment: Alignment.center,
+          child: Icon(icon, size: 16, color: color),
+        ),
+      ),
+    );
+  }
+}
+
+/// سوئیچ نقش ویژه با نشان PRO و راهنما — کنار هم در یک ردیف
 class _PremiumRoleToggle extends StatelessWidget {
   const _PremiumRoleToggle({
     required this.title,
-    required this.subtitle,
+    required this.helpBodyKey,
     required this.icon,
     required this.value,
     required this.enabled,
@@ -224,7 +344,7 @@ class _PremiumRoleToggle extends StatelessWidget {
   });
 
   final String title;
-  final String subtitle;
+  final String helpBodyKey;
   final IconData icon;
   final bool value;
   final bool enabled;
@@ -234,25 +354,53 @@ class _PremiumRoleToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      clipBehavior: Clip.none,
+      fit: StackFit.expand,
+      clipBehavior: Clip.hardEdge,
       children: [
+        // بچه غیر Positioned — محدودیت مربع را به کارت می‌دهد
         GestureDetector(
           onTap: onPremiumTap,
           behavior: HitTestBehavior.translucent,
           child: SettingToggle(
             title: title,
-            subtitle: subtitle,
             icon: icon,
             value: value,
             enabled: enabled,
+            compact: true,
+            compactTopInset: 34,
+            expand: true,
             accentColor: AppColors.accentPremium,
             onChanged: onChanged,
           ),
         ),
-        const Positioned(
+        Positioned.directional(
+          textDirection: Directionality.of(context),
           top: 8,
-          right: 56,
-          child: ProBadge(),
+          end: 8,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _CornerIconButton(
+                icon: Icons.help_outline,
+                color: AppColors.primaryBlue,
+                onTap: () => _showRoleHelpDialog(
+                  context,
+                  title: title,
+                  body: helpBodyKey.tr(),
+                  icon: icon,
+                ),
+              ),
+              const SizedBox(width: 6),
+              IgnorePointer(
+                ignoring: onPremiumTap == null,
+                child: _CornerIconButton(
+                  icon: Icons.lock_outline,
+                  color: AppColors.accentPremium,
+                  onTap: onPremiumTap ?? () {},
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
