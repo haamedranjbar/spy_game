@@ -53,6 +53,7 @@ flutter:
   assets:
     - assets/translations/
     - assets/icon/wallspy.jpg
+    - assets/icon/app_icon.png
   fonts:
     - family: Vazirmatn
       fonts:

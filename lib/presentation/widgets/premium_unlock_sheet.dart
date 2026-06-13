@@ -126,11 +126,6 @@ class _PremiumUnlockSheet extends ConsumerWidget {
                 context.push(AppRoutes.iap);
               },
             ),
-            const SizedBox(height: 8),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('common.cancel'.tr()),
-            ),
           ],
         ),
       ),

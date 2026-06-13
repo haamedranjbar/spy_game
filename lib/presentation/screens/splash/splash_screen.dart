@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:spy_game/core/constants/app_assets.dart';
 import 'package:spy_game/core/constants/app_colors.dart';
 import 'package:spy_game/core/router/router.dart';
 import 'package:spy_game/presentation/screens/splash/splash_provider.dart';
@@ -83,22 +84,23 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             width: 100,
             height: 100,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: AppColors.gradientPurple,
-              ),
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.accentDefault.withValues(alpha: 0.4),
+                  color: AppColors.primaryRed.withValues(alpha: 0.35),
                   blurRadius: 24,
                   spreadRadius: 2,
                 ),
               ],
             ),
-            child: const Icon(
-              Icons.visibility_off,
-              size: 52,
-              color: AppColors.textPrimary,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Image.asset(
+                AppAssets.appIcon,
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           const SizedBox(height: 24),
