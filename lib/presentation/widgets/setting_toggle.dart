@@ -57,6 +57,7 @@ class SettingToggle extends StatelessWidget {
         onTap: enabled ? () => onChanged(!value) : null,
         isSelected: isActive,
         selectedGlowColor: accentColor,
+        accentTint: accentColor,
         expandChild: expand,
         padding: EdgeInsets.symmetric(
           horizontal: compact ? 8 : 16,
@@ -157,6 +158,34 @@ class SettingToggle extends StatelessWidget {
                 const SizedBox(height: 18),
               ],
             ],
+          ),
+        ),
+        const SizedBox(width: 8),
+        SwitchTheme(
+          data: SwitchThemeData(
+            thumbColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) {
+                return AppColors.textPrimary;
+              }
+              return AppColors.textMuted;
+            }),
+            trackColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) {
+                return accentColor;
+              }
+              return AppColors.surfaceLight;
+            }),
+            trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) {
+                return accentColor.withValues(alpha: 0.5);
+              }
+              return AppColors.cardBorder;
+            }),
+          ),
+          child: Switch(
+            value: value,
+            onChanged: enabled ? onChanged : null,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
         ),
       ],

@@ -20,13 +20,13 @@ class CreateCustomCard extends StatelessWidget {
       onTap: onTap,
       borderColor: _accent,
       backgroundColor: Color.lerp(AppColors.surface, _accent, 0.1)!,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 48,
-            height: 48,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
               color: _accent.withValues(alpha: 0.18),
               shape: BoxShape.circle,
@@ -35,25 +35,19 @@ class CreateCustomCard extends StatelessWidget {
             child: const Icon(
               Icons.add,
               color: _accent,
-              size: 28,
+              size: 24,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Text(
             'category.create_custom'.tr(),
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: _accent,
                   fontWeight: FontWeight.w700,
                 ),
             textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'category.create_custom_hint'.tr(),
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

@@ -16,6 +16,7 @@ class CounterCard extends StatelessWidget {
     this.actionHint,
     this.minValue,
     this.maxValue,
+    this.largeValue = false,
   });
 
   final String title;
@@ -28,6 +29,7 @@ class CounterCard extends StatelessWidget {
   final String? actionHint;
   final int? minValue;
   final int? maxValue;
+  final bool largeValue;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class CounterCard extends StatelessWidget {
 
     return AppCard(
       onTap: onTap,
+      accentTint: accentColor,
       child: SizedBox(
         width: double.infinity,
         child: Column(
@@ -79,7 +82,10 @@ class CounterCard extends StatelessWidget {
                 ),
                 Text(
                   '$value',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  style: (largeValue
+                          ? Theme.of(context).textTheme.displaySmall
+                          : Theme.of(context).textTheme.headlineMedium)
+                      ?.copyWith(
                         color: accentColor,
                         fontWeight: FontWeight.w800,
                       ),

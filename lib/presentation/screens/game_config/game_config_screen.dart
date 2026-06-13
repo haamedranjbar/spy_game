@@ -55,7 +55,7 @@ class GameConfigScreen extends ConsumerWidget {
                             value: gameState.playerNames.length,
                             icon: Icons.people_outline,
                             accentColor: AppColors.accentDefault,
-                            actionHint: 'game_config.edit_players_hint'.tr(),
+                            largeValue: true,
                             onTap: () {
                               ref
                                   .read(playerSetupProvider.notifier)
@@ -71,6 +71,7 @@ class GameConfigScreen extends ConsumerWidget {
                             value: gameState.spyCount,
                             icon: Icons.visibility_off,
                             accentColor: AppColors.accentDanger,
+                            largeValue: true,
                             minValue: GameConfig.minSpies,
                             maxValue: configNotifier.maxSpies,
                             onIncrement: configNotifier.incrementSpyCount,
@@ -88,6 +89,7 @@ class GameConfigScreen extends ConsumerWidget {
                     value: timerMinutes,
                     icon: Icons.timer_outlined,
                     accentColor: AppColors.accentClassic,
+                    largeValue: true,
                     minValue: GameConfig.minTimerSeconds ~/ 60,
                     maxValue: GameConfig.maxTimerSeconds ~/ 60,
                     onIncrement: configNotifier.incrementTimer,
@@ -96,6 +98,7 @@ class GameConfigScreen extends ConsumerWidget {
                   const SizedBox(height: 20),
                   AppCard(
                     onTap: () => context.push(AppRoutes.categories),
+                    accentTint: AppColors.accentDefault,
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       children: [
@@ -352,6 +355,7 @@ class _PremiumRoleToggle extends StatelessWidget {
         onTap: enabled ? () => onChanged(!value) : onPremiumTap,
         isSelected: isActive,
         selectedGlowColor: AppColors.accentPremium,
+        accentTint: AppColors.accentPremium,
         expandChild: true,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
         child: Row(

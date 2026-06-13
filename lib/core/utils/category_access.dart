@@ -1,6 +1,6 @@
 import 'package:spy_game/data/models/word_category.dart';
 
-/// منطق دسترسی به دسته — رایگان، ویدیو، طلایی
+/// منطق دسترسی به دسته — رایگان، ویدیو موقت، طلایی دائمی
 abstract final class CategoryAccess {
   /// آیا دسته قفل است؟
   static bool isLocked({

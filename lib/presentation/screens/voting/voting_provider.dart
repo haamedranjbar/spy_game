@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spy_game/data/models/player_role.dart';
 import 'package:spy_game/presentation/providers/audio_provider.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
+import 'package:spy_game/presentation/providers/monetization_provider.dart';
 import 'package:spy_game/presentation/screens/timer/timer_provider.dart';
 
 part 'voting_provider.g.dart';
@@ -53,6 +54,7 @@ class VotingNotifier extends _$VotingNotifier {
     ref.read(audioServiceProvider).playTimerEnd();
     ref.read(audioServiceProvider).vibrateHeavy();
     ref.read(gameProvider.notifier).endGameReveal();
+    ref.read(monetizationProvider.notifier).resetVideoUnlocksAfterRound();
 
     // ذخیره نتیجه این دور — مستقل از state بازی دور بعد
     state = state.copyWith(

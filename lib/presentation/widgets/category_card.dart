@@ -4,7 +4,7 @@ import 'package:spy_game/core/constants/app_colors.dart';
 import 'package:spy_game/presentation/widgets/app_card.dart';
 import 'package:spy_game/presentation/widgets/pro_badge.dart';
 
-/// کارت دسته‌بندی در grid دو ستونه
+/// کارت دسته‌بندی در grid سه ستونه
 class CategoryCard extends StatelessWidget {
   const CategoryCard({
     super.key,
@@ -40,7 +40,8 @@ class CategoryCard extends StatelessWidget {
       borderColor: isLocked ? AppColors.accentPremium : null,
       backgroundColor:
           isLocked ? AppColors.premiumLockedBackground() : null,
-      padding: const EdgeInsets.all(14),
+      accentTint: isLocked ? null : accentColor,
+      padding: const EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -55,7 +56,7 @@ class CategoryCard extends StatelessWidget {
                     size: 22,
                   )
                 else if (icon != null)
-                  Icon(icon, color: accentColor, size: 28),
+                  Icon(icon, color: accentColor, size: 22),
                 const Spacer(),
                 if (isPremium)
                   ProBadge(showPlayIcon: showPlayIcon, compact: true),
@@ -65,7 +66,7 @@ class CategoryCard extends StatelessWidget {
           ],
           Text(
             name,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.titleSmall,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),

@@ -21,6 +21,14 @@ abstract final class AppColors {
   /// پس‌زمینه ملایم دسته‌های قفل‌دار — لایه طلایی شفاف روی سطح تیره
   static Color premiumLockedBackground([Color base = surface]) =>
       Color.lerp(base, accentPremium, 0.1)!;
+
+  /// پس‌زمینه بسیار شفاف کارت — بر اساس رنگ accent متن/آیکن
+  static Color tintedSurface(
+    Color accent, {
+    Color base = surface,
+    double strength = 0.07,
+  }) =>
+      Color.lerp(base, accent, strength)!;
   /// ساخت دسته سفارشی — متمایز از طلایی قفل پریمیوم
   static const Color accentCustomCategory = Color(0xFF2DD4BF);
   static const Color accentDanger = Color(0xFFEF4444);

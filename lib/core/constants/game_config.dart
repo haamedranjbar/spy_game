@@ -50,10 +50,16 @@ abstract final class GameConfig {
   static const int minCustomCategoryWords = 2;
 
   // نسخه بسته کلمات seed — با هر آپدیت محتوا افزایش یابد
-  static const int wordSeedVersion = 1;
+  static const int wordSeedVersion = 2;
 
   // شناسه محصول نسخه طلایی در فروشگاه‌ها
   static const String goldenProductIdGoogle = 'golden_edition';
   static const String goldenProductIdBazaar = 'golden_edition';
   static const String goldenProductIdMyket = 'golden_edition';
+
+  /// دسته‌هایی که با ویدیو موقت (تا پایان دور) باز می‌شوند
+  static const Set<String> videoUnlockCategorySlugs = {
+    'iranian_cinema',
+    'animals',
+  };
 }

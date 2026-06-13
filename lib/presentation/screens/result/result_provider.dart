@@ -29,7 +29,15 @@ class ResultUiState {
 @riverpod
 class ResultNotifier extends _$ResultNotifier {
   @override
-  ResultUiState build() => const ResultUiState();
+  ResultUiState build() {
+    ref.listen(gameProvider, (previous, next) {
+      if (next.phase == GamePhase.result &&
+          previous?.phase != GamePhase.result) {
+        ref.read(monetizationProvider.notifier).resetVideoUnlocksAfterRound();
+      }
+    });
+    return const ResultUiState();
+  }
 
   /// شروع دور بعدی — قبلش تبلیغ بین‌دوری برای کاربران رایگان
   Future<bool> continueGame() async {

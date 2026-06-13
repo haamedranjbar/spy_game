@@ -57,7 +57,18 @@ class MonetizationRepository {
     }
   }
 
-  /// باز کردن دسته با تماشای ویدیو
+  /// پاک کردن unlockهای قدیمی ویدیو — دیگر persist نمی‌شوند
+  Future<void> clearAdUnlockedCategories({required Isar isar}) async {
+    try {
+      await isar.writeTxn(() async {
+        await isar.adUnlockedCategorys.clear();
+      });
+    } catch (e, stackTrace) {
+      appLogger.e('Failed to clear ad unlocked categories', e, stackTrace);
+    }
+  }
+
+  /// @deprecated unlock ویدیو فقط تا پایان دور — در حافظه نگه داشته می‌شود
   Future<bool> unlockCategoryByAd({
     required Isar isar,
     required String categorySlug,

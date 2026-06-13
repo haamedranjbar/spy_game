@@ -16,20 +16,20 @@ class ProBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // نسخه فشرده: کادر مربعی هم‌اندازه آیکن دسته در کارت
+    // نسخه فشرده: کادر هم‌اندازه آیکن دسته (۲۲)
     if (compact) {
       return Container(
-        width: 28,
-        height: 28,
+        width: 22,
+        height: 22,
         decoration: BoxDecoration(
           color: AppColors.accentPremium.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(6),
           border: Border.all(color: AppColors.accentPremium),
         ),
         alignment: Alignment.center,
         child: Icon(
           showPlayIcon ? Icons.play_circle_outline : Icons.lock_outline,
-          size: 16,
+          size: 14,
           color: AppColors.accentPremium,
         ),
       );

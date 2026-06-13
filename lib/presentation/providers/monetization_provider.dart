@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spy_game/core/ads/ad_interface.dart';
 import 'package:spy_game/core/ads/ad_service_factory.dart';
 import 'package:spy_game/core/constants/app_market_config.dart';
+import 'package:spy_game/core/constants/game_config.dart';
 import 'package:spy_game/core/iap/iap_interface.dart';
 import 'package:spy_game/core/iap/iap_service_factory.dart';
 import 'package:spy_game/core/utils/app_flavor_bridge.dart';
@@ -9,6 +10,7 @@ import 'package:spy_game/core/utils/app_logger.dart';
 import 'package:spy_game/core/utils/category_access.dart';
 import 'package:spy_game/data/models/word_category.dart';
 import 'package:spy_game/data/repositories/monetization_repository.dart';
+import 'package:spy_game/presentation/providers/game_provider.dart';
 import 'package:spy_game/presentation/providers/isar_provider.dart';
 
 part 'monetization_provider.g.dart';
@@ -107,7 +109,8 @@ class MonetizationNotifier extends _$MonetizationNotifier {
 
       final isar = await ref.read(isarProvider.future);
       final purchaseState = await _repository.getPurchaseState(isar: isar);
-      final adUnlocked = await _repository.getAdUnlockedSlugs(isar: isar);
+      // unlock ویدیو دیگر persist نمی‌شود — داده قدیمی را پاک کن
+      await _repository.clearAdUnlockedCategories(isar: isar);
       final iapReady = await _iapService!.isAvailable();
       final product = await _iapService!.getGoldenProduct();
       final canPurchase = _canPurchase(
@@ -119,7 +122,7 @@ class MonetizationNotifier extends _$MonetizationNotifier {
       if (ref.mounted) {
         state = state.copyWith(
           isGoldenUser: purchaseState.isGoldenUser,
-          adUnlockedSlugs: adUnlocked,
+          adUnlockedSlugs: const {},
           productTitle: product?.title ?? '',
           productPrice: product?.price ?? '',
           activeMarket: market,
@@ -255,8 +258,12 @@ class MonetizationNotifier extends _$MonetizationNotifier {
     }
   }
 
-  /// باز کردن دسته با تماشای ویدیو
+  /// باز کردن دسته با تماشای ویدیو — فقط تا پایان دور جاری
   Future<bool> unlockCategoryWithVideo(String categorySlug) async {
+    if (!GameConfig.videoUnlockCategorySlugs.contains(categorySlug)) {
+      return false;
+    }
+
     final ad = _adService;
     if (ad == null) return false;
 
@@ -265,18 +272,12 @@ class MonetizationNotifier extends _$MonetizationNotifier {
       final result = await ad.showRewarded();
       if (result != AdShowResult.completed) return false;
 
-      final isar = await ref.read(isarProvider.future);
-      final saved = await _repository.unlockCategoryByAd(
-        isar: isar,
-        categorySlug: categorySlug,
-      );
-
-      if (saved && ref.mounted) {
+      if (ref.mounted) {
         state = state.copyWith(
           adUnlockedSlugs: {...state.adUnlockedSlugs, categorySlug},
         );
       }
-      return saved;
+      return true;
     } catch (e, stackTrace) {
       appLogger.e('Unlock category with video failed', e, stackTrace);
       return false;
@@ -284,6 +285,41 @@ class MonetizationNotifier extends _$MonetizationNotifier {
       if (ref.mounted) {
         state = state.copyWith(isUnlockingCategory: false);
       }
+    }
+  }
+
+  /// پایان دور — قفل مجدد دسته‌های باز شده با ویدیو
+  void resetVideoUnlocksAfterRound() {
+    if (state.isGoldenUser || state.adUnlockedSlugs.isEmpty) return;
+
+    state = state.copyWith(adUnlockedSlugs: const {});
+
+    final game = ref.read(gameProvider);
+    // فقط قبل از شروع بازی — دسته‌های قفل‌شده را از انتخاب حذف کن
+    if (game.phase == GamePhase.setup) {
+      Future.microtask(pruneLockedCategoriesFromSelection);
+    }
+  }
+
+  /// حذف دسته‌های قفل از انتخاب — هنگام بازگشت به صفحه دسته‌بندی‌ها
+  Future<void> pruneLockedCategoriesFromSelection() async {
+    if (state.isGoldenUser) return;
+
+    final game = ref.read(gameProvider);
+    if (game.selectedCategoryIds.isEmpty) return;
+
+    try {
+      final isar = await ref.read(isarProvider.future);
+      final gameNotifier = ref.read(gameProvider.notifier);
+
+      for (final id in List<int>.from(game.selectedCategoryIds)) {
+        final category = await isar.wordCategorys.get(id);
+        if (category != null && isCategoryLocked(category)) {
+          gameNotifier.removeCategoryFromSelection(id);
+        }
+      }
+    } catch (e, stackTrace) {
+      appLogger.e('Prune locked categories failed', e, stackTrace);
     }
   }
 

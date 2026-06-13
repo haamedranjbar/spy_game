@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:spy_game/data/models/word_category.dart';
 import 'package:spy_game/presentation/providers/game_provider.dart';
+import 'package:spy_game/presentation/providers/monetization_provider.dart';
 
 part 'categories_provider.g.dart';
 
@@ -34,6 +35,12 @@ class CategoriesNotifier extends _$CategoriesNotifier {
   CategoriesUiState build() {
     final game = ref.watch(gameProvider);
     final modeIndex = game.gameMode == CategoryType.family ? 1 : 0;
+
+    // پس از قفل شدن مجدد، دسته‌های پولی از انتخاب خارج شوند
+    Future.microtask(
+      () => ref.read(monetizationProvider.notifier).pruneLockedCategoriesFromSelection(),
+    );
+
     return CategoriesUiState(modeIndex: modeIndex);
   }
 

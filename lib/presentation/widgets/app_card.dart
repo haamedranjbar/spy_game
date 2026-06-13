@@ -14,6 +14,7 @@ class AppCard extends StatelessWidget {
     this.onTap,
     this.isSelected = false,
     this.selectedGlowColor,
+    this.accentTint,
     this.expandChild = false,
   });
 
@@ -26,6 +27,8 @@ class AppCard extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isSelected;
   final Color? selectedGlowColor;
+  /// لایه رنگی کمرنگ پس‌زمینه — هماهنگ با accent متن/آیکن
+  final Color? accentTint;
   /// بچه کل فضای کارت را پر کند — برای وسط‌چین عمودی در کارت‌های expand
   final bool expandChild;
 
@@ -38,10 +41,12 @@ class AppCard extends StatelessWidget {
         ? glowColor
         : (borderColor ?? AppColors.cardBorder);
 
-    // پس‌زمینه کمرنگ هنگام انتخاب — ترکیب subtle با رنگ accent همان تب
+    // پس‌زمینه کمرنگ — tint شفاف accent یا پررنگ‌تر هنگام انتخاب
     final effectiveBackground = isSelected
         ? Color.lerp(baseBackground, glowColor, 0.11)!
-        : baseBackground;
+        : accentTint != null
+            ? AppColors.tintedSurface(accentTint!, base: baseBackground)
+            : baseBackground;
 
     final card = Container(
       margin: margin,
