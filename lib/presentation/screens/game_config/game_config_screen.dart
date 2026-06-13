@@ -132,52 +132,43 @@ class GameConfigScreen extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // کارت مربع کنار هم — ارتفاع صریح از عرض ستون
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      const gap = 12.0;
-                      final cardWidth = (constraints.maxWidth - gap) / 2;
-
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: cardWidth,
-                            height: cardWidth,
-                            child: _PremiumRoleToggle(
-                              title: 'game_config.has_detective'.tr(),
-                              helpBodyKey: 'game_config.detective_help_detail',
-                              icon: Icons.search_outlined,
-                              value: gameState.hasDetective,
-                              enabled: isGoldenUser &&
-                                  configNotifier.canEnableDetective,
-                              onChanged: configNotifier.setHasDetective,
-                              onPremiumTap: isGoldenUser
-                                  ? null
-                                  : () => context.push(AppRoutes.iap),
-                            ),
+                  // نقش‌های ویژه — هم‌ارتفاع با کارت دسته‌بندی‌ها
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: _PremiumRoleToggle(
+                            title: 'game_config.has_detective'.tr(),
+                            helpBodyKey: 'game_config.detective_help_detail',
+                            icon: Icons.search_outlined,
+                            value: gameState.hasDetective,
+                            enabled: isGoldenUser &&
+                                configNotifier.canEnableDetective,
+                            onChanged: configNotifier.setHasDetective,
+                            onPremiumTap: isGoldenUser
+                                ? null
+                                : () => context.push(AppRoutes.iap),
                           ),
-                          const SizedBox(width: gap),
-                          SizedBox(
-                            width: cardWidth,
-                            height: cardWidth,
-                            child: _PremiumRoleToggle(
-                              title: 'game_config.has_infiltrator'.tr(),
-                              helpBodyKey:
-                                  'game_config.infiltrator_help_detail',
-                              icon: Icons.theater_comedy_outlined,
-                              value: gameState.hasInfiltrator,
-                              enabled: isGoldenUser &&
-                                  configNotifier.canEnableInfiltrator,
-                              onChanged: configNotifier.setHasInfiltrator,
-                              onPremiumTap: isGoldenUser
-                                  ? null
-                                  : () => context.push(AppRoutes.iap),
-                            ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _PremiumRoleToggle(
+                            title: 'game_config.has_infiltrator'.tr(),
+                            helpBodyKey:
+                                'game_config.infiltrator_help_detail',
+                            icon: Icons.theater_comedy_outlined,
+                            value: gameState.hasInfiltrator,
+                            enabled: isGoldenUser &&
+                                configNotifier.canEnableInfiltrator,
+                            onChanged: configNotifier.setHasInfiltrator,
+                            onPremiumTap: isGoldenUser
+                                ? null
+                                : () => context.push(AppRoutes.iap),
                           ),
-                        ],
-                      );
-                    },
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 12),
                   SettingToggle(
@@ -353,56 +344,64 @@ class _PremiumRoleToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      clipBehavior: Clip.hardEdge,
-      children: [
-        // بچه غیر Positioned — محدودیت مربع را به کارت می‌دهد
-        GestureDetector(
-          onTap: onPremiumTap,
-          behavior: HitTestBehavior.translucent,
-          child: SettingToggle(
-            title: title,
-            icon: icon,
-            value: value,
-            enabled: enabled,
-            compact: true,
-            compactTopInset: 34,
-            expand: true,
-            accentColor: AppColors.accentPremium,
-            onChanged: onChanged,
-          ),
-        ),
-        Positioned.directional(
-          textDirection: Directionality.of(context),
-          top: 8,
-          end: 8,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _CornerIconButton(
-                icon: Icons.help_outline,
-                color: AppColors.primaryBlue,
-                onTap: () => _showRoleHelpDialog(
-                  context,
-                  title: title,
-                  body: helpBodyKey.tr(),
-                  icon: icon,
-                ),
+    final isActive = value && enabled;
+
+    return Opacity(
+      opacity: enabled ? 1 : 0.72,
+      child: AppCard(
+        onTap: enabled ? () => onChanged(!value) : onPremiumTap,
+        isSelected: isActive,
+        selectedGlowColor: AppColors.accentPremium,
+        expandChild: true,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 22,
+              color: isActive
+                  ? AppColors.accentPremium
+                  : (enabled ? AppColors.textSecondary : AppColors.textMuted),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: isActive
+                          ? AppColors.textPrimary
+                          : AppColors.textMuted,
+                      fontWeight:
+                          isActive ? FontWeight.w700 : FontWeight.w500,
+                      height: 1.25,
+                    ),
               ),
-              const SizedBox(width: 6),
-              IgnorePointer(
-                ignoring: onPremiumTap == null,
-                child: _CornerIconButton(
-                  icon: Icons.lock_outline,
-                  color: AppColors.accentPremium,
-                  onTap: onPremiumTap ?? () {},
-                ),
+            ),
+            _CornerIconButton(
+              icon: Icons.help_outline,
+              color: AppColors.primaryBlue,
+              onTap: () => _showRoleHelpDialog(
+                context,
+                title: title,
+                body: helpBodyKey.tr(),
+                icon: icon,
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 6),
+            IgnorePointer(
+              ignoring: onPremiumTap == null,
+              child: _CornerIconButton(
+                icon: Icons.lock_outline,
+                color: AppColors.accentPremium,
+                onTap: onPremiumTap ?? () {},
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

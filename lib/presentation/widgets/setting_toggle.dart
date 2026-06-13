@@ -16,6 +16,7 @@ class SettingToggle extends StatelessWidget {
     this.compact = false,
     this.compactTopInset = 0,
     this.expand = false,
+    this.reserveSubtitleLine = false,
   });
 
   final String title;
@@ -31,10 +32,24 @@ class SettingToggle extends StatelessWidget {
   final double compactTopInset;
   /// پر کردن ارتفاع والد — برای کارت‌های نقش ویژه
   final bool expand;
+  /// فضای خط دوم — هم‌ارتفاع با کارت‌های دوخطی مثل دسته‌بندی‌ها
+  final bool reserveSubtitleLine;
 
   @override
   Widget build(BuildContext context) {
     final isActive = value && enabled;
+
+    // expand=true → بچه باید کل ارتفاع کارت را بگیرد تا Center واقعاً وسط‌چین شود
+    Widget cardChild = compact
+        ? _buildCompactContent(context, isActive)
+        : _buildRowContent(context, isActive);
+    if (expand) {
+      cardChild = SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: cardChild,
+      );
+    }
 
     final card = Opacity(
       opacity: enabled ? 1 : 0.72,
@@ -42,51 +57,63 @@ class SettingToggle extends StatelessWidget {
         onTap: enabled ? () => onChanged(!value) : null,
         isSelected: isActive,
         selectedGlowColor: accentColor,
+        expandChild: expand,
         padding: EdgeInsets.symmetric(
           horizontal: compact ? 8 : 16,
-          vertical: compact ? 10 : 12,
+          vertical: compact ? 10 : 16,
         ),
-        child: compact
-            ? _buildCompactContent(context, isActive)
-            : _buildRowContent(context, isActive),
+        child: cardChild,
       ),
     );
 
     if (!expand) return card;
 
-    // پر کردن کامل محدوده والد — برای کارت‌های مربع نقش ویژه
+    // پر کردن کامل محدوده والد — برای کارت‌های نقش ویژه
     return SizedBox.expand(child: card);
   }
 
   Widget _buildCompactContent(BuildContext context, bool isActive) {
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        if (icon != null) ...[
+          Icon(
+            icon,
+            color: isActive
+                ? accentColor
+                : (enabled ? AppColors.textSecondary : AppColors.textMuted),
+            size: expand ? 22 : 26,
+          ),
+          SizedBox(height: expand ? 6 : 8),
+        ],
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: isActive ? AppColors.textPrimary : AppColors.textMuted,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                height: 1.2,
+              ),
+        ),
+      ],
+    );
+
+    if (expand) {
+      return Align(
+        alignment: Alignment.center,
+        child: content,
+      );
+    }
+
     return Padding(
       padding: EdgeInsets.only(top: compactTopInset),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (icon != null) ...[
-            Icon(
-              icon,
-              color: isActive
-                  ? accentColor
-                  : (enabled ? AppColors.textSecondary : AppColors.textMuted),
-              size: 26,
-            ),
-            const SizedBox(height: 8),
-          ],
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: isActive ? AppColors.textPrimary : AppColors.textMuted,
-                  fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-                  height: 1.2,
-                ),
-          ),
-        ],
+        children: [content],
       ),
     );
   }
@@ -126,6 +153,8 @@ class SettingToggle extends StatelessWidget {
                         color: AppColors.textMuted,
                       ),
                 ),
+              ] else if (reserveSubtitleLine) ...[
+                const SizedBox(height: 18),
               ],
             ],
           ),

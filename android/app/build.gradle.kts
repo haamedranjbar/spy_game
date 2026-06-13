@@ -53,12 +53,10 @@ android {
         create("bazaar") {
             dimension = "store"
             applicationIdSuffix = ".bazaar"
-            resValue("string", "app_name", "بازی جاسوس")
         }
         create("myket") {
             dimension = "store"
             applicationIdSuffix = ".myket"
-            resValue("string", "app_name", "بازی جاسوس")
             // پیکربندی billing مایکت — طبق مستند myket_iap
             manifestPlaceholders["marketApplicationId"] = "ir.mservices.market"
             manifestPlaceholders["marketBindAddress"] =
@@ -67,12 +65,13 @@ android {
         }
         create("google") {
             dimension = "store"
-            resValue("string", "app_name", "Spy Game")
         }
     }
 
     defaultConfig {
         applicationId = "ir.hamed.spygame"
+        // نام نمایشی زیر آیکون در لانچر
+        resValue("string", "app_name", "نفوذی")
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

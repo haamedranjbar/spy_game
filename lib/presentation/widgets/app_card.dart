@@ -14,6 +14,7 @@ class AppCard extends StatelessWidget {
     this.onTap,
     this.isSelected = false,
     this.selectedGlowColor,
+    this.expandChild = false,
   });
 
   final Widget child;
@@ -25,6 +26,8 @@ class AppCard extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isSelected;
   final Color? selectedGlowColor;
+  /// بچه کل فضای کارت را پر کند — برای وسط‌چین عمودی در کارت‌های expand
+  final bool expandChild;
 
   @override
   Widget build(BuildContext context) {
@@ -61,17 +64,30 @@ class AppCard extends StatelessWidget {
       ),
       child: Padding(
         padding: padding,
-        child: child,
+        child: expandChild
+            ? SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: child,
+              )
+            : child,
       ),
     );
 
     if (onTap != null) {
+      final tappable = expandChild
+          ? SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: card,
+            )
+          : card;
       return Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(borderRadius),
-          child: card,
+          child: tappable,
         ),
       );
     }
